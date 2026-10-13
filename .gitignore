@@ -14,3 +14,4 @@ assets/clips/*
 eval/out/
 eval/transcripts/
 .DS_Store
+*.egg-info/
