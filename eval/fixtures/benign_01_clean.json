@@ -1,0 +1,20 @@
+{
+ "note": "SYNTHETIC",
+ "label": "benign",
+ "noise": "clean",
+ "lang": "en-IN",
+ "segments": [
+  {
+   "text": "Hello beta, kal ka khana ban gaya hai",
+   "t": 0.0
+  },
+  {
+   "text": "Doctor ne kaha hai ki police verification ke baad hi form bharna hoga",
+   "t": 8.0
+  },
+  {
+   "text": "Main rent transfer kar dungi shaam ko",
+   "t": 16.0
+  }
+ ]
+}

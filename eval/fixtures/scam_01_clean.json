@@ -1,0 +1,24 @@
+{
+ "note": "SYNTHETIC",
+ "label": "scam",
+ "noise": "clean",
+ "lang": "en-IN",
+ "segments": [
+  {
+   "text": "Hello main CBI office se bol raha hoon",
+   "t": 0.0
+  },
+  {
+   "text": "Aapke naam par case registered hai money laundering ka",
+   "t": 8.0
+  },
+  {
+   "text": "Yeh digital arrest hai, kisi ko mat batana, stay on video",
+   "t": 16.0
+  },
+  {
+   "text": "Verification ke liye safe account mein paise transfer karo",
+   "t": 24.0
+  }
+ ]
+}

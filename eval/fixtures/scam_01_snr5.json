@@ -1,0 +1,24 @@
+{
+ "note": "SYNTHETIC",
+ "label": "scam",
+ "noise": "snr5",
+ "lang": "en-IN",
+ "segments": [
+  {
+   "text": "This is the cyber crime branch calling",
+   "t": 0.0
+  },
+  {
+   "text": "We found illegal activities linked to your sim, there is an arrest warrant",
+   "t": 8.0
+  },
+  {
+   "text": "Do not disconnect this call, it is confidential",
+   "t": 16.0
+  },
+  {
+   "text": "Right now you must transfer the money to the safe account",
+   "t": 24.0
+  }
+ ]
+}

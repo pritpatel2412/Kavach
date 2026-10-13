@@ -1,0 +1,9 @@
+id: benign_family_hindi_01
+label: benign
+lang: hi-IN
+caller_voice: Hemraj
+victim_voice: Nalini
+turns:
+  - {who: caller, text: "माँ, मैं बोल रहा हूँ। कल पुलिस वेरिफिकेशन के लिए मेरे दफ़्तर से फ़ोन आएगा, घबराना मत।"}
+  - {who: victim, text: "अच्छा बेटा, और खाना खाया?"}
+  - {who: caller, text: "हाँ माँ। शाम को मैं किराया ट्रांसफर कर दूँगा। डॉक्टर के पास भी जाना है, तुरंत बताना अगर दर्द बढ़े।"}

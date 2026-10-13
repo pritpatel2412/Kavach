@@ -1,0 +1,113 @@
+# Stage dictionaries. Phrases are normalised at load time (lowercase, no punctuation, no nukta).
+# Add real ASR mis-spellings you observe in saved transcripts (see docs/DETECTION_SPEC.md).
+# Rules of thumb: prefer multi-word phrases; avoid words that are common in normal Hinglish
+# speech (e.g. "fir" = "phir"). Single-word entries must be distinctive (cbi, trai, warrant).
+
+S1_authority:
+  - cbi
+  - सीबीआई
+  - trai
+  - ट्राई
+  - police
+  - पुलिस
+  - crime branch
+  - क्राइम ब्रांच
+  - cyber crime
+  - cyber cell
+  - साइबर क्राइम
+  - customs
+  - कस्टम
+  - narcotics
+  - नारकोटिक्स
+  - enforcement directorate
+  - supreme court
+  - सुप्रीम कोर्ट
+  - mumbai police
+  - मुंबई पुलिस
+  - fedex
+  - फेडेक्स
+
+S2_accusation:
+  - money laundering
+  - मनी लॉन्ड्रिंग
+  - मनी लॉन्डरिंग
+  - case registered
+  - case darj
+  - केस दर्ज
+  - arrest warrant
+  - गिरफ्तारी वारंट
+  - warrant
+  - वारंट
+  - drugs in the parcel
+  - parcel mein drugs
+  - पार्सल में ड्रग्स
+  - illegal sim
+  - sim band
+  - सिम बंद
+  - aadhaar misused
+  - your aadhaar
+  - आपके आधार
+  - आधार कार्ड से
+  - fir registered
+  - एफआईआर
+  - human trafficking
+  - illegal activities
+
+S3_isolation:
+  - dont tell anyone
+  - do not tell anyone
+  - kisi ko mat batana
+  - kisi ko mat bataiye
+  - किसी को मत बताइए
+  - किसी को मत बताना
+  - किसी को न बताएं
+  - stay on video
+  - stay on the video call
+  - वीडियो कॉल पर रहिए
+  - digital arrest
+  - डिजिटल अरेस्ट
+  - dont disconnect
+  - do not disconnect
+  - dont cut the call
+  - phone mat katiye
+  - फोन मत काटिए
+  - फोन नहीं काटना
+  - confidential
+  - गोपनीय
+  - under surveillance
+
+S4_urgency:
+  - right now
+  - immediately
+  - within two hours
+  - within 2 hours
+  - abhi ke abhi
+  - अभी के अभी
+  - तुरंत
+  - दो घंटे में
+  - last warning
+  - arrested today
+  - आज ही गिरफ्तार
+  - or you will be arrested
+  - otherwise arrest
+
+S5_payment:
+  # Keep S5 SPECIFIC: generic phrases like "transfer karo" / "rent transfer" appear in normal family
+  # calls and, combined with S1, would trigger the instant-L3 rule. (Regression: test_benign_rent_transfer)
+  - safe account
+  - सेफ अकाउंट
+  - सुरक्षित खाते
+  - सुरक्षित अकाउंट
+  - secure account
+  - rbi account
+  - आरबीआई अकाउंट
+  - verification transfer
+  - verification deposit
+  - वेरिफिकेशन डिपॉजिट
+  - verification ke liye paise
+  - वेरिफिकेशन के लिए पैसे
+  - break your fd
+  - fd todo
+  - एफडी तोड़
+  - refundable amount
+  - refundable deposit

@@ -1,0 +1,13 @@
+# SYNTHETIC scenario. No real people, numbers, accounts. Voices: verify names in the Timbre catalog (Spike S5).
+id: scam_cbi_hindi_01
+label: scam
+lang: hi-IN            # TTS language and STT lang_code
+caller_voice: Hemraj
+victim_voice: Nalini
+turns:
+  - {who: caller, text: "नमस्ते, मैं सीबीआई दफ़्तर से बोल रहा हूँ। क्या आप सावित्री जी बोल रही हैं?"}
+  - {who: victim, text: "हाँ जी, बोलिए। क्या हुआ?"}
+  - {who: caller, text: "आपके आधार से जुड़े एक पार्सल में ड्रग्स मिले हैं। आपके नाम पर केस दर्ज हो गया है और गिरफ्तारी वारंट निकला है।"}
+  - {who: victim, text: "हे भगवान, मैंने तो कुछ नहीं किया।"}
+  - {who: caller, text: "यह डिजिटल अरेस्ट है। आप वीडियो कॉल पर रहिए और किसी को मत बताइए, यह गोपनीय मामला है।"}
+  - {who: caller, text: "अभी के अभी वेरिफिकेशन के लिए पैसे सेफ अकाउंट में भेजिए, वरना आज ही गिरफ्तार कर लेंगे।"}

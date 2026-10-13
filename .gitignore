@@ -1,0 +1,16 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+# privacy: never commit voice data, embeddings, recordings
+*.embedding.json
+embeddings/
+recordings/
+samples/private/
+assets/clips/*
+!assets/clips/.gitkeep
+eval/out/
+eval/transcripts/
+.DS_Store

@@ -1,0 +1,16 @@
+{
+ "note": "SYNTHETIC",
+ "label": "benign",
+ "noise": "snr5",
+ "lang": "en-IN",
+ "segments": [
+  {
+   "text": "Your electricity bill is due tomorrow",
+   "t": 0.0
+  },
+  {
+   "text": "Please pay at the nearest counter, this is not confidential, no hurry",
+   "t": 8.0
+  }
+ ]
+}

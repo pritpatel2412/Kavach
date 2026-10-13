@@ -1,0 +1,23 @@
+# Warning copy per language and level. Numbers must be written as spoken words (TTS Input Formatting Guide).
+# `clip_text` is what Timbre / the cloned voice says. `screen_text` is the large on-screen line.
+# Phase 4 adds guardian-name templating ({elder_name}, {guardian_name}) for cloned-voice clips.
+hi-IN:
+  1:
+    clip_text: "ज़रा रुकिए। यह कॉल संदिग्ध लग रही है। कोई भी पैसे ट्रांसफर मत कीजिए।"
+    screen_text: "सावधान! यह कॉल संदिग्ध है"
+  2:
+    clip_text: "रुकिए! यह स्कैम है। पुलिस या सीबीआई फ़ोन पर किसी को गिरफ़्तार नहीं करती। फ़ोन काट दीजिए।"
+    screen_text: "यह स्कैम है! फ़ोन काट दीजिए"
+  3:
+    clip_text: "फ़ोन काट दीजिए। आपके परिवार को सूचना भेज दी गई है। साइबर हेल्पलाइन, एक नौ तीन शून्य, पर कॉल कीजिए।"
+    screen_text: "फ़ोन काटें। 1930 पर कॉल करें"
+en-IN:
+  1:
+    clip_text: "Please be careful. This call looks suspicious. Do not transfer any money."
+    screen_text: "Be careful. This call looks suspicious"
+  2:
+    clip_text: "Stop. This is a scam. Police and the CBI never arrest anyone over a phone call. Hang up now."
+    screen_text: "This is a scam. Hang up now"
+  3:
+    clip_text: "Hang up. Your family has been alerted. Call the cyber helpline, one nine three zero."
+    screen_text: "Hang up. Call 1930"

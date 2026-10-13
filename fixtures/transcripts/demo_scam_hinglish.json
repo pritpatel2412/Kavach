@@ -1,0 +1,10 @@
+{
+  "note": "SYNTHETIC role-played scam call (Hinglish, Latin script as returned by en-IN). No real people, numbers or accounts.",
+  "language": "en-IN",
+  "segments": [
+    {"speaker": "caller", "text": "Hello, main CBI office se bol raha hoon, aapka naam Savitri ji hai na"},
+    {"speaker": "caller", "text": "Aapke aadhaar se ek parcel Mumbai mein pakda gaya hai, usme drugs hain, case registered ho chuka hai"},
+    {"speaker": "caller", "text": "Yeh ek digital arrest hai, aap stay on video aur kisi ko mat batana, yeh confidential hai"},
+    {"speaker": "caller", "text": "Abhi ke abhi aapko verification ke liye safe account mein paise transfer karo warna arrest"}
+  ]
+}
