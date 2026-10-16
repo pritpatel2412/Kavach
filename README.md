@@ -1,25 +1,64 @@
-# Kavach — real-time scam-call guardian for Indian elders
+# Kavach — Real-Time Scam-Call Guardian for Indian Elders
 
-> *Phone kaatiye. Yeh scam hai.*  Built for Gnani AI's Great Indian AI Internship Challenge.
+> *Phone kaatiye. Yeh scam hai.* Built for Gnani AI's Great Indian AI Internship Challenge.
 
 Kavach runs on a second device next to a phone on speaker. It streams audio to **Gnani Prisma** (Indian-language STT),
 scores the stages of a "digital arrest" scam script, and speaks a warning with **Gnani Timbre** (optionally a *consented*
-cloned family voice via voice cloning), while alerting a guardian. Calls used for testing are synthetic or role-played.
+cloned family voice via voice cloning), while alerting a guardian via Telegram. Calls used for testing are synthetic or role-played.
 
-## Quick start (zero credits)
+## Demo Quick Start (Zero Credits, Fully Offline)
+
+### 1. Setup & Tests
 ```bash
-make setup          # venv + deps + .env
-make test           # offline tests
-make dev-mock       # open http://localhost:8000/?mock=1&judge=1  -> watch a scripted scam call get caught
+make setup          # venv + dependencies + .env
+make test           # 42 offline tests (0 paid credits)
+make eval           # evaluate detector on synthetic degraded audio
 ```
-Live mode: put `GNANI_API_KEY` in `.env`, set `KAVACH_MOCK_STT=0`, run `make dev`, open `/?judge=1`.
-(Browsers need HTTPS or localhost for the microphone.)
 
-## Where things are
-- Instructions for AI agents/IDEs: `AGENTS.md` (also `AGENT.md`, `CLAUDE.md`, `GEMINI.md`, `.agent/`)
-- Progress: `STATUS.md` · Phases: `docs/phases/` · Product: `docs/PRD_SUMMARY.md`
-- Gnani API facts: `docs/GNANI_API_NOTES.md` · Architecture: `docs/ARCHITECTURE.md` · Safety: `docs/SAFETY.md`
-- Contest plan: `docs/WIN_PLAN.md`, `docs/DEMO_SCRIPT.md`, `docs/SUBMISSION.md`
+### 2. Run the Offline Demo Server
+```bash
+make dev-mock       # runs with KAVACH_MOCK_STT=1 on http://localhost:8000
+```
 
-## Models used
-Prisma v2.5 (realtime STT) · Timbre v2.5 (TTS) · Voice cloning `vachana-vc-v1`.
+### 3. End-to-End Walkthrough
+1. **Guardian Voice Onboarding (`/guardian.html`)**:
+   - Register guardian name, gender (for Hindi grammar `बोल रहा हूँ` / `बोल रही हूँ`), and optional Telegram Chat ID.
+   - Add elder name and warning language (`hi-IN` / `en-IN`).
+   - Accept the explicit consent agreement (owner-only, liveness-gated, DPDP compliant).
+   - Read the single-use random challenge sentence aloud (or click *Use Demo Voice* in mock environments).
+   - Preview the pre-rendered L1, L2, L3 warning clips spoken in the enrolled voice.
+2. **Elder Listening Screen (`/?mock=1&judge=1`)**:
+   - Tap **START** or click **▶ Replay Hinglish Scam Demo**.
+   - Watch the scam transcript stream in, the risk meter climb, and the stage chips (`S1 Authority`, `S2 Accusation`, `S3 Isolation`, `S4 Urgency`, `S5 Payment`) light up.
+   - At Level 2 and Level 3, Kavach intervenes with personalized voice warnings. Echo gate mutes incoming audio while the warning speaks.
+   - At Level 3, the emergency **1930 Cyber Helpline** call button appears.
+3. **Incident Timeline & Feedback (`/timeline.html`)**:
+   - Review the complete transcript segment chronology, stage progression, and guardian alert delivery status.
+   - Click **सही अलर्ट (Real Scam)** or **गलत अलर्ट (False Alarm)** to submit verification feedback.
+4. **Permanent Voice Deletion**:
+   - On `/guardian.html`, tap **Delete My Voice** to permanently erase the voice embedding from SQLite and unlink all clip files from disk.
+
+---
+
+## Live Production Mode (Uses Gnani Credits)
+
+To run with live microphone audio and real Gnani API services:
+1. Set `GNANI_API_KEY` in `.env`.
+2. Set `KAVACH_MOCK_STT=0`.
+3. Run `make dev` and open `http://localhost:8000/?judge=1`.
+*(Note: Browsers require `localhost` or HTTPS to access the microphone).*
+
+---
+
+## Project Structure
+- `apps/api/app/`: FastAPI backend, WebSocket session pipeline, SQLite persistence (`db.py`), voice enrollment (`routes_voice.py`), interventions, and Telegram alerts.
+- `apps/web/`: Vanilla HTML/CSS/JS client: Elder Screen (`index.html`), Guardian Wizard (`guardian.html`), Incident Timeline (`timeline.html`), AudioWorklet (`worklet.js`).
+- `packages/detector/`: Pure Python deterministic multi-stage scam detector (`kavach_detector`).
+- `eval/`: Synthetic telephony audio evaluation tools (`run_eval.py`, `degrade.py`).
+- `docs/`: Architecture, safety guidelines, Gnani API verified specs, and screenshots (`docs/img/`).
+
+## Models & APIs Used
+- **Prisma v3 Realtime Stream** (`wss://api.vachana.ai/stt/v3/stream`)
+- **Prisma REST STT** (`POST https://api.vachana.ai/stt/v3`) for enrollment liveness
+- **Timbre v2.5 TTS** (`POST https://api.vachana.ai/api/v1/tts/inference`)
+- **Vachana VC v1** (`POST /api/v1/tts/voice-clone/embeddings`) for consented guardian voice cloning

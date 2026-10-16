@@ -1,5 +1,6 @@
 .env
 .venv/
+venv/
 __pycache__/
 *.pyc
 .pytest_cache/
@@ -11,6 +12,10 @@ recordings/
 samples/private/
 assets/clips/*
 !assets/clips/.gitkeep
+data/
+fixtures/audio/*
+!fixtures/audio/README.md
+!fixtures/audio/demo_scam_hinglish.wav
 eval/out/
 eval/transcripts/
 .DS_Store
