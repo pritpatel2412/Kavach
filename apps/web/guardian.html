@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kavach · Guardian Voice Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b11;
+    --card: rgba(18, 25, 38, 0.82);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --fg: #f8fafc;
+    --mut: #94a3b8;
+    --dim: #475569;
+    --ok: #10b981;
+    --ok-glow: rgba(16, 185, 129, 0.28);
+    --warn: #f59e0b;
+    --bad: #ef4444;
+    --bad-glow: rgba(239, 68, 68, 0.35);
+    --line: rgba(255, 255, 255, 0.1);
+    --surface: #0f172a;
+    --primary: #3b82f6;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: "Outfit", "Noto Sans Devanagari", system-ui, sans-serif;
+    background: radial-gradient(circle at 50% 0%, #152238 0%, var(--bg) 65%);
+    color: var(--fg);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ok);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    transition: all .2s ease;
+  }
+  .back-link:hover {
+    background: rgba(16, 185, 129, 0.18);
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin: 0 0 8px;
+    color: #fff;
+  }
+  .subtitle {
+    color: var(--mut);
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 24px;
+  }
+
+  /* Stepper */
+  .stepper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    position: relative;
+    padding: 0 8px;
+  }
+  .stepper::before {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: 24px;
+    right: 24px;
+    height: 2px;
+    background: var(--line);
+    z-index: 1;
+  }
+  .step-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+    cursor: default;
+  }
+  .step-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #0f172a;
+    border: 2px solid var(--dim);
+    color: var(--mut);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .3s ease;
+  }
+  .step-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mut);
+  }
+  .step-node.active .step-dot {
+    border-color: var(--ok);
+    background: var(--ok);
+    color: #fff;
+    box-shadow: 0 0 14px var(--ok-glow);
+  }
+  .step-node.active .step-label {
+    color: #fff;
+  }
+  .step-node.done .step-dot {
+    border-color: var(--ok);
+    background: #064e3b;
+    color: var(--ok);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 28px;
+    margin: 16px 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    transition: all .3s ease;
+  }
+  .card.hidden {
+    display: none;
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 span.step-num {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--ok);
+    padding: 2px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin-top: 16px;
+  }
+  .label-desc {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--mut);
+    margin-top: 2px;
+  }
+  input, select {
+    width: 100%;
+    font-size: 17px;
+    font-family: inherit;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: #090e17;
+    color: #fff;
+    margin-top: 8px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input:focus, select:focus {
+    border-color: var(--ok);
+    box-shadow: 0 0 10px var(--ok-glow);
+  }
+
+  /* Buttons */
+  .btn-row {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  button {
+    font-size: 17px;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 14px 24px;
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px var(--ok-glow);
+    transition: all .2s ease;
+  }
+  button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--ok-glow);
+  }
+  button:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  button.ghost {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--line);
+    box-shadow: none;
+  }
+  button.ghost:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.14);
+  }
+  button.danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 4px 14px var(--bad-glow);
+  }
+
+  /* Consent styling */
+  .consent-box {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 16px 0;
+    color: #e2e8f0;
+  }
+  .consent-box p {
+    margin: 0 0 12px;
+  }
+  .consent-box p:last-child {
+    margin-bottom: 0;
+  }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    padding: 12px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 12px;
+    margin-top: 14px;
+  }
+  .checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--ok);
+  }
+
+  /* Challenge sentence */
+  .challenge-card {
+    background: #090e17;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+  #sentence {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: #fff;
+    margin: 0;
+  }
+  .rec-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--mut);
+  }
+  .pulse-rec {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--dim);
+  }
+  .pulse-rec.active {
+    background: var(--bad);
+    animation: blink 1s infinite;
+    box-shadow: 0 0 12px var(--bad-glow);
+  }
+
+  /* Alerts / Notices */
+  #err {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+  }
+  #err:not(:empty) { display: block; }
+  #ok {
+    color: #6ee7b7;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+  }
+  #ok:not(:empty) { display: block; }
+
+  /* Preview clips */
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 18px 0;
+  }
+  .preview-card {
+    background: #090e17;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+  .preview-card .lvl-tag {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .lvl-tag.l1 { background: rgba(245, 158, 11, 0.2); color: var(--warn); }
+  .lvl-tag.l2 { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+  .lvl-tag.l3 { background: var(--bad); color: #fff; }
+  .preview-card button {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="top-nav">
+    <a class="back-link" href="/?mock=1&judge=1">← बुज़ुर्ग स्क्रीन · Elder screen</a>
+    <span style="font-size:12px;color:var(--mut);">Kavach Voice Enrollment</span>
+  </div>
+
+  <h1>अभिभावक सेटअप · Guardian</h1>
+  <p class="subtitle">
+    अपनी आवाज़ को सहमति के साथ सुरक्षित रूप से जोड़ें। चेतावनी आपके अपनों को आपकी ही आवाज़ में सुनाई देगी।
+    <br><span style="font-size:13px;opacity:0.8;">Only your own voice, consent-gated, and instantly deletable at any time.</span>
+  </p>
+
+  <div class="stepper" id="stepper">
+    <div class="step-node active" id="node1"><div class="step-dot">1</div><div class="step-label">आप (You)</div></div>
+    <div class="step-node" id="node2"><div class="step-dot">2</div><div class="step-label">बुज़ुर्ग (Elder)</div></div>
+    <div class="step-node" id="node3"><div class="step-dot">3</div><div class="step-label">सहमति (Consent)</div></div>
+    <div class="step-node" id="node4"><div class="step-dot">4</div><div class="step-label">वाक्य (Liveness)</div></div>
+    <div class="step-node" id="node5"><div class="step-dot">5</div><div class="step-label">सुनें (Preview)</div></div>
+  </div>
+
+  <div id="err"></div>
+  <div id="ok"></div>
+
+  <!-- Step 1: Guardian -->
+  <section class="card" id="s1">
+    <h2><span class="step-num">Step 1</span> आप · Guardian Profile</h2>
+    <label>
+      आपका नाम / Guardian Name
+      <div class="label-desc">यह नाम चेतावनी में बोला जाएगा (e.g. "राहुल बोल रहा हूँ")</div>
+      <input id="gname" autocomplete="name" placeholder="उदा. राहुल / Rahul">
+    </label>
+    <label>
+      लिंग / Gender (Hindi grammar)
+      <div class="label-desc">व्याकरण के लिए आवश्यक (बोल रहा हूँ vs बोल रही हूँ)</div>
+      <select id="gender">
+        <option value="m">पुरुष · Male (बोल रहा हूँ)</option>
+        <option value="f">महिला · Female (बोल रही हूँ)</option>
+      </select>
+    </label>
+    <label>
+      Telegram Chat ID (Optional)
+      <div class="label-desc">संदिग्ध कॉल आने पर आपको तुरंत Telegram पर अलर्ट मिलेगा</div>
+      <input id="tg" inputmode="numeric" placeholder="उदा. 123456789">
+    </label>
+    <div class="btn-row">
+      <button type="button" id="next1">आगे बढ़ें · Next</button>
+    </div>
+  </section>
+
+  <!-- Step 2: Elder -->
+  <section class="card hidden" id="s2">
+    <h2><span class="step-num">Step 2</span> बुज़ुर्ग · Elder Profile</h2>
+    <label>
+      बुज़ुर्ग का नाम / Elder's Name
+      <div class="label-desc">यह नाम चेतावनी में आदर से पुकारा जाएगा (उदा. "सावित्री जी")</div>
+      <input id="ename" placeholder="उदा. सावित्री जी / Savitri Ji">
+    </label>
+    <label>
+      चेतावनी की भाषा / Language
+      <div class="label-desc">बुज़ुर्ग किस भाषा में चेतावनी सुनना चाहेंगे?</div>
+      <select id="lang">
+        <option value="hi-IN">हिन्दी (hi-IN) - Devanagari</option>
+        <option value="en-IN">Hinglish / English (en-IN) - Latin</option>
+      </select>
+    </label>
+    <div class="btn-row">
+      <button type="button" class="ghost" onclick="show('s1')">← पीछे · Back</button>
+      <button type="button" id="next2">आगे बढ़ें · Next</button>
+    </div>
+  </section>
+
+  <!-- Step 3: Consent -->
+  <section class="card hidden" id="s3">
+    <h2><span class="step-num">Step 3</span> सहमति एवं सुरक्षा · Consent & Safety</h2>
+    <div class="consent-box">
+      <p><strong>सहमति घोषणा (Consent Declaration):</strong></p>
+      <p>मैं सहमति देता/देती हूँ कि Kavach मेरी आवाज़ का एक एम्बेडिंग बनाए और केवल इस बुज़ुर्ग को साइबर ठगी से आगाह करने के लिए चेतावनी क्लिप्स तैयार करे। किसी तीसरे व्यक्ति की आवाज़ क्लोन नहीं की जाएगी।</p>
+      <p style="color:var(--mut);font-size:13px;border-top:1px solid var(--line);padding-top:10px;">
+        I explicitly consent to Kavach creating an embedding of my voice, solely used to synthesize scam-warning audio for this elder. The embedding is stored securely, never logged, and can be permanently deleted with a single click.
+      </p>
+    </div>
+    <label class="checkbox-label">
+      <input type="checkbox" id="consent">
+      <span>मैं सहमत हूँ · I explicitly consent</span>
+    </label>
+    <div class="btn-row">
+      <button type="button" class="ghost" onclick="show('s2')">← पीछे · Back</button>
+      <button type="button" id="next3">वाक्य दिखाओ · Show Challenge</button>
+    </div>
+  </section>
+
+  <!-- Step 4: Liveness Reading -->
+  <section class="card hidden" id="s4">
+    <h2><span class="step-num">Step 4</span> आवाज़ रिकॉर्डिंग · Read Aloud (5–30s)</h2>
+    <p style="color:var(--mut);margin-top:0;">नीचे लिखा वाक्य साफ़ आवाज़ में पढ़ें (Read this sentence clearly):</p>
+    
+    <div class="challenge-card">
+      <p id="sentence">वाक्य लोड हो रहा है...</p>
+    </div>
+
+    <div class="rec-indicator">
+      <div class="pulse-rec" id="recDot"></div>
+      <span id="timer">0 s / 30 s</span>
+      <span style="font-size:13px;color:var(--dim);">(कम से कम 5 सेकंड)</span>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" id="rec">🔴 रिकॉर्ड शुरू · Record</button>
+      <button type="button" class="ghost" id="stopRec" disabled>⏹ रोकें · Stop</button>
+      <button type="button" class="ghost" id="useDemo" style="display:none;">⚡ Use Demo Voice (Mock)</button>
+      <button type="button" id="upload" disabled>⬆ अपलोड एवं एनरोल · Upload</button>
+    </div>
+    <audio id="playback" controls style="width:100%;margin-top:14px;display:none;"></audio>
+  </section>
+
+  <!-- Step 5: Preview -->
+  <section class="card hidden" id="s5">
+    <h2><span class="step-num">Step 5</span> आवाज़ तैयार है · Preview Clips</h2>
+    <p style="color:var(--mut);margin-top:0;">आपकी आवाज़ में चेतावनी क्लिप्स सफलतापूर्वक प्री-रेंडर हो चुकी हैं।</p>
+
+    <div class="preview-grid">
+      <div class="preview-card">
+        <span class="lvl-tag l1">Level 1 · Soft</span>
+        <div style="font-size:12px;color:var(--mut);margin-bottom:8px;">संदिग्ध कॉल चेतावनी</div>
+        <button type="button" data-level="1">▶ सुनें (L1)</button>
+      </div>
+      <div class="preview-card">
+        <span class="lvl-tag l2">Level 2 · Urgent</span>
+        <div style="font-size:12px;color:var(--mut);margin-bottom:8px;">स्कैम रुकने की चेतावनी</div>
+        <button type="button" data-level="2">▶ सुनें (L2)</button>
+      </div>
+      <div class="preview-card">
+        <span class="lvl-tag l3">Level 3 · Critical</span>
+        <div style="font-size:12px;color:var(--mut);margin-bottom:8px;">फ़ोन काटें + 1930</div>
+        <button type="button" data-level="3">▶ सुनें (L3)</button>
+      </div>
+    </div>
+
+    <div style="margin:24px 0 16px;">
+      <a id="elderLink" href="/?mock=1&judge=1" style="text-decoration:none;">
+        <button type="button" style="width:100%;">🚀 बुज़ुर्ग स्क्रीन शुरू करें · Launch Elder Screen</button>
+      </a>
+    </div>
+
+    <div style="border-top:1px solid var(--line);padding-top:18px;margin-top:20px;">
+      <div style="font-size:13px;color:var(--mut);margin-bottom:10px;">डेटा प्राइवेसी एवं नियंत्रण:</div>
+      <button type="button" class="danger" id="del">🗑️ आवाज़ मिटाएँ · Delete My Voice Permanently</button>
+    </div>
+  </section>
+</main>
+
+<script src="guardian.js"></script>
+</body>
+</html>
