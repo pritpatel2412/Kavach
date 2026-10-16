@@ -23,11 +23,17 @@ class Settings:
     stt_min_silence_ms: int
     stt_min_speech_ms: int
     echo_gate_tail_s: float
+    stt_roll_at_s: float
     telegram_bot_token: str
     telegram_chat_id: str
     clips_dir: Path
     web_dir: Path
     fixtures_dir: Path
+    db_path: Path
+    public_url: str
+    liveness_threshold: float
+    llm_provider: str
+    llm_api_key: str
 
 
 def get_settings() -> Settings:
@@ -40,9 +46,15 @@ def get_settings() -> Settings:
         stt_min_silence_ms=int(os.getenv("STT_MIN_SILENCE_MS", "500")),
         stt_min_speech_ms=int(os.getenv("STT_MIN_SPEECH_MS", "200")),
         echo_gate_tail_s=float(os.getenv("ECHO_GATE_TAIL_S", "0.4")),
+        stt_roll_at_s=float(os.getenv("STT_ROLL_AT_S", str(14 * 60 + 30))),
         telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", ""),
         telegram_chat_id=os.getenv("TELEGRAM_CHAT_ID", ""),
         clips_dir=Path(os.getenv("CLIPS_DIR", str(ROOT / "assets" / "clips"))),
         web_dir=ROOT / "apps" / "web",
         fixtures_dir=ROOT / "fixtures",
+        db_path=Path(os.getenv("KAVACH_DB", str(ROOT / "data" / "kavach.db"))),
+        public_url=os.getenv("KAVACH_PUBLIC_URL", "http://localhost:8000").rstrip("/"),
+        liveness_threshold=float(os.getenv("LIVENESS_THRESHOLD", "75")),
+        llm_provider=os.getenv("LLM_PROVIDER", "").strip(),
+        llm_api_key=os.getenv("LLM_API_KEY", ""),
     )

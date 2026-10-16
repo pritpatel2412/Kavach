@@ -10,9 +10,10 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import time
 import unicodedata
-from typing import AsyncIterator
+from typing import Any, AsyncIterator, Awaitable, Callable
 
 import websockets
 
@@ -20,8 +21,12 @@ log = logging.getLogger("kavach.stt")
 
 STT_URL = "wss://api.vachana.ai/stt/v3/stream"
 FRAME_BYTES = 1024
-ROLL_AT_S = 14 * 60 + 30
+DEFAULT_ROLL_AT_S = 14 * 60 + 30
 ALLOWED_BIAS_SCORES = {0.0, 0.5, 1.0, 1.5, 2.0}
+
+
+def roll_at_s() -> float:
+    return float(os.getenv("STT_ROLL_AT_S", str(DEFAULT_ROLL_AT_S)))
 
 
 def sanitize_bias_list(words: list[str], limit: int = 100) -> list[str]:
@@ -65,19 +70,26 @@ def build_headers(api_key: str, lang_code: str, *, sample_rate: int = 16000, fmt
 
 
 class SttConnection:
-    def __init__(self, headers: dict[str, str]):
+    def __init__(self, headers: dict[str, str],
+                 connector: Callable[[], Awaitable[Any]] | None = None):
         self.headers = headers
         self.ws = None
         self.started = 0.0
         self._buf = bytearray()
         self._closing = False
+        self._connector = connector
 
     @property
     def age(self) -> float:
         return time.monotonic() - self.started if self.started else 0.0
 
+    async def _connect_ws(self):
+        if self._connector is not None:
+            return await self._connector()
+        return await websockets.connect(STT_URL, additional_headers=self.headers, ping_interval=20)
+
     async def open(self) -> None:
-        self.ws = await websockets.connect(STT_URL, additional_headers=self.headers, ping_interval=20)
+        self.ws = await self._connect_ws()
         self.started = time.monotonic()
         log.info("Prisma STT connected")
 
@@ -90,12 +102,12 @@ class SttConnection:
             if self.ws is not None:
                 try:
                     await self.ws.send(frame)
-                except websockets.ConnectionClosed:
+                except Exception:
                     log.warning("send on closed STT socket (will reconnect in reader)")
 
     async def roll(self) -> None:
         """Open a fresh connection before the 15-min cap, then close the old one."""
-        new = await websockets.connect(STT_URL, additional_headers=self.headers, ping_interval=20)
+        new = await self._connect_ws()
         old, self.ws, self.started = self.ws, new, time.monotonic()
         log.info("Prisma STT session rolled")
         if old is not None:
@@ -106,14 +118,18 @@ class SttConnection:
             try:
                 raw = await asyncio.wait_for(self.ws.recv(), timeout=1.0)
             except asyncio.TimeoutError:
-                if self.age > ROLL_AT_S:
+                if self.age > roll_at_s():
                     await self.roll()
                 continue
             except websockets.ConnectionClosed:
                 if self._closing:
                     return
                 log.warning("STT socket closed unexpectedly; reconnecting")
-                await self.open()
+                try:
+                    await self.open()
+                except Exception:
+                    log.warning("STT reconnect failed; retrying")
+                    await asyncio.sleep(0.5)
                 continue
             if isinstance(raw, bytes):
                 continue

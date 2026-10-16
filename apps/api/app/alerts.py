@@ -7,10 +7,13 @@ log = logging.getLogger("kavach.alerts")
 
 
 async def send_guardian_alert(token: str, chat_id: str, level: int, stages: list[str], excerpt: str,
-                              elder_name: str = "your family member") -> bool:
+                              elder_name: str = "your family member",
+                              timeline_url: str = "") -> bool:
     text = (f"Kavach alert (level {level}): a suspicious call is in progress for {elder_name}.\n"
             f"Stages heard: {', '.join(stages) or 'n/a'}.\nExcerpt: {excerpt[:160]}\n"
             f"Please call them now. Cyber helpline: 1930.")
+    if timeline_url:
+        text += f"\nTimeline: {timeline_url}"
     if not token or not chat_id:
         log.info("[alert not sent: no Telegram config] %s", text)
         return False

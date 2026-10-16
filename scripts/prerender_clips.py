@@ -1,26 +1,38 @@
 """Pre-render warning clips (zero TTS latency and zero credits during a live call).
+
   python scripts/prerender_clips.py                         # default voices -> assets/clips/default/
   python scripts/prerender_clips.py --embedding /tmp/me.json --profile guardian1 --lang hi-IN
-Files: assets/clips/<profile>/<lang>_L<level>.wav  (served at /clips/...)"""
-import argparse, asyncio, json
-import _common
-from app.gnani.tts import synthesize, synthesize_cloned
-from app.interventions import load_warnings
 
-DEFAULT_VOICES = {"hi-IN": "Nalini", "en-IN": "Kaveri", "hi-en": "Poorvi"}   # names seen in Gnani docs; verify in catalog
+Same renderer as POST /api/voice/enroll (`app.clips.render_profile_clips`).
+Files: assets/clips/<profile>/<lang>_L<level>.wav  (served at /clips/...)
+"""
+import argparse
+import asyncio
+import json
+
+import _common
+from app.clips import render_profile_clips
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--profile", default="default"); ap.add_argument("--embedding", default="")
-ap.add_argument("--lang", default="")
+ap.add_argument("--profile", default="default")
+ap.add_argument("--embedding", default="")
+ap.add_argument("--lang", default="hi-IN")
+ap.add_argument("--elder-name", default="आप")
+ap.add_argument("--guardian-name", default="Kavach")
+ap.add_argument("--gender", default="m", choices=("m", "f"))
+ap.add_argument("--mock", action="store_true", help="write silent placeholder WAVs (zero credits)")
 a = ap.parse_args()
 
+
 async def go():
-    k = _common.api_key(); warnings = load_warnings(); emb = json.load(open(a.embedding)) if a.embedding else None
-    out_dir = _common.ROOT / "assets" / "clips" / a.profile; out_dir.mkdir(parents=True, exist_ok=True)
-    for lang, levels in warnings.items():
-        if a.lang and lang != a.lang: continue
-        for level, copy in levels.items():
-            if emb: audio = await synthesize_cloned(k, copy["clip_text"], emb)
-            else: audio = await synthesize(k, copy["clip_text"], voice=DEFAULT_VOICES.get(lang, "Nalini"), language=lang)
-            p = out_dir / f"{lang}_L{level}.wav"; p.write_bytes(audio); print("wrote", p)
+    emb = json.load(open(a.embedding, encoding="utf-8")) if a.embedding else None
+    clips = await render_profile_clips(
+        profile=a.profile, lang=a.lang, embedding=emb,
+        elder_name=a.elder_name, guardian_name=a.guardian_name, gender=a.gender,
+        mock=a.mock or None, api_key=_common.api_key() if not a.mock else "",
+    )
+    for c in clips:
+        print("wrote", c)
+
+
 asyncio.run(go())
