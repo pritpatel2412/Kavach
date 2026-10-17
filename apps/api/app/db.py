@@ -1,6 +1,7 @@
 """SQLite persistence (stdlib sqlite3). No ORM. Embeddings are stored but never logged."""
 from __future__ import annotations
 
+import hashlib
 import logging
 import os
 import secrets
@@ -21,7 +22,12 @@ CREATE TABLE IF NOT EXISTS guardians (
   name TEXT NOT NULL,
   gender TEXT NOT NULL CHECK (gender IN ('m', 'f')),
   telegram_chat_id TEXT,
-  token TEXT
+  token TEXT,
+  token_hash TEXT
+);
+CREATE TABLE IF NOT EXISTS daily_usage (
+  usage_date TEXT PRIMARY KEY,
+  minutes REAL DEFAULT 0.0
 );
 CREATE TABLE IF NOT EXISTS elders (
   id TEXT PRIMARY KEY,
@@ -122,6 +128,7 @@ def init_db() -> None:
         # Safe column migrations for existing SQLite databases
         for alter in [
             "ALTER TABLE guardians ADD COLUMN token TEXT",
+            "ALTER TABLE guardians ADD COLUMN token_hash TEXT",
             "ALTER TABLE elders ADD COLUMN phone TEXT",
             "ALTER TABLE sessions ADD COLUMN last_heartbeat TEXT",
             "ALTER TABLE events ADD COLUMN reason_en TEXT",
@@ -152,14 +159,16 @@ def _row(r: sqlite3.Row | None) -> dict[str, Any] | None:
 
 
 def insert_guardian(name: str, gender: str, telegram_chat_id: str | None = None) -> tuple[str, str]:
+    """Create a guardian. Token is hashed at rest with SHA-256 and shown once at creation (S3-F)."""
     gid = new_id()
-    token = secrets.token_urlsafe(32)
+    raw_token = "kav_" + secrets.token_urlsafe(32)
+    token_hash = hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
     with db() as con:
         con.execute(
-            "INSERT INTO guardians (id, name, gender, telegram_chat_id, token) VALUES (?,?,?,?,?)",
-            (gid, name, gender, telegram_chat_id or None, token),
+            "INSERT INTO guardians (id, name, gender, telegram_chat_id, token, token_hash) VALUES (?,?,?,?,?,?)",
+            (gid, name, gender, telegram_chat_id or None, None, token_hash),
         )
-    return gid, token
+    return gid, raw_token
 
 
 def get_guardian(gid: str) -> dict[str, Any] | None:
@@ -170,8 +179,32 @@ def get_guardian(gid: str) -> dict[str, Any] | None:
 def get_guardian_by_token(token: str) -> dict[str, Any] | None:
     if not token:
         return None
+    th = hashlib.sha256(token.encode("utf-8")).hexdigest()
     with db() as con:
-        return _row(con.execute("SELECT * FROM guardians WHERE token=?", (token,)).fetchone())
+        return _row(con.execute("SELECT * FROM guardians WHERE token_hash=? OR token=?", (th, token)).fetchone())
+
+
+def get_daily_stt_minutes(usage_date: str | None = None) -> float:
+    """S3-A: Get cumulative STT audio minutes used for the given date (default today UTC)."""
+    if usage_date is None:
+        usage_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    with db() as con:
+        row = con.execute("SELECT minutes FROM daily_usage WHERE usage_date=?", (usage_date,)).fetchone()
+        return float(row["minutes"]) if row else 0.0
+
+
+def record_stt_minutes(minutes: float, usage_date: str | None = None) -> float:
+    """S3-A: Add processed STT audio minutes to the daily usage counter."""
+    if usage_date is None:
+        usage_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    with db() as con:
+        con.execute(
+            "INSERT INTO daily_usage (usage_date, minutes) VALUES (?, ?)"
+            " ON CONFLICT(usage_date) DO UPDATE SET minutes = minutes + ?",
+            (usage_date, minutes, minutes),
+        )
+        row = con.execute("SELECT minutes FROM daily_usage WHERE usage_date=?", (usage_date,)).fetchone()
+        return float(row["minutes"]) if row else 0.0
 
 
 def list_guardians() -> list[dict[str, Any]]:

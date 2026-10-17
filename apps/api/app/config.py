@@ -34,9 +34,12 @@ class Settings:
     liveness_threshold: float
     llm_provider: str
     llm_api_key: str
+    max_stt_minutes_per_day: float
 
 
 def get_settings() -> Settings:
+    # Note on Gnani auth (S3-E): Gnani Prisma and Timbre use 'X-API-Key-ID' exclusively (via GNANI_API_KEY).
+    # There is no GNANI_TOKEN in official docs (verified 13 Oct 2026 docs.gnani.ai).
     return Settings(
         gnani_api_key=os.getenv("GNANI_API_KEY", ""),
         mock_stt=_bool("KAVACH_MOCK_STT", False),
@@ -57,4 +60,5 @@ def get_settings() -> Settings:
         liveness_threshold=float(os.getenv("LIVENESS_THRESHOLD", "75")),
         llm_provider=os.getenv("LLM_PROVIDER", "").strip(),
         llm_api_key=os.getenv("LLM_API_KEY", ""),
+        max_stt_minutes_per_day=float(os.getenv("MAX_STT_MINUTES_PER_DAY", "30.0")),
     )

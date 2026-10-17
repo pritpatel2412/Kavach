@@ -12,7 +12,7 @@ from .auth import require_guardian
 from .config import get_settings
 from .device_health import check_offline_devices
 from .session import active_sessions
-from .signed_token import verify_action_token
+from .signed_token import create_action_token, verify_action_token
 
 log = logging.getLogger("kavach.routes")
 router = APIRouter()
@@ -25,6 +25,19 @@ def api_config():
         "mock": s.mock_stt,
         "llm_enabled": bool(s.llm_provider and s.llm_api_key),
         "liveness_threshold": s.liveness_threshold,
+        "max_stt_minutes_per_day": s.max_stt_minutes_per_day,
+    }
+
+
+@router.get("/api/usage")
+def api_usage():
+    """S3-A: Return daily STT audio processing minutes and quota status."""
+    s = get_settings()
+    used = db.get_daily_stt_minutes()
+    return {
+        "stt_minutes_today": round(used, 2),
+        "max_stt_minutes_per_day": s.max_stt_minutes_per_day,
+        "budget_exceeded": used >= s.max_stt_minutes_per_day,
     }
 
 
@@ -158,7 +171,8 @@ async def device_check_offline():
 
 @router.get("/api/alert/details")
 def alert_details(token: str = Query(...)):
-    data = verify_action_token(token)
+    # S3-F: Scoped by purpose: alert-view
+    data = verify_action_token(token, expected_purpose="alert_view")
     if not data:
         raise HTTPException(403, detail={"error": "token_invalid_or_expired"})
     session_id = data["session_id"]
@@ -194,11 +208,23 @@ def alert_details(token: str = Query(...)):
     }
 
 
+@router.post("/api/alert/intercom_token")
+def alert_intercom_token(token: str = Query(...)):
+    """S3-F: Exchange a valid alert_view action token for a short-lived intercom-scoped token."""
+    data = verify_action_token(token, expected_purpose="alert_view")
+    if not data:
+        raise HTTPException(403, detail={"error": "token_invalid_or_expired"})
+    session_id = data["session_id"]
+    intercom_token = create_action_token(session_id, purpose="intercom", ttl_s=300)
+    return {"intercom_token": intercom_token, "session_id": session_id}
+
+
 @router.websocket("/ws/intercom")
 async def intercom_ws(ws: WebSocket, token: str = Query("")):
-    data = verify_action_token(token)
+    # S3-F: Strictly require intercom-scoped token
+    data = verify_action_token(token, expected_purpose="intercom")
     if not data:
-        await ws.close(code=4003, reason="Invalid or expired action token")
+        await ws.close(code=4003, reason="Invalid or expired action token (purpose must be intercom)")
         return
     session_id = data.get("session_id")
     await ws.accept()

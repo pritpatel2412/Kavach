@@ -182,11 +182,26 @@ function onEvent(ev) {
         if (tlLink) tlLink.href = `timeline.html?session=${sessionId}`;
       }
       log(`state: ${ev.state}${ev.mock ? " (mock)" : ""} session=${ev.session_id || ""}`);
+      if (ev.stt_minutes_today !== undefined && $("statUsage")) {
+        $("statUsage").textContent = `${ev.stt_minutes_today.toFixed(1)} / ${ev.max_stt_minutes_per_day || 30} min`;
+        if (ev.stt_minutes_today >= (ev.max_stt_minutes_per_day || 30)) {
+          $("statUsage").style.color = "var(--bad)";
+        }
+      }
       if (ev.state === "listening") setDeviceState("armed");
       if (ev.state === "stopped") {
         setDeviceState("offline");
         if (sessionId) log("timeline: /timeline.html?session=" + sessionId);
       }
+      break;
+    case "error":
+      $("err").textContent = ev.message || "Error";
+      log("SERVER ERROR: " + ev.message);
+      if (ev.stt_minutes_today !== undefined && $("statUsage")) {
+        $("statUsage").textContent = `${ev.stt_minutes_today.toFixed(1)} / ${ev.max_stt_minutes_per_day || 30} min (Exceeded)`;
+        $("statUsage").style.color = "var(--bad)";
+      }
+      stop(false);
       break;
     case "transcript":
       if (ev.latency_ms != null) latencies.push(ev.latency_ms);
@@ -256,6 +271,65 @@ async function loadElders() {
   }
 }
 
+let callStartTime = 0;
+let lastSpeechTime = 0;
+let sustainedSpeechMs = 0;
+let handsFreeRingBuffer = [];
+let handsFreeActive = false;
+const MAX_SILENCE_MS = 3 * 60 * 1000;      // 3 minutes continuous silence auto-stop
+const MAX_CALL_MS = 20 * 60 * 1000;        // 20 minutes maximum call duration
+const SUSTAINED_SPEECH_TRIGGER_MS = 10000; // 10 seconds sustained speech
+
+function handleWorkletFrame(e) {
+  const data = e.data;
+  const buf = data.buffer || data;
+  const shouldTransmit = data.shouldTransmit !== undefined ? data.shouldTransmit : true;
+  const isSilent = data.isSilent !== undefined ? data.isSilent : false;
+  const now = Date.now();
+
+  // Hands-Free pre-trigger local VAD monitoring (S3-A)
+  if (handsFreeActive && !listening) {
+    handsFreeRingBuffer.push(buf);
+    if (handsFreeRingBuffer.length > 350) handsFreeRingBuffer.shift(); // ~11s ring
+    if (!isSilent) {
+      sustainedSpeechMs += 32;
+      if (sustainedSpeechMs >= SUSTAINED_SPEECH_TRIGGER_MS) {
+        log("Sustained speech detected (>=10s) -> auto-activating call protection!");
+        sustainedSpeechMs = 0;
+        start().then(() => {
+          while (handsFreeRingBuffer.length && ws && ws.readyState === 1) {
+            ws.send(handsFreeRingBuffer.shift());
+          }
+        }).catch(err => log("hands-free activation err: " + err));
+      }
+    } else {
+      sustainedSpeechMs = Math.max(0, sustainedSpeechMs - 48);
+    }
+    return;
+  }
+
+  // Active call monitoring (S3-A)
+  if (listening) {
+    if (!isSilent) {
+      lastSpeechTime = now;
+    } else if (lastSpeechTime > 0 && now - lastSpeechTime > MAX_SILENCE_MS) {
+      log("Auto-stopped: 3 minutes continuous silence reached (credit guard)");
+      stop(true);
+      return;
+    }
+    if (callStartTime > 0 && now - callStartTime > MAX_CALL_MS) {
+      log("Auto-stopped: 20 minutes maximum call duration reached (credit guard)");
+      stop(true);
+      return;
+    }
+
+    // Never stream silence: client-side gating (S3-A)
+    if (shouldTransmit && ws && ws.readyState === 1) {
+      ws.send(buf);
+    }
+  }
+}
+
 async function start(replayName) {
   $("err").textContent = "";
   unlockAudio();
@@ -286,22 +360,28 @@ async function start(replayName) {
   };
   await new Promise((res, rej) => { ws.onopen = res; ws.onerror = rej; });
   if (!mock && !replay) {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } });
-    } catch (e) {
-      $("err").textContent = "माइक्रोफ़ोन अनुमति नहीं मिली · mic permission denied";
-      setDeviceState("offline", "mic denied");
-      stop(false);
-      return;
+    if (!stream) {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } });
+      } catch (e) {
+        $("err").textContent = "माइक्रोफ़ोन अनुमति नहीं मिली · mic permission denied";
+        setDeviceState("offline", "mic denied");
+        stop(false);
+        return;
+      }
     }
-    ctx = new AudioContext();
-    await ctx.audioWorklet.addModule("worklet.js");
-    node = new AudioWorkletNode(ctx, "pcm16k");
-    node.port.onmessage = (e) => ws.readyState === 1 && ws.send(e.data);
-    ctx.createMediaStreamSource(stream).connect(node);
+    if (!ctx) {
+      ctx = new AudioContext();
+      await ctx.audioWorklet.addModule("worklet.js");
+      node = new AudioWorkletNode(ctx, "pcm16k");
+      node.port.onmessage = handleWorkletFrame;
+      ctx.createMediaStreamSource(stream).connect(node);
+    }
   }
   listening = true;
+  callStartTime = Date.now();
+  lastSpeechTime = Date.now();
   requestWakeLock();
   startHeartbeat();
   $("toggle").textContent = "बंद करो · STOP";
@@ -312,13 +392,19 @@ async function start(replayName) {
 
 function stop(sendStop = true) {
   listening = false;
+  callStartTime = 0;
+  lastSpeechTime = 0;
   clearTimeout(reconnectTimer);
   stopHeartbeat();
   releaseWakeLock();
   if (sendStop && ws && ws.readyState === 1) ws.send(JSON.stringify({ type: "stop" }));
   try { ws && ws.close(); } catch {}
-  stream && stream.getTracks().forEach((t) => t.stop());
-  ctx && ctx.close();
+  if (!handsFreeActive) {
+    stream && stream.getTracks().forEach((t) => t.stop());
+    stream = null;
+    ctx && ctx.close();
+    ctx = null;
+  }
   $("toggle").textContent = "सुनना शुरू करो · START";
   $("toggle").classList.remove("stop");
   setLevel(0, "Kavach बंद है");
@@ -339,6 +425,38 @@ $("replayBtn").onclick = () => {
   history.replaceState({}, "", url);
   start("demo_scam_hinglish.wav").catch((e) => log("replay failed: " + e));
 };
+
+const hfToggle = $("handsFreeToggle");
+if (hfToggle) {
+  hfToggle.onchange = async () => {
+    handsFreeActive = hfToggle.checked;
+    const consent = $("handsFreeConsent");
+    if (consent) consent.style.display = handsFreeActive ? "block" : "none";
+    if (handsFreeActive && !listening && !stream) {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } });
+        ctx = new AudioContext();
+        await ctx.audioWorklet.addModule("worklet.js");
+        node = new AudioWorkletNode(ctx, "pcm16k");
+        node.port.onmessage = handleWorkletFrame;
+        ctx.createMediaStreamSource(stream).connect(node);
+        log("Hands-free local energy-VAD monitoring active");
+      } catch (e) {
+        log("Hands-free mic permission denied: " + e);
+        hfToggle.checked = false;
+        handsFreeActive = false;
+      }
+    }
+  };
+}
+
+fetch("/api/usage").then(r => r.json()).then(u => {
+  if ($("statUsage")) {
+    $("statUsage").textContent = `${u.stt_minutes_today.toFixed(1)} / ${u.max_stt_minutes_per_day} min`;
+    if (u.budget_exceeded) $("statUsage").style.color = "var(--bad)";
+  }
+}).catch(() => {});
 
 loadElders();
 renderStats();

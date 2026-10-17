@@ -214,6 +214,10 @@ class SessionRunner:
 
     async def relay_intercom_audio(self, pcm_bytes: bytes) -> None:
         import base64
+        # S3-F: Intercom playback must activate the echo gate (silence substitution + tail)
+        # 16 kHz 16-bit mono = 32,000 bytes/sec
+        duration_s = len(pcm_bytes) / 32000.0
+        self.gate_until = max(self.gate_until, time.monotonic() + duration_s + self.s.echo_gate_tail_s)
         b64 = base64.b64encode(pcm_bytes).decode("ascii")
         await self.send({"type": "intercom_audio", "audio": b64, "rate": 16000})
 
@@ -274,7 +278,7 @@ class SessionRunner:
                 if g and g.get("telegram_chat_id"):
                     chat_id = g["telegram_chat_id"]
             timeline = f"{self.s.public_url}/timeline.html?session={self.session_id}"
-            action_token = create_action_token(self.session_id, ttl_s=900)
+            action_token = create_action_token(self.session_id, purpose="alert_view", ttl_s=900)
             action_url = f"{self.s.public_url}/alert.html?token={action_token}"
             try:
                 ok = await send_guardian_alert(self.s.telegram_bot_token, chat_id,
@@ -291,11 +295,25 @@ class SessionRunner:
             await self.send({"type": "alert_sent", "level": level, "delivered": ok, "action_url": action_url})
 
     async def run(self) -> None:
+        # S3-A: Hard cap MAX_STT_MINUTES_PER_DAY (refuse when exceeded)
+        today_mins = db.get_daily_stt_minutes()
+        if today_mins >= self.s.max_stt_minutes_per_day:
+            log.warning("Session rejected: daily STT budget exceeded (%.1f/%.1f min)", today_mins, self.s.max_stt_minutes_per_day)
+            await self.send({
+                "type": "error",
+                "message": f"Daily STT budget exceeded ({self.s.max_stt_minutes_per_day:.0f} min limit). Kavach is paused until tomorrow to prevent unexpected costs.",
+                "stt_minutes_today": today_mins,
+                "max_stt_minutes_per_day": self.s.max_stt_minutes_per_day,
+            })
+            return
+
         self.session_id = db.insert_session(self.elder_id, synthetic=self.s.mock_stt or bool(self.replay))
         active_sessions[self.session_id] = self
         await self.stt.open()
         await self.send({"type": "state", "state": "listening", "lang": self.lang,
-                          "mock": self.s.mock_stt, "session_id": self.session_id})
+                         "mock": self.s.mock_stt, "session_id": self.session_id,
+                         "stt_minutes_today": today_mins,
+                         "max_stt_minutes_per_day": self.s.max_stt_minutes_per_day})
         tasks = [asyncio.create_task(self._from_browser()), asyncio.create_task(self._from_stt())]
         if self.replay and not self.s.mock_stt:
             tasks.append(asyncio.create_task(self._replay_wav()))
@@ -317,12 +335,17 @@ class SessionRunner:
                 self._fallback_task.cancel()
             self._stop = True
             await self.stt.close()
+            # Record STT audio usage
+            duration_m = (time.monotonic() - self.started) / 60.0
+            db.record_stt_minutes(duration_m)
             try:
                 db.finish_session(self.session_id, self.scorer.max_score, self.scorer.max_level)
             except Exception:
                 pass
             try:
                 await self.send({"type": "state", "state": "stopped", "max_score": self.scorer.max_score,
-                                 "max_level": self.scorer.max_level, "session_id": self.session_id})
+                                 "max_level": self.scorer.max_level, "session_id": self.session_id,
+                                 "stt_minutes_today": db.get_daily_stt_minutes(),
+                                 "max_stt_minutes_per_day": self.s.max_stt_minutes_per_day})
             except Exception:
                 pass
