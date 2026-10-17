@@ -5,7 +5,7 @@
 ---
 
 ## 1. The Problem: India's "Digital Arrest" Epidemic
-- **The Scale:** According to the Ministry of Home Affairs (MHA) and the Indian Cybercrime Coordination Centre (I4C), Indians lost over **₹1,750 crore** to digital arrest and cyber extortion scams in the first six months of 2024 alone.
+- **The Scale:** According to government data from the National Cybercrime Reporting Portal (NCRP), reported by News18 and cited by NewsBytes (6 Jul 2026), citizens registered **297,727 digital arrest and extortion complaints** resulting in **₹4,057.7 crore lost** between 2022 and May 2026.
 - **Vulnerable Demographic:** Senior citizens and retirees are disproportionately targeted (accounting for over 70% of high-value losses), with individual elderly victims losing their entire life savings and pension corpus (averaging ₹30–80 lakhs per incident).
 - **The Psychological Trap:** Scammers weaponize false authority (CBI, Police, ED, Customs, Supreme Court), state coercion, and extreme isolation ("stay on camera, do not disconnect, keep this confidential"). Under acute panic, elders experience cognitive paralysis and comply with "safe account" liquidation demands.
 - **The Critical Gap:** Telco spam filters and Truecaller only screen known phone numbers before a call begins. Once an elder answers an untracked VoIP number or spoofed SIM, **zero protection exists during the actual conversation**.
@@ -48,17 +48,18 @@
 
 ---
 
-## 5. Measured Evaluation Results (Offline Scale Benchmark)
-Tested across **68 scripted transcripts** (37 scam calls, 31 adversarial benign calls) in Hindi, Hinglish, and Indian English:
+## 5. Measured Evaluation Results (Synthetic Text Tests)
+Tested across **70 synthetic call transcripts** (37 scam calls, 33 adversarial benign calls) plus **400 continuous household ambient segments** in Hindi, Hinglish, and Indian English. Confidence intervals are exact Wilson score 95% binomial CIs:
 
-| Metric | WER 0% (Clean) | WER 10% (Light ASR Noise) | WER 20% (Typical Speakerphone) | WER 30% (High Noise) |
+| Metric | Clean Text | Light ASR Noise (WER 10%) | Typical Speakerphone (WER 20%) | High Noise (WER 30%) |
 |---|---|---|---|---|
-| **Scam Recall (L2 before payment)** | **100.0%** | **97.3%** | **97.3%** | **73.0%** |
-| **Benign False Alarm Rate (L2+)** | **0.0%** | **3.0%** | **0.0%** | **3.0%** |
-| **Test Split Recall (Unseen)** | **100.0%** | **100.0%** | **100.0%** | **73.7%** |
+| **Scam Recall (L2 before payment)** | **36/36 (100.0%)** [90.4%, 100.0%] | **36/37 (97.3%)** [86.2%, 99.5%] | **36/37 (97.3%)** [86.2%, 99.5%] | **27/37 (73.0%)** [57.0%, 84.6%] |
+| **Benign False Alarm Rate (L2+)** | **0/32 (0.0%)** [0.0%, 10.7%] | **1/33 (3.0%)** [0.5%, 15.3%] | **0/33 (0.0%)** [0.0%, 10.4%] | **1/33 (3.0%)** [0.5%, 15.3%] |
+| **Unseen Test Split Recall** | **19/19 (100.0%)** [83.2%, 100.0%] | **19/19 (100.0%)** [83.2%, 100.0%] | **19/19 (100.0%)** [83.2%, 100.0%] | **14/19 (73.7%)** [51.2%, 88.2%] |
+| **Household Ambient False Alerts** | **0 / 400 (0.0 per 1k)** [0.0, 9.5] | — | — | — |
 | **Detection Speed (Time to Warning)** | < 650 ms | < 650 ms | < 650 ms | < 750 ms |
 
-*Result: Kavach flags scams before the victim reaches the payment stage in 97.3% of cases even with 20% ASR speech distortion, with zero false alarms on legitimate banking advisories.*
+*Result: In synthetic text tests, Kavach flags scams before the victim reaches the payment stage in 97.3% of cases at typical speakerphone ASR error rates (WER 20%), with zero false alarms on 400 household ambient background segments (TV news, serials, PSAs, religious broadcasts).*
 
 ---
 
