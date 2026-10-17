@@ -71,12 +71,13 @@ def test_intercom_relay_and_zero_audio_stored():
             sid = init["session_id"]
             assert sid in active_sessions
 
-            # Valid intercom token
-            intercom_token = create_action_token(sid, ttl_s=300)
+            # S3-F: Valid intercom token requires purpose='intercom'
+            intercom_token = create_action_token(sid, purpose="intercom", ttl_s=300)
 
             # Guardian opens /ws/intercom on separate client
             with c_guardian.websocket_connect(f"/ws/intercom?token={intercom_token}") as guardian_ws:
-                assert active_sessions[sid].guardian_connected is True
+                runner = active_sessions[sid]
+                assert runner.guardian_connected is True
 
                 # Guardian sends 16 kHz PCM audio frame
                 fake_pcm_frame = b"\x00\x10" * 256  # 512 bytes PCM16
@@ -96,15 +97,44 @@ def test_intercom_relay_and_zero_audio_stored():
                 assert relayed["rate"] == 16000
                 assert relayed["audio"]
 
+                # S3-F: Intercom playback must activate the echo gate (silence substitution + tail)
+                assert runner.gated() is True
+                from app.session import gated_audio, SILENCE_FRAME
+                fake_elder_mic_frame = b"\x12\x34" * 512
+                # Gated audio substitutes silence
+                assert gated_audio(fake_elder_mic_frame, runner.gated()) == SILENCE_FRAME
+
         # Verify zero intercom audio stored in database or files
         sess = db.get_session(sid)
         for ev in sess.get("events", []):
             assert "intercom" not in (ev.get("excerpt") or "").lower()
 
 
+def test_intercom_scoped_purpose_rejection_and_token_exchange():
+    """S3-F: An alert_view token cannot connect to /ws/intercom directly.
+    POST /api/alert/intercom_token exchanges it for a valid intercom token."""
+    with TestClient(app) as c:
+        sid = "scoped_session_123"
+        # 1. Alert view token (cannot access intercom)
+        alert_token = create_action_token(sid, purpose="alert_view", ttl_s=300)
+        with pytest.raises(Exception):
+            with c.websocket_connect(f"/ws/intercom?token={alert_token}"):
+                pass
+
+        # 2. Exchange alert_token for intercom_token
+        res = c.post(f"/api/alert/intercom_token?token={alert_token}")
+        assert res.status_code == 200
+        intercom_tok = res.json()["intercom_token"]
+        assert intercom_tok != alert_token
+        data = verify_action_token(intercom_tok, expected_purpose="intercom")
+        assert data is not None
+        assert data["purpose"] == "intercom"
+        assert data["session_id"] == sid
+
+
 def test_intercom_invalid_token_closed():
     with TestClient(app) as c:
-        expired_token = create_action_token("any_session", ttl_s=-10)
+        expired_token = create_action_token("any_session", purpose="intercom", ttl_s=-10)
         with pytest.raises(Exception):
             with c.websocket_connect(f"/ws/intercom?token={expired_token}"):
                 pass

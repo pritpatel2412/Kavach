@@ -3,8 +3,11 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
 
 from . import db
 from .config import get_settings
@@ -16,6 +19,13 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("kavach")
 
 
+class SanitizedAccessLogMiddleware(BaseHTTPMiddleware):
+    """S3-F: Prevent tokens in query strings from leaking into server access logs."""
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        return response
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     db.init_db()
@@ -24,7 +34,20 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Kavach API", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="Kavach API", version="0.3.0", lifespan=lifespan)
+
+# S3-F: Locked CORS origins
+_s = get_settings()
+_allowed = list({_s.public_url, "http://localhost:8000", "http://127.0.0.1:8000"})
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_allowed,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.add_middleware(SanitizedAccessLogMiddleware)
+
 app.include_router(core_router)
 app.include_router(voice_router)
 

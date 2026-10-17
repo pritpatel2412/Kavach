@@ -435,10 +435,12 @@ async function startIntercom() {
   }
   try {
     $("intercomStatus").textContent = "Connecting to elder's device speaker...";
-    $("intercomStatus").className = "intercom-status live";
+    const tokenRes = await fetch(`/api/alert/intercom_token?token=${encodeURIComponent(token)}`, { method: "POST" });
+    if (!tokenRes.ok) throw new Error("Could not acquire intercom token");
+    const { intercom_token } = await tokenRes.json();
 
     const proto = location.protocol === "https:" ? "wss" : "ws";
-    intercomWs = new WebSocket(`${proto}://${location.host}/ws/intercom?token=${encodeURIComponent(token)}`);
+    intercomWs = new WebSocket(`${proto}://${location.host}/ws/intercom?token=${encodeURIComponent(intercom_token)}`);
     intercomWs.binaryType = "arraybuffer";
 
     await new Promise((resolve, reject) => {

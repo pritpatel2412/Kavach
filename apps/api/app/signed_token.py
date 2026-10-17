@@ -11,10 +11,11 @@ import time
 SECRET_KEY = b"kavach_guardian_action_hmac_secret_2026"
 
 
-def create_action_token(session_id: str, ttl_s: int = 900) -> str:
-    """Create a URL-safe signed token with expiration timestamp."""
+def create_action_token(session_id: str, purpose: str = "alert_view", ttl_s: int = 900) -> str:
+    """Create a URL-safe signed token scoped by purpose (S3-F: alert-view vs intercom) with expiration."""
     payload = {
         "session_id": session_id,
+        "purpose": purpose,
         "exp": int(time.time() + ttl_s),
     }
     raw = json.dumps(payload, separators=(",", ":")).encode("utf-8")
@@ -24,8 +25,8 @@ def create_action_token(session_id: str, ttl_s: int = 900) -> str:
     return f"{b64_payload}.{b64_sig}"
 
 
-def verify_action_token(token: str, now: float | None = None) -> dict | None:
-    """Verify HMAC signature and check that token has not expired."""
+def verify_action_token(token: str, expected_purpose: str | None = None, now: float | None = None) -> dict | None:
+    """Verify HMAC signature, expiration timestamp, and optional scoped purpose."""
     if not token or "." not in token:
         return None
     b64_payload, b64_sig = token.rsplit(".", 1)
@@ -43,4 +44,8 @@ def verify_action_token(token: str, now: float | None = None) -> dict | None:
     current_time = now if now is not None else time.time()
     if data.get("exp", 0) < current_time:
         return None  # expired
+    if expected_purpose is not None:
+        token_purpose = data.get("purpose", "alert_view")
+        if token_purpose != expected_purpose:
+            return None
     return data
