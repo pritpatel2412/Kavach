@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kavach — Demo Director & Recording Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070B19;
+    --card: #0F172A;
+    --card-border: #1E293B;
+    --text: #F8FAFC;
+    --mut: #94A3B8;
+    --pri: #3B82F6;
+    --ok: #10B981;
+    --warn: #F59E0B;
+    --bad: #EF4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    overflow-x: hidden;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--card-border);
+    margin-bottom: 16px;
+  }
+  .brand {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid var(--pri);
+    color: var(--pri);
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .timers {
+    display: flex;
+    gap: 20px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .timer-box {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .timer-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: #38BDF8;
+  }
+  .studio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr 1fr;
+    gap: 16px;
+    flex: 1;
+  }
+  @media (max-width: 1024px) {
+    .studio-grid { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  }
+  .panel-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--mut);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Elder Screen Mock */
+  .ring-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+  }
+  .ring {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 8px solid var(--ok);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+    transition: all 0.4s ease;
+  }
+  .ring.l1 { border-color: var(--warn); box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%); }
+  .ring.l2, .ring.l3 { border-color: var(--bad); box-shadow: 0 0 45px rgba(239, 68, 68, 0.6); animation: pulse 1s infinite alternate; background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, transparent 70%); }
+  @keyframes pulse {
+    0% { transform: scale(1); filter: brightness(1); }
+    100% { transform: scale(1.04); filter: brightness(1.2); }
+  }
+  .ring-status { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 800; color: #fff; }
+  .ring-sub { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(--mut); margin-top: 2px; }
+
+  .transcript-box {
+    background: #020617;
+    border: 1px solid #1E293B;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    height: 130px;
+    overflow-y: auto;
+    color: #E2E8F0;
+    font-family: 'Inter', sans-serif;
+  }
+  .transcript-box .seg { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid #1e293b; }
+  .transcript-box .seg:last-child { border-bottom: none; color: #38BDF8; font-weight: 600; }
+
+  /* Judge Telemetry Panel */
+  .meter-wrap { background: #020617; border-radius: 999px; height: 14px; overflow: hidden; border: 1px solid #1E293B; position: relative; }
+  .meter-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #10B981, #F59E0B 50%, #EF4444 85%); transition: width 0.3s ease; }
+  .chips-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .chip {
+    padding: 8px 12px;
+    background: #020617;
+    border: 1px solid #1E293B;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mut);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.25s ease;
+  }
+  .chip.active { background: rgba(239, 68, 68, 0.15); border-color: var(--bad); color: #FCA5A5; }
+  .reason-card {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-left: 4px solid var(--warn);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #FEF08A;
+    line-height: 1.4;
+    min-height: 52px;
+  }
+
+  /* Guardian Mobile Simulation */
+  .phone-frame {
+    background: #020617;
+    border: 2px solid #334155;
+    border-radius: 28px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  .phone-notch {
+    width: 90px;
+    height: 14px;
+    background: #1E293B;
+    border-radius: 0 0 10px 10px;
+    margin: -14px auto 8px auto;
+  }
+  .tg-alert {
+    background: #1E293B;
+    border: 1px solid #3B82F6;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    animation: slideDown 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .tg-header { display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: #60A5FA; }
+  .intercom-btn {
+    background: var(--bad);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    margin-top: 16px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .btn {
+    background: var(--pri);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn:hover { filter: brightness(1.15); }
+  .btn.secondary { background: #1E293B; border: 1px solid #334155; }
+  .btn.success { background: var(--ok); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span>🛡️ KAVACH</span>
+    <span class="badge">Director Studio (60s Kit)</span>
+  </div>
+  <div class="timers">
+    <div class="timer-box">
+      <div style="font-size:10px;color:var(--mut);">ELAPSED TIME</div>
+      <div class="timer-val" id="timeElapsed">00:00.0</div>
+    </div>
+    <div class="timer-box">
+      <div style="font-size:10px;color:var(--mut);">TIME TO WARNING</div>
+      <div class="timer-val" id="timeTtw" style="color:#10B981;">—</div>
+    </div>
+  </div>
+</header>
+
+<div class="studio-grid">
+  <!-- Left: Elder Screen -->
+  <div class="panel">
+    <div class="panel-title">
+      <span>Elder Tabletop Device</span>
+      <span id="elderDevStatus" style="color:var(--ok);font-size:11px;">● ARMED</span>
+    </div>
+    <div class="ring-wrap">
+      <div class="ring" id="ring">
+        <div class="ring-status" id="ringStatus">सुरक्षित</div>
+        <div class="ring-sub" id="ringSub">SAFE · LISTENING</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:0.05em;">Live Phone Audio Stream</div>
+    <div class="transcript-box" id="transcriptBox">
+      <div class="seg" style="color:var(--mut);font-style:italic;">Ready to record. Click "Start 60s Simulation" below.</div>
+    </div>
+  </div>
+
+  <!-- Center: Judge Telemetry -->
+  <div class="panel">
+    <div class="panel-title">
+      <span>Scam Telemetry & Explainability</span>
+      <span id="scoreVal" style="color:#FCA5A5;font-weight:800;font-size:14px;">0 / 100</span>
+    </div>
+    <div class="meter-wrap">
+      <div class="meter-fill" id="meterFill"></div>
+    </div>
+    <div class="chips-grid">
+      <div class="chip" id="chip_S1"><span>S1 Authority Impersonation</span><span>CBI / Police</span></div>
+      <div class="chip" id="chip_S2"><span>S2 Accusation & Threat</span><span>Narcotics / Warrant</span></div>
+      <div class="chip" id="chip_S3"><span>S3 Isolation (Digital Arrest)</span><span>Room Closed</span></div>
+      <div class="chip" id="chip_S4"><span>S4 Urgency & Pressure</span><span>Immediate Action</span></div>
+      <div class="chip" id="chip_S5"><span>S5 Demand / Account Transfer</span><span>Safe Custody</span></div>
+    </div>
+    <div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:0.05em;margin-top:4px;">Explainability Reason</div>
+    <div class="reason-card" id="reasonBox">Call listening in progress. No suspicious authority or money demands detected yet.</div>
+  </div>
+
+  <!-- Right: Guardian Telegram & Intercom -->
+  <div class="panel">
+    <div class="panel-title">
+      <span>Guardian Device (Remote)</span>
+      <span style="color:#60A5FA;font-size:11px;">TELEGRAM ACTIVE</span>
+    </div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div style="text-align:center;font-size:12px;color:var(--mut);margin-bottom:8px;">12:45 PM · Friday</div>
+      <div class="tg-alert" id="tgAlert">
+        <div class="tg-header">
+          <span>🚨 Telegram · Kavach Alert</span>
+          <span style="font-size:10px;background:#EF4444;color:#fff;padding:2px 6px;border-radius:4px;">LEVEL 3</span>
+        </div>
+        <div style="font-weight:700;color:#fff;margin-top:2px;" id="tgTitle">Savitri Devi Needs Immediate Help</div>
+        <div style="font-size:11px;color:#CBD5E1;line-height:1.4;" id="tgReason">कॉलर ने CBI अधिकारी बनकर सुरक्षित खाते में पैसे मांगे।</div>
+        <button class="intercom-btn" id="intercomBtn">🎙️ Push-to-Talk Intercom</button>
+      </div>
+      <div id="intercomActiveMsg" style="display:none;margin-top:auto;text-align:center;font-size:12px;color:#10B981;font-weight:700;padding:8px;background:rgba(16,185,129,0.1);border-radius:8px;">
+        🎙️ Live 1-Way Intercom Connected (Speaking to Elder)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div style="display:flex;gap:10px;align-items:center;">
+    <select id="scenarioSelect" style="background:#0F172A;color:#fff;border:1px solid #334155;padding:8px 12px;border-radius:8px;font-size:13px;">
+      <option value="digital_arrest">Digital Arrest Scam (Hinglish, 5 stages)</option>
+      <option value="courier_fedex">FedEx Parcel Narcotics Scam (English)</option>
+      <option value="bank_advisory">Adversarial Benign: Bank OTP Advisory (Hindi)</option>
+    </select>
+    <button class="btn success" id="startBtn">▶ Start 60s Simulation</button>
+    <button class="btn secondary" id="resetBtn">↺ Reset</button>
+  </div>
+  <button class="btn" id="exportSrtBtn" style="background:#4F46E5;">📥 Export Captions (SRT)</button>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+const SCENARIOS = {
+  digital_arrest: [
+    { t: 2.0, text: "Namaste, main CBI New Delhi headquarters se Inspector Chauhan bol raha hoon.", stages: ["S1"], score: 25, level: 0, reason_hi: "कॉलर ने CBI अधिकारी होने का दावा किया", reason_en: "Caller claimed to be a CBI officer" },
+    { t: 8.5, text: "Aapke Aadhaar card se linked Canara Bank account se 4 crore ka money laundering hua hai.", stages: ["S1", "S2"], score: 50, level: 1, reason_hi: "मनी लॉन्ड्रिंग का आरोप लगाया गया", reason_en: "Accused victim of money laundering" },
+    { t: 15.0, text: "Supreme Court ne aapke khilaf non-bailable arrest warrant issue kiya hai, turant kamre ka darwaza band karein.", stages: ["S1", "S2", "S3", "S4"], score: 75, level: 2, reason_hi: "वारंट की धमकी देकर कमरे में अकेले रहने को कहा", reason_en: "Threatened arrest warrant and demanded victim stay isolated" },
+    { t: 22.5, text: "Aap digital arrest mein hain. Kisi ko call mat karna varna police abhi ghar pahuchegi.", stages: ["S1", "S2", "S3", "S4"], score: 85, level: 2, reason_hi: "डिजिटल अरेस्ट में रखने की धमकी दी", reason_en: "Threatened digital arrest" },
+    { t: 28.0, text: "Case clear hone tak turant ₹2,50,000 hamare government safe escrow account mein transfer kijiye.", stages: ["S1", "S2", "S3", "S4", "S5"], score: 100, level: 3, reason_hi: "सरकारी सुरक्षित खाते में तुरंत पैसे ट्रांसफर करने को कहा", reason_en: "Demanded immediate money transfer to safe escrow account" }
+  ],
+  courier_fedex: [
+    { t: 2.0, text: "This is FedEx International Air Cargo calling regarding parcel number 4920.", stages: ["S1"], score: 25, level: 0, reason_hi: "FedEx कूरियर कॉल", reason_en: "FedEx courier customer care" },
+    { t: 8.0, text: "Your passport copy was found inside a parcel booked for Dubai containing illegal MDMA drugs.", stages: ["S1", "S2"], score: 50, level: 1, reason_hi: "पार्सल में नशीले पदार्थ होने का आरोप", reason_en: "Accused of booking illegal narcotics parcel" },
+    { t: 15.5, text: "Narcotics Control Bureau has initiated criminal proceedings. Transfer ₹1,50,000 verification clearance fee immediately.", stages: ["S1", "S2", "S4", "S5"], score: 95, level: 3, reason_hi: "NCB केस से बचने के लिए तुरंत पैसे मांगे", reason_en: "Demanded clearance fee to avoid NCB arrest" }
+  ],
+  bank_advisory: [
+    { t: 2.0, text: "State Bank of India safety awareness message: Never share your OTP, PIN or CVV with anyone.", stages: [], score: 0, level: 0, reason_hi: "बैंक सुरक्षा चेतावनी: ओटीपी कभी शेयर न करें", reason_en: "Official bank security advisory" },
+    { t: 8.0, text: "Bank officials will never ask you to transfer funds to safe accounts. Beware of fake digital arrest calls.", stages: [], score: 0, level: 0, reason_hi: "जनहित में जारी: सतर्क रहें और पैसे ट्रांसफर न करें", reason_en: "Public interest awareness against cyber fraud" }
+  ]
+};
+
+let simTimer = null;
+let startTime = 0;
+let eventsTimeline = [];
+let ttwSec = null;
+
+function formatTime(ms) {
+  const m = Math.floor(ms / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  const ds = Math.floor((ms % 1000) / 100);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${ds}`;
+}
+
+function resetSimulation() {
+  clearInterval(simTimer);
+  simTimer = null;
+  eventsTimeline = [];
+  ttwSec = null;
+  $("timeElapsed").textContent = "00:00.0";
+  $("timeTtw").textContent = "—";
+  $("ring").className = "ring";
+  $("ringStatus").textContent = "सुरक्षित";
+  $("ringSub").textContent = "SAFE · LISTENING";
+  $("meterFill").style.width = "0%";
+  $("scoreVal").textContent = "0 / 100";
+  $("transcriptBox").innerHTML = '<div class="seg" style="color:var(--mut);font-style:italic;">Ready to record. Click "Start 60s Simulation" below.</div>';
+  ["S1","S2","S3","S4","S5"].forEach(s => $("chip_" + s).className = "chip");
+  $("reasonBox").textContent = "Call listening in progress. No suspicious authority or money demands detected yet.";
+  $("tgAlert").style.display = "none";
+  $("intercomActiveMsg").style.display = "none";
+  $("startBtn").disabled = false;
+}
+
+$("resetBtn").onclick = resetSimulation;
+
+$("startBtn").onclick = () => {
+  resetSimulation();
+  $("startBtn").disabled = true;
+  const key = $("scenarioSelect").value;
+  const script = SCENARIOS[key] || SCENARIOS.digital_arrest;
+  startTime = Date.now();
+  $("transcriptBox").innerHTML = "";
+
+  simTimer = setInterval(() => {
+    const elapsedMs = Date.now() - startTime;
+    const elapsedS = elapsedMs / 1000.0;
+    $("timeElapsed").textContent = formatTime(elapsedMs);
+
+    // Check script events
+    for (const ev of script) {
+      if (elapsedS >= ev.t && !eventsTimeline.includes(ev)) {
+        eventsTimeline.push(ev);
+        // Add to transcript
+        const p = document.createElement("div");
+        p.className = "seg";
+        p.textContent = `#${eventsTimeline.length} ${ev.text}`;
+        $("transcriptBox").appendChild(p);
+        $("transcriptBox").scrollTop = $("transcriptBox").scrollHeight;
+
+        // Telemetry
+        $("meterFill").style.width = ev.score + "%";
+        $("scoreVal").textContent = `${ev.score} / 100`;
+        (ev.stages || []).forEach(s => { if ($("chip_" + s)) $("chip_" + s).className = "chip active"; });
+        $("reasonBox").textContent = `${ev.reason_hi} · ${ev.reason_en}`;
+
+        // Ring Level
+        if (ev.level === 1) {
+          $("ring").className = "ring l1";
+          $("ringStatus").textContent = "सावधान";
+          $("ringSub").textContent = "CAUTION · LEVEL 1";
+        } else if (ev.level >= 2) {
+          $("ring").className = ev.level === 3 ? "ring l3" : "ring l2";
+          $("ringStatus").textContent = "ख़तरा";
+          $("ringSub").textContent = ev.level === 3 ? "CRITICAL THREAT · L3" : "SCAM DETECTED · L2";
+          if (!ttwSec) {
+            ttwSec = elapsedS;
+            $("timeTtw").textContent = `${ttwSec.toFixed(1)}s`;
+          }
+          // Trigger Telegram Alert
+          $("tgAlert").style.display = "flex";
+          $("tgTitle").textContent = ev.level === 3 ? "Immediate Emergency: Cloned Voice Intervened" : "Potential Scam Call Detected";
+          $("tgReason").textContent = ev.reason_hi;
+        }
+      }
+    }
+
+    if (elapsedS >= 60) {
+      clearInterval(simTimer);
+    }
+  }, 100);
+};
+
+$("intercomBtn").onclick = () => {
+  $("intercomActiveMsg").style.display = "block";
+};
+
+// SRT Subtitle Export
+$("exportSrtBtn").onclick = () => {
+  if (!eventsTimeline.length) {
+    alert("Please run a simulation first to generate transcript timeline events.");
+    return;
+  }
+  let srtContent = "";
+  eventsTimeline.forEach((ev, i) => {
+    const startS = ev.t;
+    const endS = startS + 4.5;
+    const fmt = (sec) => {
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = Math.floor(sec % 60);
+      const ms = Math.floor((sec % 1) * 1000);
+      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+    };
+    srtContent += `${i + 1}\n${fmt(startS)} --> ${fmt(endS)}\n${ev.text}\n\n`;
+  });
+
+  const blob = new Blob([srtContent], { type: "text/plain;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `kavach_demo_${$("scenarioSelect").value}_captions.srt`;
+  a.click();
+};
+</script>
+
+</body>
+</html>
