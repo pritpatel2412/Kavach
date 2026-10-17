@@ -5,7 +5,8 @@ from app import db
 
 
 def test_crud_guardian_elder_session(tmp_path):
-    gid = db.insert_guardian("Ravi", "m", "123")
+    gid, token = db.insert_guardian("Ravi", "m", "123")
+    assert token
     eid = db.insert_elder(gid, "Savitri", "hi-IN")
     assert db.get_guardian(gid)["name"] == "Ravi"
     assert db.get_elder(eid)["guardian_id"] == gid
@@ -22,7 +23,7 @@ def test_crud_guardian_elder_session(tmp_path):
 
 
 def test_voice_profile_delete_cascades_clip_rows(tmp_path):
-    gid = db.insert_guardian("Asha", "f")
+    gid, token = db.insert_guardian("Asha", "f")
     eid = db.insert_elder(gid, "Nani", "hi-IN")
     vid = db.insert_voice_profile(gid, eid, '{"embedding":"SECRET"}', "phrase")
     p = tmp_path / "clips" / vid / "hi-IN_L1.wav"
@@ -36,7 +37,7 @@ def test_voice_profile_delete_cascades_clip_rows(tmp_path):
 
 
 def test_guardian_delete_cascades_elders(tmp_path):
-    gid = db.insert_guardian("X", "m")
+    gid, token = db.insert_guardian("X", "m")
     eid = db.insert_elder(gid, "Y", "en-IN")
     with db.db() as con:
         con.execute("DELETE FROM guardians WHERE id=?", (gid,))
@@ -44,7 +45,7 @@ def test_guardian_delete_cascades_elders(tmp_path):
 
 
 def test_purge_old_events():
-    gid = db.insert_guardian("P", "m")
+    gid, token = db.insert_guardian("P", "m")
     eid = db.insert_elder(gid, "Q", "hi-IN")
     sid = db.insert_session(eid, True)
     old = (datetime.now(timezone.utc) - timedelta(days=8)).isoformat()

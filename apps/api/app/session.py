@@ -4,12 +4,13 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import time
 import wave
 from pathlib import Path
 
 from fastapi import WebSocket, WebSocketDisconnect
-from kavach_detector import RiskScorer, level_for
+from kavach_detector import RiskScorer, format_reason, level_for
 
 from . import db
 from .alerts import send_guardian_alert
@@ -18,8 +19,11 @@ from .gnani.mock_stt import MockStt
 from .gnani.stt_stream import SttConnection, build_headers
 from .interventions import InterventionManager
 from .llm import blend_score, second_opinion
+from .signed_token import create_action_token
 
 log = logging.getLogger("kavach.session")
+
+active_sessions: dict[str, SessionRunner] = {}
 
 DEFAULT_BIAS = ["CBI", "TRAI", "RBI", "Aadhaar", "warrant", "arrest", "verification", "transfer", "police"]
 SILENCE_FRAME = bytes(1024)
@@ -35,9 +39,12 @@ def gated_audio(chunk: bytes, gated: bool) -> bytes:
 
 
 def load_pcm16_mono(path: Path, target_rate: int = 16000) -> bytes:
+    import array
     with wave.open(str(path), "rb") as w:
         nch, sw, rate, nframes, *_ = w.getparams()
         raw = w.readframes(nframes)
+    if not raw or len(raw) == 0:
+        raise ValueError("Replay WAV file is empty (zero frames)")
     if sw != 2:
         raise ValueError("replay wav must be 16-bit PCM")
     if nch == 2:
@@ -45,6 +52,10 @@ def load_pcm16_mono(path: Path, target_rate: int = 16000) -> bytes:
         for i in range(0, len(raw), 4):
             pcm.extend(raw[i:i + 2])
         raw = bytes(pcm)
+    src_check = array.array("h")
+    src_check.frombytes(raw)
+    if not any(abs(s) > 10 for s in src_check):
+        raise ValueError("Replay WAV file is completely silent (no audio amplitude)")
     if rate == target_rate:
         return raw
     # linear resample of int16 mono
@@ -98,6 +109,8 @@ class SessionRunner:
         self._speech_end_mono = 0.0
         self._recent_texts: list[str] = []
         self._stop = False
+        self.guardian_connected = False
+        self._fallback_task: asyncio.Task | None = None
 
     def _make_stt(self):
         if self.s.mock_stt:
@@ -142,6 +155,8 @@ class SessionRunner:
                     elif t == "playback_end":
                         self.playing = False
                         self.gate_until = time.monotonic() + self.s.echo_gate_tail_s
+                    elif t == "heartbeat":
+                        db.update_heartbeat(self.session_id)
                     elif t == "stop":
                         return
         except WebSocketDisconnect:
@@ -183,6 +198,25 @@ class SessionRunner:
                 if t == "error":
                     log.error("STT error: %s", ev.get("message"))
 
+    async def _wait_and_play_fallback(self, payload: dict, timeout_s: float = 20.0) -> None:
+        try:
+            await asyncio.sleep(timeout_s)
+            if not self.guardian_connected and not self._stop:
+                log.info("L3 alert: guardian did not join intercom within 20s; playing cloned warning clip")
+                await self.send(payload)
+        except asyncio.CancelledError:
+            log.info("L3 fallback clip cancelled because guardian joined intercom")
+
+    def guardian_joined_intercom(self) -> None:
+        self.guardian_connected = True
+        if self._fallback_task and not self._fallback_task.done():
+            self._fallback_task.cancel()
+
+    async def relay_intercom_audio(self, pcm_bytes: bytes) -> None:
+        import base64
+        b64 = base64.b64encode(pcm_bytes).decode("ascii")
+        await self.send({"type": "intercom_audio", "audio": b64, "rate": 16000})
+
     async def _on_transcript(self, ev: dict) -> None:
         text = ev.get("text", "")
         idx = ev.get("segment_index", 0)
@@ -199,13 +233,16 @@ class SessionRunner:
                 self.scorer.level = max(self.scorer.level, level)
                 self.scorer.max_level = max(self.scorer.max_level, level)
                 self.scorer.max_score = max(self.scorer.max_score, score)
+        reason_en = format_reason(up.stages_seen, "en")
+        reason_hi = format_reason(up.stages_seen, "hi")
         await self.send({"type": "transcript", "text": text, "segment_index": idx,
                          "latency_ms": ev.get("latency"), "audio_ms": ev.get("audio_duration_ms")})
         await self.send({"type": "risk", "score": score, "level": level, "stages": up.stages_seen,
                          "hits": [h[1] for h in up.hits], "segment_index": idx,
-                         "session_id": self.session_id})
+                         "session_id": self.session_id, "reason_en": reason_en, "reason_hi": reason_hi})
         try:
-            db.insert_event(self.session_id, idx, text[:160], up.stages_seen, score, level)
+            db.insert_event(self.session_id, idx, text[:160], up.stages_seen, score, level,
+                            reason_en=reason_en, reason_hi=reason_hi)
             db.touch_session_scores(self.session_id, score, level)
         except Exception as e:
             log.warning("session persist failed: %s", e)
@@ -214,7 +251,18 @@ class SessionRunner:
             speech_end = self._speech_end_mono or time.monotonic()
             payload["ttw_ms"] = int((time.monotonic() - speech_end) * 1000)
             payload["t_ms"] = int((time.monotonic() - self.started) * 1000)
-            await self.send(payload)
+            payload["reason_en"] = reason_en
+            payload["reason_hi"] = reason_hi
+            if level == 3 and payload.get("clip_url"):
+                if self.guardian_connected:
+                    log.info("L3 alert: guardian already on intercom, clip deferred")
+                else:
+                    if self._fallback_task and not self._fallback_task.done():
+                        self._fallback_task.cancel()
+                    timeout_s = float(os.getenv("L3_FALLBACK_TIMEOUT_S", "0.05" if self.s.mock_stt else "20.0"))
+                    self._fallback_task = asyncio.create_task(self._wait_and_play_fallback(payload, timeout_s))
+            else:
+                await self.send(payload)
         self._speech_end_mono = 0.0
         if level >= 2 and level > self.last_alert_level:
             self.last_alert_level = level
@@ -226,35 +274,47 @@ class SessionRunner:
                 if g and g.get("telegram_chat_id"):
                     chat_id = g["telegram_chat_id"]
             timeline = f"{self.s.public_url}/timeline.html?session={self.session_id}"
+            action_token = create_action_token(self.session_id, ttl_s=900)
+            action_url = f"{self.s.public_url}/alert.html?token={action_token}"
             try:
                 ok = await send_guardian_alert(self.s.telegram_bot_token, chat_id,
                                                level, up.stages_seen, text,
-                                               elder_name=elder_name, timeline_url=timeline)
+                                               elder_name=elder_name, timeline_url=timeline,
+                                               action_url=action_url)
             except Exception as e:
                 log.warning("alert raised: %s", e)
                 ok = False
             try:
-                db.insert_alert(self.session_id, level, ok)
+                db.insert_alert(self.session_id, level, ok, action_token=action_token)
             except Exception as e:
                 log.warning("alert persist failed: %s", e)
-            await self.send({"type": "alert_sent", "level": level, "delivered": ok})
+            await self.send({"type": "alert_sent", "level": level, "delivered": ok, "action_url": action_url})
 
     async def run(self) -> None:
         self.session_id = db.insert_session(self.elder_id, synthetic=self.s.mock_stt or bool(self.replay))
+        active_sessions[self.session_id] = self
         await self.stt.open()
         await self.send({"type": "state", "state": "listening", "lang": self.lang,
-                         "mock": self.s.mock_stt, "session_id": self.session_id})
+                          "mock": self.s.mock_stt, "session_id": self.session_id})
         tasks = [asyncio.create_task(self._from_browser()), asyncio.create_task(self._from_stt())]
         if self.replay and not self.s.mock_stt:
             tasks.append(asyncio.create_task(self._replay_wav()))
         try:
             done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            if self._fallback_task and not self._fallback_task.done() and not self._stop:
+                try:
+                    await self._fallback_task
+                except asyncio.CancelledError:
+                    pass
             for p in pending:
                 p.cancel()
             for d in done:
                 if d.exception():
                     log.error("session task failed: %r", d.exception())
         finally:
+            active_sessions.pop(self.session_id, None)
+            if self._fallback_task and not self._fallback_task.done():
+                self._fallback_task.cancel()
             self._stop = True
             await self.stt.close()
             try:

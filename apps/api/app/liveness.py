@@ -10,4 +10,6 @@ def liveness_ok(transcript: str, expected: str, threshold: float) -> bool:
     a, b = normalise(transcript), normalise(expected)
     if not a or not b:
         return False
+    if len(a) < 0.5 * len(b):
+        return False
     return max(fuzz.ratio(a, b), fuzz.partial_ratio(a, b)) >= threshold

@@ -14,15 +14,17 @@ from app.routes_voice import _challenges
 
 def test_e2e_offline_guardian_session_timeline_delete():
     with TestClient(app) as c:
-        g = c.post("/api/guardians", json={"name": "Ravi", "gender": "m",
-                                           "telegram_chat_id": ""}).json()["id"]
+        g_res = c.post("/api/guardians", json={"name": "Ravi", "gender": "m",
+                                               "telegram_chat_id": ""}).json()
+        g, token = g_res["id"], g_res["token"]
+        headers = {"Authorization": f"Bearer {token}"}
         e = c.post("/api/elders", json={"guardian_id": g, "name": "Savitri",
-                                        "language": "en-IN"}).json()["id"]
+                                        "language": "en-IN"}, headers=headers).json()["id"]
         ch = c.get("/api/voice/challenge").json()
         _challenges[ch["challenge_id"]] = (ch["sentence"], 1e18)
         en = c.post("/api/voice/enroll", data={
             "challenge_id": ch["challenge_id"], "guardian_id": g, "elder_id": e, "consent": "true",
-        }, files={"audio_file": ("a.wav", tiny_wav_bytes(), "audio/wav")})
+        }, headers=headers, files={"audio_file": ("a.wav", tiny_wav_bytes(), "audio/wav")})
         assert en.status_code == 200, en.text
         vid = en.json()["voice_profile_id"]
         clip_urls = {cl["level"]: cl["url"] for cl in en.json()["clips"]}
@@ -36,7 +38,7 @@ def test_e2e_offline_guardian_session_timeline_delete():
                 events.append(ev)
                 if ev["type"] == "state" and ev.get("session_id"):
                     session_id = ev["session_id"]
-                if ev["type"] == "alert_sent" and ev["level"] == 3:
+                if ev["type"] == "intervene" and ev["level"] == 3:
                     break
         types = [e["type"] for e in events]
         assert "transcript" in types and "risk" in types
@@ -50,16 +52,16 @@ def test_e2e_offline_guardian_session_timeline_delete():
         assert any(e["type"] == "alert_sent" for e in events)
         assert session_id
 
-        tl = c.get(f"/api/sessions/{session_id}")
+        tl = c.get(f"/api/sessions/{session_id}", headers=headers)
         assert tl.status_code == 200
         body = tl.json()
         assert body["events"] and all(len(ev["excerpt"]) <= 160 for ev in body["events"])
         assert body["alerts"]
-        fb = c.post(f"/api/sessions/{session_id}/feedback", json={"verdict": "real"})
+        fb = c.post(f"/api/sessions/{session_id}/feedback", json={"verdict": "real"}, headers=headers)
         assert fb.json() == {"ok": True}
-        assert c.get(f"/api/sessions/{session_id}").json()["feedback"] == "real"
+        assert c.get(f"/api/sessions/{session_id}", headers=headers).json()["feedback"] == "real"
 
-        d = c.delete(f"/api/voice/{vid}")
+        d = c.delete(f"/api/voice/{vid}", headers=headers)
         assert d.json() == {"deleted": True}
         from app.config import get_settings
         assert not (get_settings().clips_dir / vid / "en-IN_L2.wav").exists()
