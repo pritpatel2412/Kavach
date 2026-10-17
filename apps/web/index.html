@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b11">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Kavach · Real-time Scam Call Guardian</title>
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -138,6 +143,16 @@
   #listen.off .dot {
     background: var(--dim);
     animation: none;
+  }
+  #listen.reconnecting {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: var(--warn);
+    box-shadow: 0 0 16px var(--warn-glow);
+  }
+  #listen.reconnecting .dot {
+    background: var(--warn);
+    animation: blink 0.6s infinite;
   }
 
   /* Elder Selector */
@@ -494,6 +509,15 @@
       <div class="label">Guardian Telegram Alert</div>
       <div class="val" id="statAlert">None</div>
     </div>
+    <div class="stat-card">
+      <div class="label">Device & Intercom</div>
+      <div class="val" id="statDevice" style="font-size:14px;color:var(--ok);">Armed · Standby</div>
+    </div>
+  </div>
+
+  <div class="stat-card" style="margin-top:10px; border-left: 3px solid var(--warn);">
+    <div class="label">Detection Reason (Explainability)</div>
+    <div id="judgeReason" style="font-size:14px; margin-top:4px; color:#fef08a; line-height:1.4;">—</div>
   </div>
 
   <div class="judge-controls">

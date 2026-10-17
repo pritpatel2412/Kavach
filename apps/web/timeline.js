@@ -1,11 +1,23 @@
 const q = new URLSearchParams(location.search);
 let sessionId = q.get("session") || localStorage.getItem("kavach_last_session_id") || "";
+let guardianToken = q.get("token") || localStorage.getItem("kavach_guardian_token") || "";
 const $ = (id) => document.getElementById(id);
+
+function authHeaders(extra = {}) {
+  const h = { ...extra };
+  if (guardianToken) h["Authorization"] = "Bearer " + guardianToken;
+  return h;
+}
 
 async function loadSessionList() {
   try {
-    const r = await fetch("/api/sessions");
-    if (!r.ok) return;
+    const r = await fetch("/api/sessions", { headers: authHeaders() });
+    if (!r.ok) {
+      if (r.status === 401) {
+        $("sid").textContent = "प्रमाणीकरण आवश्यक · Guardian token required to view sessions";
+      }
+      return;
+    }
     const data = await r.json();
     const sessions = data.sessions || [];
     if (!sessions.length) {
@@ -49,7 +61,7 @@ async function load(id) {
   }
   $("sid").textContent = id;
   try {
-    const r = await fetch("/api/sessions/" + id);
+    const r = await fetch("/api/sessions/" + id, { headers: authHeaders() });
     if (!r.ok) {
       $("sid").textContent = "सत्र नहीं मिला · Session not found (" + id + ")";
       return;
@@ -127,7 +139,8 @@ async function vote(verdict) {
   if (!sessionId) return;
   try {
     const r = await fetch("/api/sessions/" + sessionId + "/feedback", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: authHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ verdict }),
     });
     const data = await r.json();

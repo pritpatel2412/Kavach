@@ -1,0 +1,17 @@
+{
+  "name": "Kavach · Scam Call Guardian",
+  "short_name": "Kavach",
+  "description": "Real-time scam-call guardian for Indian elders",
+  "start_url": "/?judge=1",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#070b11",
+  "theme_color": "#070b11",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

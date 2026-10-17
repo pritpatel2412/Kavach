@@ -42,11 +42,73 @@ function renderStats() {
   }
 }
 
+let wakeLock = null;
+let heartbeatTimer = null;
+let reconnectTimer = null;
+let currentReplay = "";
+
+async function requestWakeLock() {
+  if ("wakeLock" in navigator) {
+    try {
+      wakeLock = await navigator.wakeLock.request("screen");
+      log("screen wake lock active");
+    } catch (e) {
+      log("wake lock err: " + e);
+    }
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLock) {
+    try { wakeLock.release(); } catch {}
+    wakeLock = null;
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (wakeLock !== null && document.visibilityState === "visible" && listening) {
+    requestWakeLock();
+  }
+});
+
+function setDeviceState(state, extra) {
+  const el = $("listen");
+  const txt = $("listenTxt");
+  const statDev = $("statDevice");
+  el.className = "";
+  if (state === "armed") {
+    el.className = "on";
+    txt.textContent = "Kavach आर्मड · Armed & Listening";
+    if (statDev) { statDev.textContent = "Armed · Standby"; statDev.style.color = "var(--ok)"; }
+  } else if (state === "reconnecting") {
+    el.className = "reconnecting";
+    txt.textContent = "पुनः जुड़ रहा है · Reconnecting...";
+    if (statDev) { statDev.textContent = "Reconnecting..."; statDev.style.color = "var(--warn)"; }
+  } else {
+    el.className = "off";
+    txt.textContent = extra || "Kavach ऑफ़लाइन · Offline / Disarmed";
+    if (statDev) { statDev.textContent = "Offline"; statDev.style.color = "var(--mut)"; }
+  }
+}
+
+function startHeartbeat() {
+  stopHeartbeat();
+  heartbeatTimer = setInterval(() => {
+    if (ws && ws.readyState === 1) {
+      ws.send(JSON.stringify({ type: "heartbeat" }));
+    }
+  }, 30000);
+}
+
+function stopHeartbeat() {
+  if (heartbeatTimer) {
+    clearInterval(heartbeatTimer);
+    heartbeatTimer = null;
+  }
+}
+
 function setListening(on, extra) {
-  $("listen").className = on ? "on" : "off";
-  $("listenTxt").textContent = on
-    ? "Kavach सुन रहा है · listening"
-    : (extra || "Kavach सुन नहीं रहा · not listening");
+  setDeviceState(on ? "armed" : "offline", extra);
 }
 
 function setLevel(level, text) {
@@ -79,6 +141,37 @@ function play(url) {
   a.play().catch(end);
 }
 
+let playbackCtx = null;
+function playIntercomPcm(b64Pcm, sampleRate = 16000) {
+  try {
+    const bin = atob(b64Pcm);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const int16 = new Int16Array(bytes.buffer);
+    if (!playbackCtx) playbackCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate });
+    const buf = playbackCtx.createBuffer(1, int16.length, sampleRate);
+    const ch = buf.getChannelData(0);
+    for (let i = 0; i < int16.length; i++) ch[i] = int16[i] / 32768.0;
+    const src = playbackCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(playbackCtx.destination);
+    src.start();
+    if ($("statDevice")) {
+      $("statDevice").textContent = "🎙️ Intercom Active (Guardian Speaking)";
+      $("statDevice").style.color = "var(--bad)";
+      clearTimeout(window._intercomReset);
+      window._intercomReset = setTimeout(() => {
+        if ($("statDevice")) {
+          $("statDevice").textContent = "Armed · Standby";
+          $("statDevice").style.color = "var(--ok)";
+        }
+      }, 1500);
+    }
+  } catch (err) {
+    log("intercom audio err: " + err);
+  }
+}
+
 function onEvent(ev) {
   switch (ev.type) {
     case "state":
@@ -89,9 +182,9 @@ function onEvent(ev) {
         if (tlLink) tlLink.href = `timeline.html?session=${sessionId}`;
       }
       log(`state: ${ev.state}${ev.mock ? " (mock)" : ""} session=${ev.session_id || ""}`);
-      if (ev.state === "listening") setListening(true);
+      if (ev.state === "listening") setDeviceState("armed");
       if (ev.state === "stopped") {
-        setListening(false);
+        setDeviceState("offline");
         if (sessionId) log("timeline: /timeline.html?session=" + sessionId);
       }
       break;
@@ -105,14 +198,23 @@ function onEvent(ev) {
       if ($("scoreText")) $("scoreText").textContent = ev.score + " / 100";
       STAGES.forEach((s) => $("c_" + s).classList.toggle("on", (ev.stages || []).includes(s)));
       setLevel(ev.level);
+      if ($("judgeReason") && (ev.reason_hi || ev.reason_en)) {
+        $("judgeReason").textContent = `${ev.reason_hi || ""} · ${ev.reason_en || ""}`;
+      }
       log(`risk ${ev.score} L${ev.level} hits: ${(ev.hits || []).join(", ")}`);
       break;
     case "intervene":
       setLevel(ev.level, ev.screen_text);
       if (ev.ttw_ms != null) ttws.push(ev.ttw_ms);
+      if ($("judgeReason") && (ev.reason_hi || ev.reason_en)) {
+        $("judgeReason").textContent = `${ev.reason_hi || ""} · ${ev.reason_en || ""}`;
+      }
       renderStats();
       log(`INTERVENE L${ev.level} ttw=${ev.ttw_ms}ms ${ev.clip_url || "(text only)"}`);
       if (ev.clip_url) play(ev.clip_url);
+      break;
+    case "intercom_audio":
+      playIntercomPcm(ev.audio, ev.rate || 16000);
       break;
     case "alert_sent":
       lastAlert = `L${ev.level} ${ev.delivered ? "delivered" : "not delivered"}`;
@@ -121,11 +223,12 @@ function onEvent(ev) {
       break;
     case "stt_error":
       $("err").textContent = "STT error: " + (ev.message || "connection failed");
-      setListening(true, "STT error · reconnecting?");
+      setDeviceState("reconnecting", "STT error · reconnecting?");
       log("STT ERROR: " + ev.message);
       break;
     case "stt_connected":
       $("err").textContent = "";
+      setDeviceState("armed");
       log("STT connected");
       break;
   }
@@ -137,7 +240,10 @@ function elderId() {
 
 async function loadElders() {
   try {
-    const r = await fetch("/api/elders");
+    const token = q.get("token") || localStorage.getItem("kavach_guardian_token") || "";
+    const headers = token ? { "Authorization": "Bearer " + token } : {};
+    const r = await fetch("/api/elders", { headers });
+    if (!r.ok) return;
     const data = await r.json();
     const sel = $("elder");
     sel.innerHTML = '<option value="">— select / चुनें —</option>' +
@@ -153,17 +259,31 @@ async function loadElders() {
 async function start(replayName) {
   $("err").textContent = "";
   unlockAudio();
+  currentReplay = replayName || replayQ;
   const proto = location.protocol === "https:" ? "wss" : "ws";
   const eid = elderId();
-  const replay = replayName || replayQ;
+  const replay = currentReplay;
   const params = new URLSearchParams({ lang, rate: "16000" });
   if (eid) params.set("elder_id", eid);
   if (replay) params.set("replay", replay);
   ws = new WebSocket(`${proto}://${location.host}/ws/session?${params}`);
   ws.binaryType = "arraybuffer";
   ws.onmessage = (m) => typeof m.data === "string" && onEvent(JSON.parse(m.data));
-  ws.onclose = () => { if (listening) { setListening(false); log("socket closed"); } };
-  ws.onerror = () => { $("err").textContent = "कनेक्शन नहीं जुड़ा · connection error"; };
+  ws.onclose = () => {
+    if (listening) {
+      setDeviceState("reconnecting");
+      log("socket disconnected · auto-reconnecting in 2.5s...");
+      clearTimeout(reconnectTimer);
+      reconnectTimer = setTimeout(() => {
+        if (listening) {
+          start(currentReplay).catch(e => log("reconnect failed: " + e));
+        }
+      }, 2500);
+    }
+  };
+  ws.onerror = () => {
+    $("err").textContent = "कनेक्शन नहीं जुड़ा · connection error";
+  };
   await new Promise((res, rej) => { ws.onopen = res; ws.onerror = rej; });
   if (!mock && !replay) {
     try {
@@ -171,7 +291,7 @@ async function start(replayName) {
         audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } });
     } catch (e) {
       $("err").textContent = "माइक्रोफ़ोन अनुमति नहीं मिली · mic permission denied";
-      setListening(false, "mic denied");
+      setDeviceState("offline", "mic denied");
       stop(false);
       return;
     }
@@ -182,22 +302,27 @@ async function start(replayName) {
     ctx.createMediaStreamSource(stream).connect(node);
   }
   listening = true;
+  requestWakeLock();
+  startHeartbeat();
   $("toggle").textContent = "बंद करो · STOP";
   $("toggle").classList.add("stop");
   setLevel(0, "Kavach सुन रहा है");
-  setListening(true);
+  setDeviceState("armed");
 }
 
 function stop(sendStop = true) {
+  listening = false;
+  clearTimeout(reconnectTimer);
+  stopHeartbeat();
+  releaseWakeLock();
   if (sendStop && ws && ws.readyState === 1) ws.send(JSON.stringify({ type: "stop" }));
   try { ws && ws.close(); } catch {}
   stream && stream.getTracks().forEach((t) => t.stop());
   ctx && ctx.close();
-  listening = false;
   $("toggle").textContent = "सुनना शुरू करो · START";
   $("toggle").classList.remove("stop");
   setLevel(0, "Kavach बंद है");
-  setListening(false);
+  setDeviceState("offline");
 }
 
 $("toggle").onclick = () => (listening ? stop() : start().catch((e) => {

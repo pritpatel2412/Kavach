@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b11">
+<title>Kavach Alert · Guardian Action Link</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b11;
+    --card: rgba(18, 25, 38, 0.88);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --fg: #f8fafc;
+    --mut: #94a3b8;
+    --dim: #475569;
+    --ok: #10b981;
+    --ok-glow: rgba(16, 185, 129, 0.28);
+    --warn: #f59e0b;
+    --warn-glow: rgba(245, 158, 11, 0.35);
+    --bad: #ef4444;
+    --bad-glow: rgba(239, 68, 68, 0.45);
+    --line: rgba(255, 255, 255, 0.12);
+    --surface: #0f172a;
+    --accent: #38bdf8;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: "Outfit", "Noto Sans Devanagari", system-ui, sans-serif;
+    background: radial-gradient(circle at 50% 0%, #1e111a 0%, var(--bg) 75%);
+    color: var(--fg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 14px 40px;
+    gap: 16px;
+  }
+  .container {
+    width: 100%;
+    max-width: 540px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: .06em;
+  }
+  .brand svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--bad);
+  }
+  .status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .badge-live {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid var(--bad);
+    color: #fca5a5;
+  }
+  .badge-live .pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bad);
+    animation: pulse-dot 1s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .4; transform: scale(0.8); }
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  .threat-banner {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid var(--bad);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .threat-level {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    color: #f87171;
+    text-transform: uppercase;
+  }
+  .threat-headline {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--mut);
+    margin-bottom: 2px;
+  }
+
+  .reason-box {
+    background: rgba(255, 255, 255, 0.04);
+    border-left: 3px solid var(--warn);
+    padding: 12px 14px;
+    border-radius: 4px 10px 10px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .reason-hi {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fef08a;
+    line-height: 1.35;
+  }
+  .reason-en {
+    font-size: 14px;
+    color: #e2e8f0;
+    line-height: 1.4;
+  }
+
+  .excerpt-box {
+    background: #000;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    position: relative;
+  }
+  .excerpt-box::before {
+    content: "HEARD ON CALL:";
+    display: block;
+    font-size: 10px;
+    color: var(--mut);
+    letter-spacing: .08em;
+    margin-bottom: 4px;
+    font-family: "Outfit", sans-serif;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    font-weight: 600;
+  }
+
+  /* Actions */
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .btn {
+    appearance: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-call {
+    background: #10b981;
+    color: #064e3b;
+    box-shadow: 0 4px 16px var(--ok-glow);
+  }
+  .btn-call:hover {
+    background: #059669;
+    color: #fff;
+  }
+  .btn-intercom {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+    font-size: 17px;
+  }
+  .btn-intercom.active {
+    background: #dc2626;
+    box-shadow: 0 0 28px var(--bad-glow);
+    animation: ptt-glow 1s infinite alternate;
+  }
+  @keyframes ptt-glow {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.25); }
+  }
+
+  .intercom-status {
+    font-size: 13px;
+    text-align: center;
+    color: var(--mut);
+    min-height: 20px;
+  }
+  .intercom-status.live {
+    color: #f87171;
+    font-weight: 700;
+  }
+
+  .privacy-note {
+    font-size: 11px;
+    color: var(--dim);
+    text-align: center;
+    line-height: 1.4;
+    padding: 0 10px;
+  }
+
+  .links-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    font-size: 13px;
+  }
+  .links-row a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .links-row a:hover {
+    text-decoration: underline;
+  }
+
+  #errorScreen {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z"/></svg>
+      <span>KAVACH GUARDIAN ALERT</span>
+    </div>
+    <div class="status-badge badge-live" id="liveBadge">
+      <span class="pulse"></span>
+      <span id="badgeText">CALL ACTIVE</span>
+    </div>
+  </header>
+
+  <div class="card" id="alertCard">
+    <div class="threat-banner" id="threatBanner">
+      <div class="threat-level" id="threatLevel">LEVEL 3 · CRITICAL ALERT</div>
+      <div class="threat-headline" id="elderTarget">Elder Protection Triggered</div>
+    </div>
+
+    <div>
+      <div class="section-label">Why Kavach Warned (स्पष्टीकरण)</div>
+      <div class="reason-box">
+        <div class="reason-hi" id="reasonHi">लोड हो रहा है...</div>
+        <div class="reason-en" id="reasonEn">Loading explanation...</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Scam Excerpt (कॉल का अंश)</div>
+      <div class="excerpt-box" id="excerptText">—</div>
+    </div>
+
+    <div>
+      <div class="section-label">Detected Scam Stages (पहचाने गए चरण)</div>
+      <div class="chips" id="stagesChips"></div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-call" id="callBtn" href="#">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        <span id="callBtnText">Call Elder Directly</span>
+      </a>
+
+      <button class="btn btn-intercom" id="intercomBtn">
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+        <span id="intercomBtnText">Speak Through Kavach Speaker</span>
+      </button>
+      <div class="intercom-status" id="intercomStatus">Click to connect live audio intercom to elder's device</div>
+    </div>
+
+    <div class="privacy-note">
+      🔒 Zero audio stored: Intercom streams live 1-way PCM directly to elder's speaker over WebSocket.
+      If not answered within 20s, Kavach's cloned family voice automatically intervenes.
+    </div>
+
+    <div class="links-row">
+      <a id="timelineLink" href="#" target="_blank">View Forensic Timeline →</a>
+      <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">National Helpline: 1930</a>
+    </div>
+  </div>
+
+  <div id="errorScreen" class="card">
+    <h2 style="color: #f87171; margin-top:0;">Alert Link Expired or Invalid</h2>
+    <p style="color: var(--mut);">This action token is either expired or invalid. Security tokens expire after 15 minutes to protect elder privacy.</p>
+    <a href="/guardian.html" class="btn btn-call" style="background: #334155; color: #fff; margin-top: 12px;">Go to Guardian Dashboard</a>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const token = params.get("token") || "";
+
+const $ = (id) => document.getElementById(id);
+
+let intercomWs = null;
+let audioCtx = null;
+let micStream = null;
+let scriptNode = null;
+let isSpeaking = false;
+let currentSessionId = "";
+
+async function loadDetails() {
+  if (!token) {
+    showError("No action token provided.");
+    return;
+  }
+  try {
+    const res = await fetch(`/api/alert/details?token=${encodeURIComponent(token)}`);
+    if (!res.ok) {
+      showError("Token invalid or expired");
+      return;
+    }
+    const data = await res.json();
+    currentSessionId = data.session_id;
+
+    $("elderTarget").textContent = `Alert for ${data.elder_name}`;
+    $("reasonHi").textContent = data.reason_hi || "संदिग्ध स्कैम पहचान";
+    $("reasonEn").textContent = data.reason_en || "Suspicious scam indicators detected";
+    $("excerptText").textContent = data.excerpt ? `"${data.excerpt}"` : "Transcript excerpt unavailable";
+
+    const lvl = data.max_level || 3;
+    $("threatLevel").textContent = `LEVEL ${lvl} · ${lvl >= 3 ? "CRITICAL THREAT" : "SUSPICIOUS ACTIVITY"}`;
+    if (lvl < 3) {
+      $("threatBanner").style.borderColor = "var(--warn)";
+      $("threatBanner").style.background = "rgba(245, 158, 11, 0.15)";
+      $("threatLevel").style.color = "var(--warn)";
+    }
+
+    if (data.elder_phone) {
+      $("callBtn").href = `tel:${data.elder_phone}`;
+      $("callBtnText").textContent = `Call ${data.elder_name} (${data.elder_phone})`;
+    } else {
+      $("callBtnText").textContent = `Call ${data.elder_name}`;
+      $("callBtn").onclick = (e) => {
+        if (!data.elder_phone) {
+          e.preventDefault();
+          alert(`No phone number configured for ${data.elder_name}. Please dial them on their phone directly.`);
+        }
+      };
+    }
+
+    $("stagesChips").innerHTML = (data.stages || []).map(s => `<span class="chip">${s.replace('_', ' ')}</span>`).join("") || '<span class="chip" style="opacity:0.6">Risk score elevated</span>';
+
+    $("timelineLink").href = `/timeline.html?session=${encodeURIComponent(data.session_id)}`;
+
+    if (!data.is_active) {
+      $("liveBadge").className = "status-badge";
+      $("liveBadge").style.background = "rgba(100, 116, 139, 0.2)";
+      $("liveBadge").style.color = "#94a3b8";
+      $("liveBadge").innerHTML = "SESSION CONCLUDED";
+    }
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
+function showError(msg) {
+  $("alertCard").style.display = "none";
+  $("liveBadge").style.display = "none";
+  $("errorScreen").style.display = "block";
+}
+
+async function startIntercom() {
+  if (isSpeaking) {
+    stopIntercom();
+    return;
+  }
+  try {
+    $("intercomStatus").textContent = "Connecting to elder's device speaker...";
+    $("intercomStatus").className = "intercom-status live";
+
+    const proto = location.protocol === "https:" ? "wss" : "ws";
+    intercomWs = new WebSocket(`${proto}://${location.host}/ws/intercom?token=${encodeURIComponent(token)}`);
+    intercomWs.binaryType = "arraybuffer";
+
+    await new Promise((resolve, reject) => {
+      intercomWs.onopen = resolve;
+      intercomWs.onerror = reject;
+    });
+
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: { sampleRate: 16000, channelCount: 1, echoCancellation: true, noiseSuppression: true }
+    });
+
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+    const source = audioCtx.createMediaStreamSource(micStream);
+
+    // Simple PCM16 buffer processor
+    const bufferSize = 1024;
+    scriptNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+    scriptNode.onaudioprocess = (e) => {
+      if (!isSpeaking || !intercomWs || intercomWs.readyState !== 1) return;
+      const input = e.inputBuffer.getChannelData(0);
+      const pcm16 = new Int16Array(input.length);
+      for (let i = 0; i < input.length; i++) {
+        const s = Math.max(-1, Math.min(1, input[i]));
+        pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+      }
+      intercomWs.send(pcm16.buffer);
+    };
+
+    source.connect(scriptNode);
+    scriptNode.connect(audioCtx.destination);
+
+    isSpeaking = true;
+    $("intercomBtn").classList.add("active");
+    $("intercomBtnText").textContent = "LIVE BROADCASTING · CLICK TO STOP";
+    $("intercomStatus").textContent = "🔴 SPEAKING TO ELDER: Your voice is broadcasting on their speaker now!";
+  } catch (err) {
+    $("intercomStatus").textContent = "Mic or connection error: " + err.message;
+    $("intercomStatus").className = "intercom-status";
+    stopIntercom();
+  }
+}
+
+function stopIntercom() {
+  isSpeaking = false;
+  if (scriptNode) { scriptNode.disconnect(); scriptNode = null; }
+  if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
+  if (audioCtx) { audioCtx.close(); audioCtx = null; }
+  if (intercomWs) { intercomWs.close(); intercomWs = null; }
+
+  $("intercomBtn").classList.remove("active");
+  $("intercomBtnText").textContent = "Speak Through Kavach Speaker";
+  $("intercomStatus").textContent = "Intercom closed. Cloned voice fallback armed.";
+  $("intercomStatus").className = "intercom-status";
+}
+
+$("intercomBtn").onclick = startIntercom;
+
+loadDetails();
+</script>
+</body>
+</html>

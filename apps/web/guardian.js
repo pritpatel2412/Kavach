@@ -7,6 +7,7 @@ const err = (m) => {
 const ok = (m) => { $("ok").textContent = m || ""; };
 
 let guardianId = localStorage.getItem("kavach_guardian_id") || "";
+let guardianToken = localStorage.getItem("kavach_guardian_token") || "";
 let elderId = localStorage.getItem("kavach_elder_id") || "";
 let voiceId = localStorage.getItem("kavach_voice_id") || "";
 let challenge = null;
@@ -16,6 +17,23 @@ let recStream = null;
 let recStart = 0;
 let recTimer = null;
 let wavBlob = null;
+let appConfig = { mock: false, llm_enabled: false };
+
+async function loadConfig() {
+  try {
+    const r = await fetch("/api/config");
+    if (r.ok) {
+      appConfig = await r.json();
+      if (appConfig.llm_enabled && $("llmDisclosure")) {
+        $("llmDisclosure").style.display = "block";
+      }
+      if (!appConfig.mock && $("useDemo")) {
+        $("useDemo").remove();
+      }
+    }
+  } catch (e) {}
+}
+loadConfig();
 
 const STEPS = ["s1", "s2", "s3", "s4", "s5"];
 
@@ -46,6 +64,12 @@ function apiError(data) {
   return typeof d === "string" ? d : "अनुरोध विफल रहा · Request failed";
 }
 
+function authHeaders(extra = {}) {
+  const h = { ...extra };
+  if (guardianToken) h["Authorization"] = "Bearer " + guardianToken;
+  return h;
+}
+
 $("next1").onclick = async () => {
   err("");
   const name = $("gname").value.trim();
@@ -58,7 +82,9 @@ $("next1").onclick = async () => {
     const data = await r.json();
     if (!r.ok) return err(apiError(data));
     guardianId = data.id;
+    guardianToken = data.token || "";
     localStorage.setItem("kavach_guardian_id", guardianId);
+    if (guardianToken) localStorage.setItem("kavach_guardian_token", guardianToken);
     show("s2");
   } catch (e) {
     err("सर्वर से संपर्क नहीं हो सका · Server connection failed: " + e.message);
@@ -71,7 +97,8 @@ $("next2").onclick = async () => {
   if (!name) return err("बुज़ुर्ग का नाम लिखें · Elder's name is required");
   try {
     const r = await fetch("/api/elders", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: authHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ guardian_id: guardianId, name, language: $("lang").value }),
     });
     const data = await r.json();
@@ -92,8 +119,8 @@ $("next3").onclick = async () => {
     challenge = await r.json();
     $("sentence").textContent = challenge.sentence;
     show("s4");
-    // Show demo audio option in mock environments
-    if ($("useDemo")) $("useDemo").style.display = "inline-block";
+    // Show demo audio option ONLY in mock environments
+    if (appConfig.mock && $("useDemo")) $("useDemo").style.display = "inline-block";
   } catch (e) {
     err("वाक्य लोड नहीं हो सका · Could not load challenge: " + e.message);
   }
@@ -229,12 +256,16 @@ $("upload").onclick = async () => {
   fd.append("elder_id", elderId);
   fd.append("consent", "true");
   try {
-    const r = await fetch("/api/voice/enroll", { method: "POST", body: fd });
+    const r = await fetch("/api/voice/enroll", {
+      method: "POST",
+      headers: authHeaders(),
+      body: fd,
+    });
     const data = await r.json();
     if (!r.ok) return err(apiError(data));
     voiceId = data.voice_profile_id;
     localStorage.setItem("kavach_voice_id", voiceId);
-    $("elderLink").href = `/?mock=1&judge=1&elder=${elderId}`;
+    $("elderLink").href = `/?mock=${appConfig.mock ? "1" : "0"}&judge=1&elder=${elderId}&token=${guardianToken}`;
     const fallbackList = (data.clips || []).filter((c) => c.fallback).map((c) => "L" + c.level).join(", ");
     ok("आवाज़ सफलतापूर्वक सेव हो गई · Voice enrolled! Fallback clips: " + (fallbackList || "none"));
     show("s5");
@@ -249,7 +280,8 @@ document.querySelectorAll("[data-level]").forEach((btn) => {
     if (!voiceId) return err("कोई आवाज़ प्रोफ़ाइल नहीं मिली · No voice profile enrolled");
     try {
       const r = await fetch("/api/voice/preview", {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: authHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ voice_profile_id: voiceId, level: Number(btn.dataset.level) }),
       });
       if (!r.ok) return err("क्लिप लोड नहीं हुई · Clip preview failed");
@@ -268,7 +300,10 @@ $("del").onclick = async () => {
     return;
   }
   try {
-    const r = await fetch("/api/voice/" + voiceId, { method: "DELETE" });
+    const r = await fetch("/api/voice/" + voiceId, {
+      method: "DELETE",
+      headers: authHeaders(),
+    });
     const data = await r.json();
     if (!r.ok || !data.deleted) return err("डिलीट नहीं हो सका · Delete failed");
     localStorage.removeItem("kavach_voice_id");
