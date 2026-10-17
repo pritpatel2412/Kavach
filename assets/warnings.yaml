@@ -24,3 +24,16 @@ en-IN:
   3:
     clip_text: "This is {guardian_name}. {elder_name}, hang up. Your family has been alerted. Call the cyber helpline, one nine three zero."
     screen_text: "Hang up. Call 1930"
+gu-IN:
+  1:
+    clip_text: "{guardian_name} બોલું છું. {elder_name}, જરા થોભો. આ કોલ શંકાસ્પદ લાગે છે. કોઈપણ પૈસા ટ્રાન્સફર કરશો નહીં."
+    clip_text_f: "{guardian_name} બોલું છું. {elder_name}, જરા થોભો. આ કોલ શંકાસ્પદ લાગે છે. કોઈપણ પૈસા ટ્રાન્સફર કરશો નહીં."
+    screen_text: "સાવધાન! આ કોલ શંકાસ્પદ છે"
+  2:
+    clip_text: "{guardian_name} બોલું છું. {elder_name}, અટકો! આ છેતરપિંડી છે. પોલીસ કે સીબીઆઈ ફોન પર કોઈની ધરપકડ કરતી નથી. ફોન કાપી નાખો."
+    clip_text_f: "{guardian_name} બોલું છું. {elder_name}, અટકો! આ છેતરપિંડી છે. પોલીસ કે સીબીઆઈ ફોન પર કોઈની ધરપકડ કરતી નથી. ફોન કાપી નાખો."
+    screen_text: "આ સ્કેમ છે! ફોન કાપી નાખો"
+  3:
+    clip_text: "{guardian_name} બોલું છું. {elder_name}, ફોન કાપી નાખો. પરિવારને જાણ કરવામાં આવી છે. સાયબર હેલ્પલાઇન, એક નવ ત્રણ શૂન્ય, પર કોલ કરો."
+    clip_text_f: "{guardian_name} બોલું છું. {elder_name}, ફોન કાપી નાખો. પરિવારને જાણ કરવામાં આવી છે. સાયબર હેલ્પલાઇન, એક નવ ત્રણ શૂન્ય, પર કોલ કરો."
+    screen_text: "ફોન કાપો. 1930 પર કોલ કરો"

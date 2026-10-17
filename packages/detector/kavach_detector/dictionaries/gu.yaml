@@ -1,0 +1,71 @@
+# Gujarati (gu-IN) scam stage dictionary
+S1_authority:
+  - cbi
+  - સીબીઆઈ
+  - trai
+  - ટ્રાઈ
+  - police
+  - પોલીસ
+  - crime branch
+  - ક્રાઈમ બ્રાન્ચ
+  - cyber crime
+  - સાયબર ક્રાઈમ
+  - customs
+  - કસ્ટમ્સ
+  - fedex
+  - ફેડેક્સ
+  - bank officer
+  - બેંક અધિકારી
+
+S2_accusation:
+  - money laundering
+  - મની લોન્ડરિંગ
+  - arrest warrant
+  - ધરપકડ વોરંટ
+  - warrant
+  - વોરંટ
+  - drugs in parcel
+  - પાર્સલમાં ડ્રગ્સ
+  - illegal sim
+  - ગેરકાયદે સિમ
+  - kyc expired
+  - કેવાયસી એક્સપાયર
+  - account blocked
+  - એકાઉન્ટ બ્લોક
+
+S3_isolation:
+  - kisi ko mat batana
+  - કોઈને કહેશો નહીં
+  - koi ne na kehsho
+  - video call par raho
+  - વિડિયો કોલ પર રહો
+  - digital arrest
+  - ડિજિટલ અરેસ્ટ
+  - phone mat kato
+  - ફોન કાપશો નહીં
+  - confidential
+  - ગુપ્ત
+
+S4_urgency:
+  - right now
+  - abhi ke abhi
+  - અત્યારે જ
+  - tarat
+  - તરત જ
+  - 2 hours
+  - બે કલાકમાં
+  - arrested today
+  - આજે જ ધરપકડ
+
+S5_payment:
+  - safe account
+  - સેફ એકાઉન્ટ
+  - સુરક્ષિત ખાતું
+  - rbi account
+  - આરબીઆઈ એકાઉન્ટ
+  - verification deposit
+  - વેરિફિકેશન ડિપોઝિટ
+  - otp batao
+  - ઓટીપી આપો
+  - upi pin enter karo
+  - યુપીઆઈ પિન નાખો

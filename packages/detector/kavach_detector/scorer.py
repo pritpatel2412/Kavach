@@ -15,6 +15,7 @@ try:  # optional, improves recall on ASR spelling variants
 except Exception:  # pragma: no cover
     fuzz = None
 
+from .advisories import is_genuine_advisory
 from .dictionary import load_dictionary
 from .normalise import normalise
 
@@ -82,8 +83,11 @@ class RiskScorer:
         self.level = self.max_level = self.max_score = 0
 
     def _match(self, text_norm: str) -> list[tuple[str, str]]:
+        is_advisory = is_genuine_advisory(text_norm)
         hits: list[tuple[str, str]] = []
         for stage, plist in self._patterns.items():
+            if is_advisory and stage in ("S5_payment", "S1_authority"):
+                continue
             for phrase, pat in plist:
                 if pat.search(text_norm):
                     hits.append((stage, phrase))

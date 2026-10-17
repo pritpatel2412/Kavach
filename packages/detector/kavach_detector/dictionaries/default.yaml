@@ -15,17 +15,89 @@ S1_authority:
   - cyber crime
   - cyber cell
   - साइबर क्राइम
+  - साइबर सेल
+  - cyber crime investigation unit
+  - cyber crime cell
+  - crime branch cyber cell
   - customs
   - कस्टम
   - narcotics
   - नारकोटिक्स
   - enforcement directorate
+  - ed office
   - supreme court
   - सुप्रीम कोर्ट
   - mumbai police
   - मुंबई पुलिस
   - fedex
   - फेडेक्स
+  - fedex courier
+  - फेडेक्स कूरियर
+  - dhl courier
+  - dhl international
+  - customs department
+  - कस्टम्स डिपार्टमेंट
+  - airport customs
+  - airport cargo customs
+  - customs narcotics branch
+  - customs clearance officer
+  - bank manager
+  - बैंक मैनेजर
+  - bank kyc department
+  - kyc verification officer
+  - bank customer service
+  - verification desk
+  - helpline desk
+  - बिजली विभाग
+  - bijli vibhag
+  - electricity board
+  - electricity department
+  - electricity officer
+  - power department
+  - power distribution corporation
+  - power distribution
+  - sub station
+  - vidyut vitran nigam
+  - vidyut vitran
+  - line inspector
+  - telecom regulatory authority
+  - trai office
+  - ट्राई ऑफिस
+  - department of telecommunications
+  - telecom billing center
+  - delhi police
+  - दिल्ली पुलिस
+  - bank server
+  - credit card verification department
+  - credit card department
+  - trading tips
+  - trading tips group
+  - institutional trading desk
+  - registered investment advisor
+  - trading syndicate
+  - trading club
+  - institutional trading
+  - senior advisor
+  - sebi registered
+  - social media police
+  - police station inspector
+  - थाना प्रभारी
+  - police inspector
+  - sub-inspector
+  - sub inspector
+  - sho sahib
+  - police chowki
+  - police thane se
+  - hospital emergency
+  - bank security support
+  - technical security desk
+  - state bank of india
+  - canara bank
+  - punjab national bank
+  - icici bank
+  - hdfc bank
+  - kbc lucky draw
+  - lucky draw
 
 S2_accusation:
   - money laundering
@@ -38,12 +110,35 @@ S2_accusation:
   - गिरफ्तारी वारंट
   - warrant
   - वारंट
+  - non-bailable warrant
+  - judicial arrest
+  - physical arrest
   - drugs in the parcel
   - parcel mein drugs
   - पार्सल में ड्रग्स
+  - narcotics in parcel
+  - contraband in parcel
+  - parcel seized
+  - पार्सल जब्त
+  - parcel held
+  - पार्सल में नशीले पदार्थ
+  - illegal narcotics
+  - synthetic drugs
+  - banned chemicals
+  - counterfeit currency
+  - forged passport
+  - illegal contraband
+  - customs anti-smuggling
   - illegal sim
   - sim band
   - सिम बंद
+  - sim card block
+  - number block
+  - sim card deactivate
+  - illegal spam
+  - threatening calls
+  - bulk messaging
+  - cancellation of all telecom
   - aadhaar misused
   - your aadhaar
   - आपके आधार
@@ -52,17 +147,113 @@ S2_accusation:
   - एफआईआर
   - human trafficking
   - illegal activities
+  - pending kyc
+  - kyc update
+  - kyc expired
+  - केवाईसी एक्सपायर
+  - account blocked
+  - अकाउंट ब्लॉक
+  - account suspended
+  - account permanently block
+  - account will be frozen
+  - account freeze
+  - खाता बंद हो जाएगा
+  - services suspend
+  - pension suspend
+  - savings account block
+  - pan card verification failed
+  - regulatory block
+  - atm card block
+  - aadhar se link nahi
+  - funds impounded
+  - pan not linked
+  - बिजली का बिल बकाया
+  - electricity bill unpaid
+  - electricity power disconnect
+  - power disconnect
+  - power cut tonight
+  - power cut
+  - light cut
+  - bijli cut
+  - meter kaatne
+  - bijli line kaat
+  - disconnection order
+  - unpaid invoice
+  - bill overdue
+  - bijli connection tonight disconnect
+  - bill unpaid
+  - आज रात बिजली कटेगी
+  - power disconnection order
+  - बिजली काट दी जाएगी
+  - virus alert
+  - unauthorized transactions
+  - trojan malware
+  - infected with trojan
+  - obscene messages
+  - अश्लील संदेश
+  - obscene video call
+  - अश्लील वीडियो कॉल
+  - objectionable video
+  - ashleel video
+  - explicit video
+  - pornography complaint
+  - video will be leaked
+  - viral video
+  - वीडियो वायरल
+  - video release
+  - youtube par release
+  - youtube par upload
+  - guaranteed returns
+  - गारंटीड रिटर्न
+  - guaranteed profit
+  - गारंटीड मुनाफा
+  - 300% guaranteed
+  - 500% profit
+  - double return
+  - daily guaranteed
+  - pre-ipo quota
+  - algorithmic bot
+  - seed investment
+  - vip trading group
+  - son in police custody
+  - बेटा पुलिस कस्टडी में
+  - beta police custody mein
+  - nephew arrested
+  - serious accident in hospital
+  - अस्पताल में भर्ती
+  - car accident
+  - severe accident
+  - lockup mein band
+  - detained him
+  - murder case
+  - jail custody
+  - illegal fight case
+  - court bhejne se pehle
+  - reward points expire
+  - bill refund
+  - lottery prize
+  - cashback lapse
+  - security alert
+  - parivar aur contacts
+  - contacts ko send
+  - viral video clip
 
 S3_isolation:
   - dont tell anyone
   - do not tell anyone
   - kisi ko mat batana
   - kisi ko mat bataiye
+  - kisi ko nahi bata sakte
+  - family member ko nahi bata sakte
+  - kisi family member ko
   - किसी को मत बताइए
   - किसी को मत बताना
   - किसी को न बताएं
   - stay on video
   - stay on the video call
+  - stay on video call
+  - video call par rehna
+  - locked room
   - वीडियो कॉल पर रहिए
   - digital arrest
   - डिजिटल अरेस्ट
@@ -74,13 +265,39 @@ S3_isolation:
   - फोन नहीं काटना
   - confidential
   - गोपनीय
+  - gopniya
   - under surveillance
+  - download anydesk
+  - anydesk download
+  - anydesk app
+  - anydesk open
+  - anydesk
+  - एनीडेस्क डाउनलोड
+  - install teamviewer
+  - teamviewer install
+  - teamviewer quicksupport
+  - quicksupport app
+  - quicksupport download
+  - quicksupport
+  - टीमव्यूअर इनस्टॉल
+  - download quicksupport
+  - share your screen
+  - स्क्रीन शेयर कीजिए
+  - screen share karein
+  - screen share accept
+  - screen permissions
+  - 9 digit code
+  - access code
+  - social media par upload
+  - quicksupport ya anydesk
+  - anydesk app download
 
 S4_urgency:
   - right now
   - immediately
   - within two hours
   - within 2 hours
+  - within ten minutes
   - abhi ke abhi
   - अभी के अभी
   - तुरंत
@@ -90,6 +307,22 @@ S4_urgency:
   - आज ही गिरफ्तार
   - or you will be arrested
   - otherwise arrest
+  - 24 ghante mein
+  - 24 घंटे में
+  - update today
+  - आज ही अपडेट करें
+  - line disconnected tonight
+  - aaj raat
+  - tonight at
+  - tonight
+  - 10 minute
+  - 15 minute
+  - 20 minute
+  - before registration closes
+  - jaldi se
+  - bina der kiye
+  - jaldi
+  - आज रात कटेगा
 
 S5_payment:
   # Keep S5 SPECIFIC: generic phrases like "transfer karo" / "rent transfer" appear in normal family
@@ -100,6 +333,76 @@ S5_payment:
   - सुरक्षित अकाउंट
   - secure account
   - rbi account
+  - rbi safe
+  - safe treasury account
+  - clearance account
+  - customs account
+  - customs clearance fee
+  - customs clearance charges
+  - customs security deposit
+  - customs clearance
+  - penalty fees transfer
+  - penalty amount transfer
+  - verification bond
+  - update fees
+  - surcharge fee
+  - verification charges
+  - re-connection charge
+  - reconnection charge
+  - line bachaane ke liye
+  - connection bachaane ke liye
+  - regulatory bond
+  - verification fine
+  - telecom verification security fees
+  - telecom regulatory safe account
+  - settlement fee
+  - settlement amount
+  - case close karne ke liye
+  - case band karwane ke liye
+  - video delete karwane ke liye
+  - video delete karwane
+  - officer ke account
+  - fine transfer
+  - fir cancel karne
+  - case band karwana
+  - secret pin aur password enter
+  - medical bail
+  - emergency bail
+  - bail deposit
+  - chhut sake
+  - bina case ke chhod
+  - settlement nahi kiya toh
+  - settlement ke liye paise
+  - portfolio account mein transfer
+  - trading deposit
+  - deposit wallet
+  - initial token amount
+  - investment funds
+  - tell me your pin
+  - share your pin
+  - secret pin
+  - login pin
+  - atm pin
+  - upi pin
+  - cvv
+  - authentication otp
+  - 6 digit ka otp
+  - 6 digit otp
+  - bina otp ke
+  - otp share
+  - otp code
+  - apna otp
+  - otp number
+  - read out your one time password
+  - pin daal kar
+  - pin type karke
+  - enter your confidential upi pin
+  - secret pin aur password
+  - confidential upi pin
+  - enter upi pin
+  - upi pin enter karo
+  - यूपीआई पिन दर्ज करें
+  - rbi escrow account
   - आरबीआई अकाउंट
   - verification transfer
   - verification deposit
@@ -111,3 +414,16 @@ S5_payment:
   - एफडी तोड़
   - refundable amount
   - refundable deposit
+  - bail money
+  - बेल के पैसे
+  - police release money
+  - tell me your otp
+  - tell me the otp
+  - share your otp
+  - share the otp
+  - otp bataiye
+  - otp batao
+  - अपना ओटीपी बताइए
+  - ओटीपी बताओ
+  - six digit code
+  - 6 digit code
