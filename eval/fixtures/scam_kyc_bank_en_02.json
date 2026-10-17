@@ -1,0 +1,29 @@
+{
+  "id": "scam_kyc_bank_en_02",
+  "label": "scam",
+  "family": "kyc_bank",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Attention HDFC bank customer, your bank account and debit card are suspended due to pending KYC.",
+      "t": 0.0
+    },
+    {
+      "text": "Your PAN card verification failed and regulatory block has been placed on your savings account.",
+      "t": 6.5
+    },
+    {
+      "text": "To restore your banking privileges, we need your netbanking PIN and 6-digit authentication OTP.",
+      "t": 13.0
+    },
+    {
+      "text": "Tell me your OTP right now over the phone to prevent permanent bank blacklisting.",
+      "t": 19.5
+    },
+    {
+      "text": "Provide the PIN immediately or your funds will be permanently impounded by bank authorities.",
+      "t": 26.0
+    }
+  ]
+}

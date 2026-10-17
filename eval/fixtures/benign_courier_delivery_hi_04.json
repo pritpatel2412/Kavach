@@ -1,0 +1,29 @@
+{
+  "id": "benign_courier_delivery_hi_04",
+  "label": "benign",
+  "family": "courier_delivery",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Namaste, Delhivery parcel service se call hai, aapka book packet aaya hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Guard bol raha hai aap teesri floor par rehte hain, main upar aa raha hoon.",
+      "t": 6.5
+    },
+    {
+      "text": "Packet lene ke baad delivery confirmation code bata dijiyega.",
+      "t": 13.0
+    },
+    {
+      "text": "Dhanyavaad uncle ji, packet aapke hath mein de diya hai.",
+      "t": 19.5
+    },
+    {
+      "text": "Shubh din.",
+      "t": 26.0
+    }
+  ]
+}

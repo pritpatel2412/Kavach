@@ -1,0 +1,29 @@
+{
+  "id": "scam_sextortion_hinglish_03",
+  "label": "scam",
+  "family": "sextortion",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Crime Branch Cyber Cell se call hai, aapka viral video clip hamare paas aaya hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka ashleel video YouTube par release hone wala hai aur FIR arrest warrant ready hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Agar izzat bachaani hai aur case band karwana hai toh turant fine transfer karo.",
+      "t": 13.0
+    },
+    {
+      "text": "Abhi paise transfer kijiye officer ke account mein case file close ho jayegi.",
+      "t": 19.5
+    },
+    {
+      "text": "Jaldi transfer karo warna parivar aur dosto ko video send kar denge.",
+      "t": 26.0
+    }
+  ]
+}

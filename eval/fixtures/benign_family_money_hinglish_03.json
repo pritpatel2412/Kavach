@@ -1,0 +1,29 @@
+{
+  "id": "benign_family_money_hinglish_03",
+  "label": "benign",
+  "family": "family_money",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Dadi ji namaste, Rohit bol raha hoon college hostel se.",
+      "t": 0.0
+    },
+    {
+      "text": "Mera semester exam bohot accha gaya, first division aayega is baar.",
+      "t": 6.5
+    },
+    {
+      "text": "Papa ne books khareedne ke liye paise transfer kar diye hain mere account mein.",
+      "t": 13.0
+    },
+    {
+      "text": "Aapki tabiyat kaisi hai ab? Dawai time par le rahi hain na?",
+      "t": 19.5
+    },
+    {
+      "text": "Next month chhuttiyon mein ghar aaunga toh aapke hath ke laddoo khaaunga.",
+      "t": 26.0
+    }
+  ]
+}

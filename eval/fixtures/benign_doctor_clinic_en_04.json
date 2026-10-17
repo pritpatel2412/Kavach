@@ -1,0 +1,29 @@
+{
+  "id": "benign_doctor_clinic_en_04",
+  "label": "benign",
+  "family": "doctor_clinic",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Hello Dr. Rao dental clinic here confirming your dental cleaning appointment for tomorrow at 4 PM.",
+      "t": 0.0
+    },
+    {
+      "text": "Please carry your previous dental X-ray film if convenient.",
+      "t": 6.5
+    },
+    {
+      "text": "No special advance preparation is required for routine scaling and polishing.",
+      "t": 13.0
+    },
+    {
+      "text": "Consultation fee of five hundred can be paid at clinic reception desk.",
+      "t": 19.5
+    },
+    {
+      "text": "See you tomorrow afternoon.",
+      "t": 26.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "benign_tech_support_en_02",
+  "label": "benign",
+  "family": "tech_support",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Hello sir, calling from JioFiber technical assistance desk regarding your home connection.",
+      "t": 0.0
+    },
+    {
+      "text": "Our automated diagnostic detected intermittent signal attenuation on your area line.",
+      "t": 6.5
+    },
+    {
+      "text": "Our line engineer is inspecting the neighborhood junction distribution box.",
+      "t": 13.0
+    },
+    {
+      "text": "No action required from your end, your broadband internet will remain operational.",
+      "t": 19.5
+    },
+    {
+      "text": "Thank you for your patience and support.",
+      "t": 26.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "benign_courier_delivery_en_02",
+  "label": "benign",
+  "family": "courier_delivery",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Hello madam, Flipkart courier delivery partner here with your grocery order.",
+      "t": 0.0
+    },
+    {
+      "text": "I have arrived at your building entrance and ringing the door bell.",
+      "t": 6.5
+    },
+    {
+      "text": "Could you please share the 4-digit package delivery OTP sent via SMS to verify receipt?",
+      "t": 13.0
+    },
+    {
+      "text": "Thank you madam, order delivered successfully at your door step.",
+      "t": 19.5
+    },
+    {
+      "text": "Have a pleasant day ahead and thank you for shopping with Flipkart.",
+      "t": 26.0
+    }
+  ]
+}

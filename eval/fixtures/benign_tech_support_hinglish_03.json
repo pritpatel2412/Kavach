@@ -1,0 +1,25 @@
+{
+  "id": "benign_tech_support_hinglish_03",
+  "label": "benign",
+  "family": "tech_support",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Sir Tata Play fiber se call hai, routine line maintenance complete ho gaya hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka set top box aur WiFi connection smoothly chal raha hai na?",
+      "t": 6.5
+    },
+    {
+      "text": "Agar koi channel change karne mein dikkat ho toh remote ka reset button press kijiye.",
+      "t": 13.0
+    },
+    {
+      "text": "Thank you for choosing Tata Play, have a great evening.",
+      "t": 19.5
+    }
+  ]
+}

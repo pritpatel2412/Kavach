@@ -1,0 +1,29 @@
+{
+  "id": "benign_utility_reminder_en_02",
+  "label": "benign",
+  "family": "utility_reminder",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Good day, water supply board automated advisory regarding municipal water meter reading.",
+      "t": 0.0
+    },
+    {
+      "text": "Your bi-monthly municipal consumption invoice of 380 rupees is generated.",
+      "t": 6.5
+    },
+    {
+      "text": "Payment can be made through official government portal e-Seva or at your ward office.",
+      "t": 13.0
+    },
+    {
+      "text": "Beware of fake SMS messages demanding urgent payments.",
+      "t": 19.5
+    },
+    {
+      "text": "Thank you for conserving water in our neighborhood.",
+      "t": 26.0
+    }
+  ]
+}

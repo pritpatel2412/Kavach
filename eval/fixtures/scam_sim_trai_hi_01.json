@@ -1,0 +1,29 @@
+{
+  "id": "scam_sim_trai_hi_01",
+  "label": "scam",
+  "family": "sim_trai",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Yeh TRAI Department of Telecommunications ka automated notice hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka mobile number agle 2 ghante mein permanently block aur terminate kar diya jayega.",
+      "t": 6.5
+    },
+    {
+      "text": "Aapke number se 1000 se zyada illegal spam aur threatening calls report hui hain police mein.",
+      "t": 13.0
+    },
+    {
+      "text": "Number block hone se rokne ke liye verification fine turant hamare account mein transfer karo.",
+      "t": 19.5
+    },
+    {
+      "text": "Abhi transfer kijiye warna aapke saare mobile SIM card police black list mein daal degi.",
+      "t": 26.0
+    }
+  ]
+}

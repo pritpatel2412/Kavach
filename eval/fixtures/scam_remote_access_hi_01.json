@@ -1,0 +1,29 @@
+{
+  "id": "scam_remote_access_hi_01",
+  "label": "scam",
+  "family": "remote_access",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaskar, main bank security support se bol raha hoon aapke mobile mein virus alert aaya hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapke bank account se anauthorized transactions attempt ho rahe hain hacker ke dwara.",
+      "t": 6.5
+    },
+    {
+      "text": "Phone protect karne ke liye Play Store se AnyDesk app install kijiye turant.",
+      "t": 13.0
+    },
+    {
+      "text": "AnyDesk open kijiye aur screen par dikh raha 9 digit code batao taaki remote support connect karein.",
+      "t": 19.5
+    },
+    {
+      "text": "Ab apna bank app open karo aur PIN daal kar account verify karo.",
+      "t": 26.0
+    }
+  ]
+}

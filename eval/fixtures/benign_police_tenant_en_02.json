@@ -1,0 +1,29 @@
+{
+  "id": "benign_police_tenant_en_02",
+  "label": "benign",
+  "family": "police_tenant",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Good day sir, this is Sub-Inspector Patel from Indiranagar local police station.",
+      "t": 0.0
+    },
+    {
+      "text": "We are conducting the routine annual resident welfare community verification survey.",
+      "t": 6.5
+    },
+    {
+      "text": "Could you confirm if the security cameras at the lane entrance gate are functioning properly?",
+      "t": 13.0
+    },
+    {
+      "text": "Please ensure night watchman registers all visitor vehicles in the society logbook.",
+      "t": 19.5
+    },
+    {
+      "text": "Thank you for cooperating with the community policing initiative.",
+      "t": 26.0
+    }
+  ]
+}

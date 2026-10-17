@@ -1,0 +1,29 @@
+{
+  "id": "benign_doctor_clinic_hinglish_03",
+  "label": "benign",
+  "family": "doctor_clinic",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Hello aunty ji, Apollo pharmacy se chemist bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapki monthly diabetes medicines packet pack ho gayi hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Total 850 rupaye ka bill bana hai, jab delivery boy aaye tab cash ya UPI se transfer kar dena.",
+      "t": 13.0
+    },
+    {
+      "text": "Insulin fridge mein store kijiyega aur expiry date check kar li hai.",
+      "t": 19.5
+    },
+    {
+      "text": "Take care aunty ji.",
+      "t": 26.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "scam_courier_fedex_hi_01",
+  "label": "scam",
+  "family": "courier_fedex",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaskar, FedEx courier customer support se call hai, aapka ek parcel Mumbai airport customs ne hold kiya hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Is parcel mein 5 fake passports aur 150 gram illegal narcotics drugs baramad hui hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Customs narcotics branch ne aapke khilaf illegal contraband FIR register ki hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Customs clearance officer keh rahe hain ki case radd karne ke liye penalty fees transfer karo.",
+      "t": 19.5
+    },
+    {
+      "text": "Turant diye gaye account mein customs security deposit transfer kijiye warna arrest tay hai.",
+      "t": 26.0
+    }
+  ]
+}

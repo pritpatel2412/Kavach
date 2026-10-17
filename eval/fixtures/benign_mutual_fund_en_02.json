@@ -1,0 +1,29 @@
+{
+  "id": "benign_mutual_fund_en_02",
+  "label": "benign",
+  "family": "mutual_fund",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Good morning Mr. Nair, relationship manager calling from UTI Mutual Funds.",
+      "t": 0.0
+    },
+    {
+      "text": "Reviewing your retirement SIP portfolio, your index equity funds are performing steadily.",
+      "t": 6.5
+    },
+    {
+      "text": "We recommend maintaining your diversified asset allocation without making hasty switches.",
+      "t": 13.0
+    },
+    {
+      "text": "All dividend payouts are credited directly to your registered bank savings account.",
+      "t": 19.5
+    },
+    {
+      "text": "Let me know if you would like an updated annual capital gains statement mailed.",
+      "t": 26.0
+    }
+  ]
+}

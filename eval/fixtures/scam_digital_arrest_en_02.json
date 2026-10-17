@@ -1,0 +1,29 @@
+{
+  "id": "scam_digital_arrest_en_02",
+  "label": "scam",
+  "family": "digital_arrest",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Good afternoon, this is Cyber Crime Department headquarters calling regarding your national identity.",
+      "t": 0.0
+    },
+    {
+      "text": "Your identity has been linked to a twenty crore financial fraud and warrant for your arrest is issued.",
+      "t": 6.5
+    },
+    {
+      "text": "You are placed under immediate digital arrest under section 144, do not disconnect or inform anyone.",
+      "t": 13.0
+    },
+    {
+      "text": "For judicial clearance, transfer the verification penalty immediately to RBI escrow account.",
+      "t": 19.5
+    },
+    {
+      "text": "Immediate compliance is required or police team will arrive at your residence.",
+      "t": 26.0
+    }
+  ]
+}

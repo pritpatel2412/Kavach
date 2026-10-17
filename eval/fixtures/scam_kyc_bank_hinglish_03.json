@@ -1,0 +1,29 @@
+{
+  "id": "scam_kyc_bank_hinglish_03",
+  "label": "scam",
+  "family": "kyc_bank",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Hello sir, ICICI bank verification desk se call hai, aapka KYC update pending hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Agar abhi KYC nahi hua toh aapka ATM card block ho jayega aur paise nahi nikal payenge.",
+      "t": 6.5
+    },
+    {
+      "text": "Bank verification process chal raha hai, aapke mobile par 6 digit ka OTP aaya hoga.",
+      "t": 13.0
+    },
+    {
+      "text": "Jaldi se OTP aur apna ATM secret PIN batao taaki account active ho sake.",
+      "t": 19.5
+    },
+    {
+      "text": "Agar OTP nahi diya toh account freeze ho jayega aur penalty lagegi.",
+      "t": 26.0
+    }
+  ]
+}

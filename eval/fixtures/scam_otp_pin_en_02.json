@@ -1,0 +1,29 @@
+{
+  "id": "scam_otp_pin_en_02",
+  "label": "scam",
+  "family": "otp_pin",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Good day, this is Telecom billing center calling regarding your pending bill refund.",
+      "t": 0.0
+    },
+    {
+      "text": "You have excess balance of twelve thousand rupees due for direct bank transfer refund.",
+      "t": 6.5
+    },
+    {
+      "text": "To confirm the refund transaction, read out your one time password OTP received right now.",
+      "t": 13.0
+    },
+    {
+      "text": "Share your OTP and debit card PIN immediately to complete the credit clearance.",
+      "t": 19.5
+    },
+    {
+      "text": "Tell me the OTP now or refund authorization will be cancelled permanently.",
+      "t": 26.0
+    }
+  ]
+}

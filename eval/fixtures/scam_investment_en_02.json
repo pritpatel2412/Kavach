@@ -1,0 +1,29 @@
+{
+  "id": "scam_investment_en_02",
+  "label": "scam",
+  "family": "investment",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Exclusive invitation from institutional crypto trading syndicate with guaranteed returns.",
+      "t": 0.0
+    },
+    {
+      "text": "Our private algorithmic bot generates 500% profit within twenty four hours completely risk free.",
+      "t": 6.5
+    },
+    {
+      "text": "You have been selected for direct seed investment opportunity with guaranteed capital backing.",
+      "t": 13.0
+    },
+    {
+      "text": "Transfer investment funds of one lakh rupees to the trading deposit wallet now.",
+      "t": 19.5
+    },
+    {
+      "text": "Transfer money immediately to secure your spot before registration closes.",
+      "t": 26.0
+    }
+  ]
+}

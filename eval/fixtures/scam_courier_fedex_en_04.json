@@ -1,0 +1,29 @@
+{
+  "id": "scam_courier_fedex_en_04",
+  "label": "scam",
+  "family": "courier_fedex",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Urgent notice from airport cargo customs department regarding parcel interception.",
+      "t": 0.0
+    },
+    {
+      "text": "Your parcel seized with counterfeit currency notes and forged passport documents.",
+      "t": 6.5
+    },
+    {
+      "text": "You are facing immediate criminal detention under customs anti-smuggling act.",
+      "t": 13.0
+    },
+    {
+      "text": "Transfer five lakh rupees verification bond to avoid non-bailable judicial arrest.",
+      "t": 19.5
+    },
+    {
+      "text": "Complete the wire transfer now to avoid immediate police arrival.",
+      "t": 26.0
+    }
+  ]
+}

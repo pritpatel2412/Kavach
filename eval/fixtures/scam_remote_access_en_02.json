@@ -1,0 +1,29 @@
+{
+  "id": "scam_remote_access_en_02",
+  "label": "scam",
+  "family": "remote_access",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Technical security desk calling regarding suspicious unauthorized device access.",
+      "t": 0.0
+    },
+    {
+      "text": "Your online banking portal has been infected with Trojan malware.",
+      "t": 6.5
+    },
+    {
+      "text": "To scan and clean your device, immediately download TeamViewer QuickSupport from store.",
+      "t": 13.0
+    },
+    {
+      "text": "Grant full device screen permissions and give me your access code right now.",
+      "t": 19.5
+    },
+    {
+      "text": "Now enter your confidential UPI PIN on the screen to confirm your identity.",
+      "t": 26.0
+    }
+  ]
+}

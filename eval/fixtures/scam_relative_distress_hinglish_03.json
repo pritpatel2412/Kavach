@@ -1,0 +1,29 @@
+{
+  "id": "scam_relative_distress_hinglish_03",
+  "label": "scam",
+  "family": "relative_distress",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Aunty ji, aapka beta police chowki mein band hai accident case mein.",
+      "t": 0.0
+    },
+    {
+      "text": "SHO sahib bol rahe hain agar abhi settlement nahi kiya toh murder case bana denge.",
+      "t": 6.5
+    },
+    {
+      "text": "Bete ne bola hai ki mummy ko call karke turant paise transfer karwao.",
+      "t": 13.0
+    },
+    {
+      "text": "Jaldi se 40,000 rupaye is UPI ID par transfer karo taaki beta chhut sake.",
+      "t": 19.5
+    },
+    {
+      "text": "Bina der kiye transfer karo warna lockup mein maar padegi.",
+      "t": 26.0
+    }
+  ]
+}

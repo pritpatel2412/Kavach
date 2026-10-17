@@ -1,0 +1,29 @@
+{
+  "id": "scam_investment_hi_01",
+  "label": "scam",
+  "family": "investment",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaskar madam, VIP institutional stock trading club se senior advisor bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Hamare exclusive WhatsApp investment group mein daily 300% guaranteed profit return milta hai.",
+      "t": 6.5
+    },
+    {
+      "text": "SEBI approved special pre-IPO quota mein guaranteed profit return scheme hai bina kisi risk ke.",
+      "t": 13.0
+    },
+    {
+      "text": "Abhi 50,000 rupaye hamare VIP portfolio account mein transfer karo aur shaam ko 2 lakh nikalo.",
+      "t": 19.5
+    },
+    {
+      "text": "Jaldi paise transfer kijiye offer sirf agle 10 minute tak valid hai.",
+      "t": 26.0
+    }
+  ]
+}

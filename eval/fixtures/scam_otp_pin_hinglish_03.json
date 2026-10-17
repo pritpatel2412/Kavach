@@ -1,0 +1,29 @@
+{
+  "id": "scam_otp_pin_hinglish_03",
+  "label": "scam",
+  "family": "otp_pin",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Sir aapka lottery prize 25 lakh rupaye KBC lucky draw mein nikla hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Prize money aapke bank account mein transfer karne ke liye registration confirm karna hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Aapke phone par 6 digit ka OTP code aaya hoga, jaldi se batao.",
+      "t": 13.0
+    },
+    {
+      "text": "Apna OTP aur ATM PIN share karo taaki 25 lakh turant transfer ho sakein.",
+      "t": 19.5
+    },
+    {
+      "text": "Jaldi code batao warna prize cancel ho jayega.",
+      "t": 26.0
+    }
+  ]
+}

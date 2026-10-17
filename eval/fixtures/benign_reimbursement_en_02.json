@@ -1,0 +1,29 @@
+{
+  "id": "benign_reimbursement_en_02",
+  "label": "benign",
+  "family": "reimbursement",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Hi sir, HR payroll operations calling to confirm your pension gratuity adjustment.",
+      "t": 0.0
+    },
+    {
+      "text": "The arrears statement has been cleared by audit and credited to your State Bank pension account.",
+      "t": 6.5
+    },
+    {
+      "text": "No further documentation or signature is required.",
+      "t": 13.0
+    },
+    {
+      "text": "Your revised pension slip is available for download on the employee web portal.",
+      "t": 19.5
+    },
+    {
+      "text": "Best regards and enjoy your retirement.",
+      "t": 26.0
+    }
+  ]
+}

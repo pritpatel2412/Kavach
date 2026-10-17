@@ -1,0 +1,29 @@
+{
+  "id": "benign_bank_advisory_en_04",
+  "label": "benign",
+  "family": "bank_advisory",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Official banking advisory: Beware of fraudulent scams threatening electricity disconnection or court warrants.",
+      "t": 0.0
+    },
+    {
+      "text": "Legitimate organizations will never demand immediate money transfers over WhatsApp or video calls.",
+      "t": 6.5
+    },
+    {
+      "text": "Never share your OTP or UPI PIN under any circumstance. Our staff will never request passwords.",
+      "t": 13.0
+    },
+    {
+      "text": "If someone claims your parcel contains illegal goods, do not panic, contact local police station.",
+      "t": 19.5
+    },
+    {
+      "text": "Protect your hard earned savings by verifying directly at your home branch.",
+      "t": 26.0
+    }
+  ]
+}

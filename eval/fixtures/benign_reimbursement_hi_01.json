@@ -1,0 +1,29 @@
+{
+  "id": "benign_reimbursement_hi_01",
+  "label": "benign",
+  "family": "reimbursement",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Sir namaste, finance department se account officer bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka pichhle mahine ka travel aur medical allowance bill verify ho gaya hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Total 8,500 rupaye ka reimbursement aapke salary account mein company ne transfer kar diya hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Bank credit slip aur voucher statement aapke official email par bhej diya hai maine.",
+      "t": 19.5
+    },
+    {
+      "text": "Aap check kar lijiye koi difference ho toh batana.",
+      "t": 26.0
+    }
+  ]
+}

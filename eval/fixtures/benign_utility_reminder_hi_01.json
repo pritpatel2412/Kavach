@@ -1,0 +1,29 @@
+{
+  "id": "benign_utility_reminder_hi_01",
+  "label": "benign",
+  "family": "utility_reminder",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaskar, BSES Yamuna power distribution se automated informational reminder hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapke electricity bill ka due date 25 October hai, amount 1,420 rupaye hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Kripya bill ka bhugtan hamesha official BSES website ya authorized payment center se karein.",
+      "t": 13.0
+    },
+    {
+      "text": "Kisi bhi anjaan number par bill payment ke liye paise transfer na karein.",
+      "t": 19.5
+    },
+    {
+      "text": "On time payment par aapko 10 rupaye ka digital discount milega.",
+      "t": 26.0
+    }
+  ]
+}

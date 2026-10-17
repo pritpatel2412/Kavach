@@ -1,0 +1,29 @@
+{
+  "id": "scam_sextortion_en_02",
+  "label": "scam",
+  "family": "sextortion",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "This is Cyber Crime Investigation Unit regarding an explicit video recording of you.",
+      "t": 0.0
+    },
+    {
+      "text": "A complaint under IT act section 67 has been registered for circulating offensive video footage.",
+      "t": 6.5
+    },
+    {
+      "text": "A criminal arrest warrant is being processed to seize all your digital devices.",
+      "t": 13.0
+    },
+    {
+      "text": "To remove the video from internet servers and stop arrest, transfer settlement fee right now.",
+      "t": 19.5
+    },
+    {
+      "text": "Pay the settlement amount to our officer account immediately or video will be released publicly.",
+      "t": 26.0
+    }
+  ]
+}

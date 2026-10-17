@@ -1,0 +1,29 @@
+{
+  "id": "scam_electricity_hi_01",
+  "label": "scam",
+  "family": "electricity",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Dear consumer, Bijli vibhag head office se urgent alert message hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka pichhle mahine ka bijli bill update nahi hua hai, aaj raat 9:30 baje electricity power disconnect hogi.",
+      "t": 6.5
+    },
+    {
+      "text": "Agar light cut nahi karwani hai toh turant electricity officer se baat karein.",
+      "t": 13.0
+    },
+    {
+      "text": "Bijli connection bachaane ke liye abhi 1500 rupaye update fees diye gaye number par transfer karo.",
+      "t": 19.5
+    },
+    {
+      "text": "Abhi payment transfer kijiye warna power sub station se aapki line kaat di jayegi.",
+      "t": 26.0
+    }
+  ]
+}

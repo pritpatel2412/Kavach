@@ -1,0 +1,29 @@
+{
+  "id": "scam_sim_trai_en_02",
+  "label": "scam",
+  "family": "sim_trai",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Department of Telecommunications alert: Your cellular SIM card will be deactivated in two hours.",
+      "t": 0.0
+    },
+    {
+      "text": "Multiple criminal harassments and unsolicited fraudulent calls traced to your mobile number.",
+      "t": 6.5
+    },
+    {
+      "text": "Telecom regulatory authority has ordered permanent cancellation of all telecom services.",
+      "t": 13.0
+    },
+    {
+      "text": "To challenge the suspension order, pay mandatory regulatory bond transfer immediately.",
+      "t": 19.5
+    },
+    {
+      "text": "Transfer the penalty amount now or SIM card will be shut down and police notified.",
+      "t": 26.0
+    }
+  ]
+}

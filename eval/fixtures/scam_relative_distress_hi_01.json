@@ -1,0 +1,29 @@
+{
+  "id": "scam_relative_distress_hi_01",
+  "label": "scam",
+  "family": "relative_distress",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Uncle ji pranam, main aapke bete Rahul ka dost bol raha hoon bohot badi musibat hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Rahul ka car se bohot bura accident ho gaya hai aur police station mein lockup mein band hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Police bol rahi hai ki court bhejne se pehle medical bail ke liye turant 50,000 rupaye lagenge.",
+      "t": 13.0
+    },
+    {
+      "text": "Rahul ka phone police ne zabt kar liya hai, unhone turant paise transfer karne ko bola hai.",
+      "t": 19.5
+    },
+    {
+      "text": "Jaldi is account par paise transfer kijiye warna Rahul ko jail bhej diya jayega.",
+      "t": 26.0
+    }
+  ]
+}

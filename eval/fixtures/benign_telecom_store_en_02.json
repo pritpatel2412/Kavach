@@ -1,0 +1,25 @@
+{
+  "id": "benign_telecom_store_en_02",
+  "label": "benign",
+  "family": "telecom_store",
+  "lang": "en-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Hello, Airtel customer service informing you about our new international roaming pack.",
+      "t": 0.0
+    },
+    {
+      "text": "If you have upcoming overseas travel, you can activate roaming directly from the official Airtel Thanks app.",
+      "t": 6.5
+    },
+    {
+      "text": "No manual paperwork or document submission is needed.",
+      "t": 13.0
+    },
+    {
+      "text": "Thank you for being a valued Airtel subscriber.",
+      "t": 19.5
+    }
+  ]
+}

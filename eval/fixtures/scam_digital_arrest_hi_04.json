@@ -1,0 +1,29 @@
+{
+  "id": "scam_digital_arrest_hi_04",
+  "label": "scam",
+  "family": "digital_arrest",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Sunिए, main Enforcement Directorate ED office New Delhi se bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapke PAN card aur Aadhaar par money laundering case mein non-bailable warrant nikla hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Yeh confidential national security investigation hai, kisi family member ko nahi bata sakte.",
+      "t": 13.0
+    },
+    {
+      "text": "Aapka bank account freeze hone se pehle verification bond deposit safe account mein transfer kijiye.",
+      "t": 19.5
+    },
+    {
+      "text": "Abhi transfer kijiye warna police team aapke ghar dispatch ho chuki hai.",
+      "t": 26.0
+    }
+  ]
+}

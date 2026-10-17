@@ -1,0 +1,29 @@
+{
+  "id": "benign_telecom_store_hi_01",
+  "label": "benign",
+  "family": "telecom_store",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaskar, main Jio Store Sector 18 se customer care representative bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka 4G SIM card ko free mein 5G SIM mein upgrade karne ki suvidha available hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Iske liye aapko koi paise nahi dene hain aur na hi koi OTP phone par share karna hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Jab bhi aap market aaiye, original Aadhaar card lekar Jio Store par aakar free SIM le sakte hain.",
+      "t": 19.5
+    },
+    {
+      "text": "Phone par kisi ko bhi SIM upgrade ke naam par OTP na batayein.",
+      "t": 26.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "benign_bank_advisory_en_02",
+  "label": "benign",
+  "family": "bank_advisory",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Dear customer, this is an official security awareness message from your trusted bank.",
+      "t": 0.0
+    },
+    {
+      "text": "Fraudsters frequently impersonate police, customs or CBI officers threatening digital arrest.",
+      "t": 6.5
+    },
+    {
+      "text": "Please remember: bank officials will never ask for your confidential OTP, CVV, or ATM PIN.",
+      "t": 13.0
+    },
+    {
+      "text": "Never share your OTP with anyone claiming to update your KYC or verify your accounts.",
+      "t": 19.5
+    },
+    {
+      "text": "Stay safe, stay vigilant, and report suspicious calls immediately to the 1930 national helpline.",
+      "t": 26.0
+    }
+  ]
+}

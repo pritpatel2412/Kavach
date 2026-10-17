@@ -1,0 +1,29 @@
+{
+  "id": "scam_sim_trai_hinglish_03",
+  "label": "scam",
+  "family": "sim_trai",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "TRAI head office notice, aapka mobile number 2 hours mein block ho raha hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Cyber crime wing ne aapke number ke khilaf complaint lodge ki hai illegal bulk messaging ki.",
+      "t": 6.5
+    },
+    {
+      "text": "Agar SIM card chalu rakhna hai toh turant telecom verification security fees pay karo.",
+      "t": 13.0
+    },
+    {
+      "text": "Turant paise transfer karo telecom regulatory safe account mein.",
+      "t": 19.5
+    },
+    {
+      "text": "Bina payment ke number turant disconnect hoga aur legal action hoga.",
+      "t": 26.0
+    }
+  ]
+}

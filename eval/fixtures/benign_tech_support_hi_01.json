@@ -1,0 +1,29 @@
+{
+  "id": "benign_tech_support_hi_01",
+  "label": "benign",
+  "family": "tech_support",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaskar, Airtel broadband customer care support se technician bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapne internet speed slow hone ki complaint register karwayi thi ticket number 4921.",
+      "t": 6.5
+    },
+    {
+      "text": "Humne backend se optic fiber line reset kar di hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Kripya apne WiFi router ko peeche se 10 second ke liye off karke on kijiye.",
+      "t": 19.5
+    },
+    {
+      "text": "Speed ab 100 Mbps aa rahi hai, check karke confirm kar dijiye.",
+      "t": 26.0
+    }
+  ]
+}

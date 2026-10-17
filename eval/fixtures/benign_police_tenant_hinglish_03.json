@@ -1,0 +1,29 @@
+{
+  "id": "benign_police_tenant_hinglish_03",
+  "label": "benign",
+  "family": "police_tenant",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Namaste uncle ji, main RWA society office se Ramesh bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Police verification camp lag raha hai Sunday ko society clubhouse mein domestic helpers ke liye.",
+      "t": 6.5
+    },
+    {
+      "text": "Agar aapki maid ya driver ka verification pending hai toh Aadhaar copy ke saath bhej dijiyega.",
+      "t": 13.0
+    },
+    {
+      "text": "Form free of cost hai society residents ke liye.",
+      "t": 19.5
+    },
+    {
+      "text": "Aapke floor ke guard ko information de di hai.",
+      "t": 26.0
+    }
+  ]
+}

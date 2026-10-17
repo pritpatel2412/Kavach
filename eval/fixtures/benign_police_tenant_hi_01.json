@@ -1,0 +1,29 @@
+{
+  "id": "benign_police_tenant_hi_01",
+  "label": "benign",
+  "family": "police_tenant",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaste Sharma ji, main local beat constable Suresh bol raha hoon Mayur Vihar thane se.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapne jo second floor par naye tenant kirayedaar ka verification form submit kiya tha wo check ho gaya hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Unka Aadhaar card aur company ID card record par verify ho gaya hai koi issue nahi hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Jab bhi time mile aap thane ke front desk se verified stamped slip collect kar lijiyega.",
+      "t": 19.5
+    },
+    {
+      "text": "Chowki mein sab theek hai, dhanyavaad Sharma ji.",
+      "t": 26.0
+    }
+  ]
+}

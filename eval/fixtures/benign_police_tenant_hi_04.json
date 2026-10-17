@@ -1,0 +1,29 @@
+{
+  "id": "benign_police_tenant_hi_04",
+  "label": "benign",
+  "family": "police_tenant",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Sharma ji pranam, chowki incharge sahab ne senior citizen helpline register check kiya hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Har mahine hum colony ke senior citizens ka haal-chaal poochte hain suraksha ke liye.",
+      "t": 6.5
+    },
+    {
+      "text": "Colony mein koi sandigdh anjaan vyakti toh nahi dikha pichhle dino?",
+      "t": 13.0
+    },
+    {
+      "text": "Emergency ke liye beat constable ka direct number aapke fridge par chipka hua hai.",
+      "t": 19.5
+    },
+    {
+      "text": "Surakshit rahein aur shubh din.",
+      "t": 26.0
+    }
+  ]
+}

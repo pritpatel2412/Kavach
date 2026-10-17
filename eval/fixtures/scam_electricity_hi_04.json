@@ -1,0 +1,29 @@
+{
+  "id": "scam_electricity_hi_04",
+  "label": "scam",
+  "family": "electricity",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Vidyut vitran nigam alert, aapke meter ka bijli bill overdue hai aur disconnection order pass hua hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Line inspector 20 minute mein aapke ghar ki power cut karne aa raha hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Disconnection rokne ke liye turant verification amount safe portal par transfer kijiye.",
+      "t": 13.0
+    },
+    {
+      "text": "Payment abhi transfer karo warna re-connection charge 5000 rupaye dena padega.",
+      "t": 19.5
+    },
+    {
+      "text": "Turant paise transfer kijiye line bachaane ke liye.",
+      "t": 26.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "scam_electricity_en_02",
+  "label": "scam",
+  "family": "electricity",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Urgent notice from Power Distribution Corporation regarding electricity meter connection.",
+      "t": 0.0
+    },
+    {
+      "text": "Your electricity power will be disconnected tonight at nine pm due to non-payment of previous invoice.",
+      "t": 6.5
+    },
+    {
+      "text": "Electricity officer is on line to stop power disconnection process immediately.",
+      "t": 13.0
+    },
+    {
+      "text": "You must pay pending surcharge fee immediately via UPI transfer to our officer account.",
+      "t": 19.5
+    },
+    {
+      "text": "Transfer payment right now or electricity meter will be permanently removed by line staff.",
+      "t": 26.0
+    }
+  ]
+}

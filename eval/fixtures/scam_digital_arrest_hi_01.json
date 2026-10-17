@@ -1,0 +1,29 @@
+{
+  "id": "scam_digital_arrest_hi_01",
+  "label": "scam",
+  "family": "digital_arrest",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaste, main CBI headquarter New Delhi se Officer Ajay Verma bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapke Aadhaar card par illegal narcotics aur money laundering ka case register hua hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Yeh ek official digital arrest warrant hai, aapko 4 ghante tak video call par rehna hoga, kisi ko mat batana.",
+      "t": 13.0
+    },
+    {
+      "text": "Supreme court ka order hai, turant investigation verification ke liye safe account mein paise transfer karo.",
+      "t": 19.5
+    },
+    {
+      "text": "Agar aapne abhi paise transfer nahi kiye toh local police aapko 15 minute mein physical arrest kar legi.",
+      "t": 26.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "benign_doctor_clinic_hi_01",
+  "label": "benign",
+  "family": "doctor_clinic",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaste Verma ji, main Dr. Gupta ke clinic se nurse Neha bol rahi hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapki kal ki blood test report Dr. Gupta ne check kar li hai, sugar levels ab control mein hain.",
+      "t": 6.5
+    },
+    {
+      "text": "Doctor ne aapki nayi BP medicine prescription WhatsApp par send kar di hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Clinic consultation fees clinic counter par transfer kar dena jab aap next checkup ke liye aao.",
+      "t": 19.5
+    },
+    {
+      "text": "Dawaein time se lena shuru kijiye aur namak kam rakhiye khane mein.",
+      "t": 26.0
+    }
+  ]
+}

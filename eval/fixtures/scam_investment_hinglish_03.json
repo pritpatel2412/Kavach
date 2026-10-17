@@ -1,0 +1,29 @@
+{
+  "id": "scam_investment_hinglish_03",
+  "label": "scam",
+  "family": "investment",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Hello sir, share market trading tips group se call hai, daily guaranteed profit mil raha hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Hamari trading app par paisa lagao aur har din double return kamao guaranteed.",
+      "t": 6.5
+    },
+    {
+      "text": "VIP slot book karne ke liye initial token amount hamare account mein transfer karo.",
+      "t": 13.0
+    },
+    {
+      "text": "Abhi paise transfer karo aur turant apna profit withdrawal account mein dekho.",
+      "t": 19.5
+    },
+    {
+      "text": "Jaldi transfer kijiye warna slot kisi aur ko allot ho jayega.",
+      "t": 26.0
+    }
+  ]
+}

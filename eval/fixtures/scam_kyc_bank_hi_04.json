@@ -1,0 +1,29 @@
+{
+  "id": "scam_kyc_bank_hi_04",
+  "label": "scam",
+  "family": "kyc_bank",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Punjab National Bank helpline desk se call hai, aapka bank khata aadhar se link nahi hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka account suspend kar diya gaya hai aur pension transfer ruk gaya hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Account unlock karne ke liye turant phone par aaya OTP number batana anivarya hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Kripya apna OTP aur login PIN turant bataiye taaki khata unlock ho sake.",
+      "t": 19.5
+    },
+    {
+      "text": "Bina OTP ke bank services permanently band ho jayengi.",
+      "t": 26.0
+    }
+  ]
+}

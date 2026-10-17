@@ -1,0 +1,29 @@
+{
+  "id": "scam_courier_fedex_hinglish_03",
+  "label": "scam",
+  "family": "courier_fedex",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Sir apka courier parcel customs clearance mein fas gaya hai narcotics department ke dwara.",
+      "t": 0.0
+    },
+    {
+      "text": "Parcel mein illegal MDMA drugs aur banned chemicals paye gaye hain aapke Aadhaar ke saath.",
+      "t": 6.5
+    },
+    {
+      "text": "Police verification officer line par hain, aapko digital arrest kiya ja raha hai parcel case mein.",
+      "t": 13.0
+    },
+    {
+      "text": "Agar case court nahi bhejna hai toh turant fine transfer karo verification account mein.",
+      "t": 19.5
+    },
+    {
+      "text": "Abhi payment transfer karo warna CBI team ghar par raid karegi.",
+      "t": 26.0
+    }
+  ]
+}

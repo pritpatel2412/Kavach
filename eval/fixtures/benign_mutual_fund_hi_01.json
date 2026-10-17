@@ -1,0 +1,29 @@
+{
+  "id": "benign_mutual_fund_hi_01",
+  "label": "benign",
+  "family": "mutual_fund",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaste Sharma ji, main aapke home branch Bank of Baroda se branch manager bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka fixed deposit agle hafte mature ho raha hai, auto-renewal ke baare mein discuss karna tha.",
+      "t": 6.5
+    },
+    {
+      "text": "Senior citizen FD par bank 7.75 percent interest rate offer kar raha hai jo bohot safe aur guaranteed hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Aap aaram se branch aakar naye FD certificate par sign kar dijiyega jab bhi suvidha ho.",
+      "t": 19.5
+    },
+    {
+      "text": "Chai peete hain branch mein milkar, shubh din.",
+      "t": 26.0
+    }
+  ]
+}

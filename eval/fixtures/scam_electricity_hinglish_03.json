@@ -1,0 +1,29 @@
+{
+  "id": "scam_electricity_hinglish_03",
+  "label": "scam",
+  "family": "electricity",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Electricity department alert, aapka bijli connection tonight disconnect hoga bill unpaid hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Sub-division power office se line man nikal chuka hai meter kaatne ke liye.",
+      "t": 6.5
+    },
+    {
+      "text": "Agar line cut se bachna hai toh turant bijli bill verification charges pay karo.",
+      "t": 13.0
+    },
+    {
+      "text": "Abhi diye gaye account par transfer karo turant connection restore ho jayega.",
+      "t": 19.5
+    },
+    {
+      "text": "Paise bhejo warna andhere mein rehna padega kal subah tak.",
+      "t": 26.0
+    }
+  ]
+}

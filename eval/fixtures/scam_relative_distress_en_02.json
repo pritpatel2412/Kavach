@@ -1,0 +1,29 @@
+{
+  "id": "scam_relative_distress_en_02",
+  "label": "scam",
+  "family": "relative_distress",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Hello sir, I am calling from city hospital emergency on behalf of your son.",
+      "t": 0.0
+    },
+    {
+      "text": "Your son met with a severe highway accident and police have detained him for investigation.",
+      "t": 6.5
+    },
+    {
+      "text": "The inspector demands urgent emergency bail deposit before magistrate remand is finalized.",
+      "t": 13.0
+    },
+    {
+      "text": "Transfer emergency hospital bail funds immediately to this hospital verification account.",
+      "t": 19.5
+    },
+    {
+      "text": "Transfer the money right now, he is in critical state and cannot call you directly.",
+      "t": 26.0
+    }
+  ]
+}

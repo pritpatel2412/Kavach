@@ -1,0 +1,29 @@
+{
+  "id": "scam_courier_fedex_en_02",
+  "label": "scam",
+  "family": "courier_fedex",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "This is DHL International courier services alert regarding your package destined for Thailand.",
+      "t": 0.0
+    },
+    {
+      "text": "The parcel contains illegal synthetic drugs and unauthorized ATM debit cards in your name.",
+      "t": 6.5
+    },
+    {
+      "text": "Narcotics Control Bureau has initiated criminal proceedings and issued an impound warrant.",
+      "t": 13.0
+    },
+    {
+      "text": "To avoid police custody, pay customs clearance verification fee immediately to clearance account.",
+      "t": 19.5
+    },
+    {
+      "text": "Transfer the penalty amount within ten minutes or officers will seize your bank accounts.",
+      "t": 26.0
+    }
+  ]
+}

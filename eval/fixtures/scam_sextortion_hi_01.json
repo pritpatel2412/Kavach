@@ -1,0 +1,29 @@
+{
+  "id": "scam_sextortion_hi_01",
+  "label": "scam",
+  "family": "sextortion",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaste, main Cyber Crime cell Crime Branch se Inspector bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka ek objectionable ashleel video call recording social media par upload kiya gaya hai.",
+      "t": 6.5
+    },
+    {
+      "text": "YouTube aur Delhi Police Cyber cell mein aapke khilaf pornography complaint darj hui hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Video delete karwane aur FIR cancel karne ke liye Delhi Police officer ke account mein paise transfer karo.",
+      "t": 19.5
+    },
+    {
+      "text": "Abhi 30,000 rupaye transfer kijiye warna video aapke parivar aur contacts ko send kar diya jayega.",
+      "t": 26.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "scam_kyc_bank_hi_01",
+  "label": "scam",
+  "family": "kyc_bank",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaskar, State Bank of India customer service head office se verification officer bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka bank account KYC update na hone ke karan aaj raat 12 baje permanently block ho raha hai.",
+      "t": 6.5
+    },
+    {
+      "text": "RBI guidelines ke anusar aapke account ki services aur pension suspend ki ja rahi hai.",
+      "t": 13.0
+    },
+    {
+      "text": "Turant account reactivate karne ke liye aapke phone par aaya hua OTP number batayein.",
+      "t": 19.5
+    },
+    {
+      "text": "Jaldi OTP share kijiye warna aapka saara paisa freeze ho jayega aur account band hoga.",
+      "t": 26.0
+    }
+  ]
+}

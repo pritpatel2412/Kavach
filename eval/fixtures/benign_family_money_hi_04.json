@@ -1,0 +1,29 @@
+{
+  "id": "benign_family_money_hi_04",
+  "label": "benign",
+  "family": "family_money",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Beta pranam, Sharma ji ke bete ki shaadi ka card aaya tha ghar par.",
+      "t": 0.0
+    },
+    {
+      "text": "Shagun ke lifaafe ke liye 2100 rupaye bank se nikal kar rakh liye hain maine.",
+      "t": 6.5
+    },
+    {
+      "text": "Tum shaam ko jaldi aa jaana toh hum dono saath mein jaayenge function mein.",
+      "t": 13.0
+    },
+    {
+      "text": "Chai bana kar rakhi hai tumhare aane tak.",
+      "t": 19.5
+    },
+    {
+      "text": "Aaram se gaadi chalana.",
+      "t": 26.0
+    }
+  ]
+}

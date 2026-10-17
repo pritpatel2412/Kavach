@@ -1,0 +1,29 @@
+{
+  "id": "benign_bank_advisory_hi_01",
+  "label": "benign",
+  "family": "bank_advisory",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaskar, yeh State Bank of India ki jan-hit mein jaari suraksha advisory hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aaj kal Cyber fraud aur digital arrest ke fake calls chal rahe hain jahan log CBI ya police bante hain.",
+      "t": 6.5
+    },
+    {
+      "text": "Kripya dhyan dein ki Bank kabhi bhi aapka OTP, PIN ya password phone par nahi poochta.",
+      "t": 13.0
+    },
+    {
+      "text": "Kabhi bhi kisi anjaan vyakti ke kehne par safe account mein paise transfer na karein.",
+      "t": 19.5
+    },
+    {
+      "text": "Kisi bhi sandigdh call par turant 1930 ya cybercrime portal par report karein.",
+      "t": 26.0
+    }
+  ]
+}

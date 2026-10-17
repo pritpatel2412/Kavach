@@ -1,0 +1,29 @@
+{
+  "id": "benign_doctor_clinic_en_02",
+  "label": "benign",
+  "family": "doctor_clinic",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Good morning Mr. Patel, calling from City Cardiology Hospital reception.",
+      "t": 0.0
+    },
+    {
+      "text": "Doctor reviewed your routine ECG test and everything appears completely normal.",
+      "t": 6.5
+    },
+    {
+      "text": "Please continue your prescribed multivitamin tablet once daily after breakfast.",
+      "t": 13.0
+    },
+    {
+      "text": "The routine follow-up consultation charges can be settled at the billing desk during your visit.",
+      "t": 19.5
+    },
+    {
+      "text": "Take care and feel free to reach out if you experience any fatigue.",
+      "t": 26.0
+    }
+  ]
+}

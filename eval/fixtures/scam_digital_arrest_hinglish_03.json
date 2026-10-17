@@ -1,0 +1,29 @@
+{
+  "id": "scam_digital_arrest_hinglish_03",
+  "label": "scam",
+  "family": "digital_arrest",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Hello, main Mumbai Crime Branch se Inspector Sharma bol raha hoon CBI joint operation se.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapke naam se Canara bank mein 15 fake accounts khole gaye hain terror funding ke liye.",
+      "t": 6.5
+    },
+    {
+      "text": "Aapka arrest warrant supreme court se nikla hai, stay on video call in a locked room quietly.",
+      "t": 13.0
+    },
+    {
+      "text": "Aapko verification ke liye RBI safe treasury account mein paise transfer karna hoga turant.",
+      "t": 19.5
+    },
+    {
+      "text": "Transfer confirm hote hi digital clearance certificate issue hoga warna immediate arrest.",
+      "t": 26.0
+    }
+  ]
+}

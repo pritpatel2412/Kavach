@@ -1,0 +1,29 @@
+{
+  "id": "benign_bank_advisory_hinglish_03",
+  "label": "benign",
+  "family": "bank_advisory",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Bank advisory: Savitri ji namaste, HDFC bank se public security awareness call hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Online banking fraud se bachein. Koi bhi vyakti agar CBI ya police bankar paise mange toh mana karein.",
+      "t": 6.5
+    },
+    {
+      "text": "Apna OTP kisi ko na dein. We will never ask for your secret PIN or netbanking credentials.",
+      "t": 13.0
+    },
+    {
+      "text": "Aapka bank account bilkul safe hai, kisi fake notice se darne ki zaroorat nahi hai.",
+      "t": 19.5
+    },
+    {
+      "text": "Surakshit rahein aur official bank branch mein jakar hi zaroori kaam karein.",
+      "t": 26.0
+    }
+  ]
+}

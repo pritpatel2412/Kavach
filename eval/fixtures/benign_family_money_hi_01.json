@@ -1,0 +1,29 @@
+{
+  "id": "benign_family_money_hi_01",
+  "label": "benign",
+  "family": "family_money",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Mummy pranam, main office se nikal gaya hoon aur ghar aa raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Maine grocery aur ration ke liye aapke savings account mein 5000 rupaye UPI se transfer kar diye hain.",
+      "t": 6.5
+    },
+    {
+      "text": "Kal subah sabzi wale ko usme se cash de dena aur doodh wale ka hisaab clear kar dena.",
+      "t": 13.0
+    },
+    {
+      "text": "Mausi ji ka phone aaya tha, wo keh rahi thi Sunday ko lunch par aayengi.",
+      "t": 19.5
+    },
+    {
+      "text": "Main rasgulla le kar aa raha hoon raste se, dhyan rakhna apna.",
+      "t": 26.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "benign_courier_delivery_hi_01",
+  "label": "benign",
+  "family": "courier_delivery",
+  "lang": "hi-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Namaste sir, main Amazon delivery boy bol raha hoon, aapka ek parcel aaya hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Main aapke apartment ke main gate par khada hoon, security guard ko parcel de raha hoon.",
+      "t": 6.5
+    },
+    {
+      "text": "Delivery complete karne ke liye delivery boy app mein OTP verify karna padega.",
+      "t": 13.0
+    },
+    {
+      "text": "Aapke phone par delivery verification ka OTP aaya hoga, kripya delivery OTP 4582 bata dijiye.",
+      "t": 19.5
+    },
+    {
+      "text": "Theek hai sir, parcel security guard ko hand over kar diya hai, dhanyavaad.",
+      "t": 26.0
+    }
+  ]
+}

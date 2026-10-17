@@ -1,0 +1,29 @@
+{
+  "id": "scam_relative_distress_hi_04",
+  "label": "scam",
+  "family": "relative_distress",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Namaste Sharma ji, main police thane se sub-inspector bol raha hoon.",
+      "t": 0.0
+    },
+    {
+      "text": "Aapka pota illegal fight case mein pakda gaya hai aur jail custody mein hai.",
+      "t": 6.5
+    },
+    {
+      "text": "Bache ka career kharab hone se bachana hai toh judge se pehle bail deposit transfer karo.",
+      "t": 13.0
+    },
+    {
+      "text": "Turant diye gaye number par paise transfer kijiye taaki use bina case ke chhod sakein.",
+      "t": 19.5
+    },
+    {
+      "text": "Jaldi payment transfer kijiye warna media aa jayegi.",
+      "t": 26.0
+    }
+  ]
+}

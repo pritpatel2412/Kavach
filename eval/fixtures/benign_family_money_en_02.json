@@ -1,0 +1,29 @@
+{
+  "id": "benign_family_money_en_02",
+  "label": "benign",
+  "family": "family_money",
+  "lang": "en-IN",
+  "split": "dev",
+  "segments": [
+    {
+      "text": "Hi Dad, just checking in to see how you and Mom are doing this evening.",
+      "t": 0.0
+    },
+    {
+      "text": "I transferred the electricity and water utility payment directly through my netbanking portal.",
+      "t": 6.5
+    },
+    {
+      "text": "Also sent three thousand to your account for your morning yoga class fee.",
+      "t": 13.0
+    },
+    {
+      "text": "Let me know if you need any help booking the train tickets to visit grandmother next week.",
+      "t": 19.5
+    },
+    {
+      "text": "Have dinner on time and give my love to Mom.",
+      "t": 26.0
+    }
+  ]
+}

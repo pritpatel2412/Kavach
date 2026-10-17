@@ -1,0 +1,29 @@
+{
+  "id": "scam_remote_access_hinglish_03",
+  "label": "scam",
+  "family": "remote_access",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Sir apke phone par bank server se security alert hai, Play Store kholiye.",
+      "t": 0.0
+    },
+    {
+      "text": "Aap turant QuickSupport ya AnyDesk app download karo phone clean karne ke liye.",
+      "t": 6.5
+    },
+    {
+      "text": "App ka number batao aur allow button par click karke screen share accept kijiye.",
+      "t": 13.0
+    },
+    {
+      "text": "Ab bank application open karke apna secret PIN aur password enter karo verification ke liye.",
+      "t": 19.5
+    },
+    {
+      "text": "Main yahan se screen dekh raha hoon, code type karke confirm kijiye.",
+      "t": 26.0
+    }
+  ]
+}

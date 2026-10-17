@@ -1,0 +1,29 @@
+{
+  "id": "benign_courier_delivery_hinglish_03",
+  "label": "benign",
+  "family": "courier_delivery",
+  "lang": "hi-IN",
+  "split": "test",
+  "segments": [
+    {
+      "text": "Bhaiya main BlueDart courier se bol raha hoon, apka medicine parcel hai.",
+      "t": 0.0
+    },
+    {
+      "text": "Aap ghar par hain ya neighbor ke paas de doon parcel?",
+      "t": 6.5
+    },
+    {
+      "text": "Delivery verify karne ke liye bas 4 digit delivery OTP bata dijiye.",
+      "t": 13.0
+    },
+    {
+      "text": "Shukriya bhaiya, parcel packet gate par receive ho gaya hai.",
+      "t": 19.5
+    },
+    {
+      "text": "Aap check kar lijiye packet sealed hai.",
+      "t": 26.0
+    }
+  ]
+}
