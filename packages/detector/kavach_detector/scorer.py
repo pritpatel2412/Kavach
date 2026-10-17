@@ -83,11 +83,10 @@ class RiskScorer:
         self.level = self.max_level = self.max_score = 0
 
     def _match(self, text_norm: str) -> list[tuple[str, str]]:
-        is_advisory = is_genuine_advisory(text_norm)
+        if is_genuine_advisory(text_norm):
+            return []  # S3-B: Suppress all scam stage hits on awareness PSAs, news reports, and genuine advisories
         hits: list[tuple[str, str]] = []
         for stage, plist in self._patterns.items():
-            if is_advisory and stage in ("S5_payment", "S1_authority"):
-                continue
             for phrase, pat in plist:
                 if pat.search(text_norm):
                     hits.append((stage, phrase))

@@ -1,0 +1,1202 @@
+[
+  {
+    "id": "ambient_sealed_test_001",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "The tailor promised that the festival alterations would be ready by tomorrow afternoon."
+  },
+  {
+    "id": "ambient_sealed_test_002",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Could you please weigh these green apples and tell me the total amount for the fruits?"
+  },
+  {
+    "id": "ambient_sealed_test_003",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Please give me five hundred grams of fresh paneer and two packets of low-fat milk."
+  },
+  {
+    "id": "ambient_sealed_test_004",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Stationery dukan se do notebooks, pen set aur geometry box le aana bachho ke liye."
+  },
+  {
+    "id": "ambient_sealed_test_005",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Master ji, is kurte ki fitting kal sham tak ho jayegi kya? Parso function mein pehanna hai."
+  },
+  {
+    "id": "ambient_sealed_test_006",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Dukan wale bhaiya, yeh shirt ka size thoda bada lag raha hai, iska medium size mil sakta hai kya?"
+  },
+  {
+    "id": "ambient_sealed_test_007",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Chemist bhaiya, doctor saheb ka yeh parcha dekh lijiye aur do hafte ki dawai de dijiye."
+  },
+  {
+    "id": "ambient_sealed_test_008",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Yeh aam kitne rupaye kilo hain? Meethe hain na ya thode khatte niklenge?"
+  },
+  {
+    "id": "ambient_sealed_test_009",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Bhaiya do kilo aaloo, ek kilo pyaaz aur paanch sau gram shimla mirch taaza wali dena."
+  },
+  {
+    "id": "ambient_sealed_test_010",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Bhaiya aloo aur pyaaz kya bhaav lagaye hain aaj mandi mein? Thoda theek theek lagao."
+  },
+  {
+    "id": "ambient_sealed_test_011",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Whisk the curd smoothly with roasted cumin powder and black salt for a refreshing raita."
+  },
+  {
+    "id": "ambient_sealed_test_012",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "To make crispy dosas, ensure the fermented batter has the right consistency and temperature."
+  },
+  {
+    "id": "ambient_sealed_test_013",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Add a pinch of freshly ground cardamom and roasted cashews to enhance the rich aroma."
+  },
+  {
+    "id": "ambient_sealed_test_014",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Kheer banane ke liye hamesha full cream doodh ka upayog karein aur chawal ko dheemi aanch par pakayein."
+  },
+  {
+    "id": "ambient_sealed_test_015",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Garam garam phulko par thoda sa makhan lagayein aur salad ke sath parosein."
+  },
+  {
+    "id": "ambient_sealed_test_016",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Slow flame par dal ko kam se kam tees minute tak ubalne dein taaki swaad achha aaye."
+  },
+  {
+    "id": "ambient_sealed_test_017",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Ab tamatar ki puree dalkar tab tak pakayein jab tak masala tel na chhodne lage."
+  },
+  {
+    "id": "ambient_sealed_test_018",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Pyaaz ko golden brown hone tak achi tarah bhoon lein, phir usme adrak lehsun ka paste milayein."
+  },
+  {
+    "id": "ambient_sealed_test_019",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Pan mein do chammach desi ghee garam karein aur usme jeera, hing aur hari mirch dalein."
+  },
+  {
+    "id": "ambient_sealed_test_020",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Namaskar dosto, aaj hum banayenge authentic Punjabi dal makhani bilkul restaurant style."
+  },
+  {
+    "id": "ambient_sealed_test_021",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Let us recite the peaceful verses together and pray for the health and happiness of everyone."
+  },
+  {
+    "id": "ambient_sealed_test_022",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "The morning prayer bells in the temple bring an uplifting and serene start to the day."
+  },
+  {
+    "id": "ambient_sealed_test_023",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Daily spiritual meditation calms the mind and helps maintain inner peace and compassion."
+  },
+  {
+    "id": "ambient_sealed_test_024",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Navratri ke shubh avsar par mata rani ki chouki sajayi gayi hai aur bhajan kirtan chal raha hai."
+  },
+  {
+    "id": "ambient_sealed_test_025",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Hanuman Chalisa ka niyamit jaap karne se sabhi sankat aur darr door ho jate hain."
+  },
+  {
+    "id": "ambient_sealed_test_026",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Guru Nanak Dev ji ne naam japne, kirat karne aur vand chhakne ka mahan sandesh diya."
+  },
+  {
+    "id": "ambient_sealed_test_027",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Pandit ji ne bataya ki agle mangalwaar ko Sundarkand ka paath parivaar sahit karna shubh rahega."
+  },
+  {
+    "id": "ambient_sealed_test_028",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Subah subah mandir jakar aarti mein shaamil hona mann ko adbhut shanti pradan karta hai."
+  },
+  {
+    "id": "ambient_sealed_test_029",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Gita ke doosre adhyay mein Bhagwan Shri Krishna karm yog ke baare mein samjhate hain."
+  },
+  {
+    "id": "ambient_sealed_test_030",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Om Jai Jagdish Hare, Swami Jai Jagdish Hare, bhakt jano ke sankat pal mein door kare."
+  },
+  {
+    "id": "ambient_sealed_test_031",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Could you check if the grocery delivery arrived downstairs? The security guard buzzed."
+  },
+  {
+    "id": "ambient_sealed_test_032",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Let's clean the balcony pots this evening and plant the new flowering seeds we bought."
+  },
+  {
+    "id": "ambient_sealed_test_033",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "We should plan a small weekend picnic to the lake near the outskirts of the city."
+  },
+  {
+    "id": "ambient_sealed_test_034",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Geyser ka switch off kar dena nahane ke baad, bijli ki bachat karni chahiye."
+  },
+  {
+    "id": "ambient_sealed_test_035",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Bachhon ko water bottle aur tiffin bag mein theek se pack karke school bhejna."
+  },
+  {
+    "id": "ambient_sealed_test_036",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Gas cylinder khatam hone wala hai, maine online booking kar di hai parso tak deliver ho jayega."
+  },
+  {
+    "id": "ambient_sealed_test_037",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Sunday ko mausi ji ke ghar chalna hai lunch par, unhone specially invite kiya hai."
+  },
+  {
+    "id": "ambient_sealed_test_038",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Ghar ki painting ke liye contractor ko call karke quotation mangwa liya hai."
+  },
+  {
+    "id": "ambient_sealed_test_039",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Beta AC ka remote kahan rakha hai? Kamre mein thodi dhoop zyada aa rahi hai."
+  },
+  {
+    "id": "ambient_sealed_test_040",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Chalo sab log milkar sham ki chai peete hain, maine methi ke pakode banaye hain."
+  },
+  {
+    "id": "ambient_sealed_test_041",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Kal subah dhoodh wala jaldi aayega, kripya bartan bahar rakh dena raat ko hi."
+  },
+  {
+    "id": "ambient_sealed_test_042",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Dadi ji keh rahi thi ki unka chashma shayad living room ki table par reh gaya hai."
+  },
+  {
+    "id": "ambient_sealed_test_043",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Aaj khane mein kya banayein? Dal tadka aur jeera rice bana lein ya roti sabzi?"
+  },
+  {
+    "id": "ambient_sealed_test_044",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Aarav beta, apna homework khatam kar lo phir hum log park mein badminton khelne chalenge."
+  },
+  {
+    "id": "ambient_sealed_test_045",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Sunoji, aaj sham ko sabzi mandi se taaza dhaniya, tamatar aur adrak lete aana."
+  },
+  {
+    "id": "ambient_sealed_test_046",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Cyber security tip: Enable two-factor authentication on all your email and banking accounts for safety."
+  },
+  {
+    "id": "ambient_sealed_test_047",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Jan hit mein jaari: Kisi anjaan vyakti dwara bheje gaye QR code ko scan karke paise receive nahi hote."
+  },
+  {
+    "id": "ambient_sealed_test_048",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Bank awareness advisory: Bank officials will never call you asking for your CVV, debit card expiry, or OTP."
+  },
+  {
+    "id": "ambient_sealed_test_049",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Digital safety PSA: Digital arrest is a scam. Police and law enforcement never call on Skype or WhatsApp to arrest you."
+  },
+  {
+    "id": "ambient_sealed_test_050",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Consumer forum advisory: Har khareedari par pakka bill zaroor lein aur MRP se zyada daam na dein."
+  },
+  {
+    "id": "ambient_sealed_test_051",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Road safety rule: Seat belt lagayein aur lamba safar karte waqt niyamit interval par rest lein."
+  },
+  {
+    "id": "ambient_sealed_test_052",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Swachh Bharat mission: Kachra kude-daan mein hi dalein, geela aur sookha kachra alag karein."
+  },
+  {
+    "id": "ambient_sealed_test_053",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Bijli bachao andolan: Zarurat na hone par lights aur fans band karein, energy efficient appliances use karein."
+  },
+  {
+    "id": "ambient_sealed_test_054",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Income tax advisory: Apni ITR samay par file karein aur kisi anadhikrit vyakti ke sath credentials share na karein."
+  },
+  {
+    "id": "ambient_sealed_test_055",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Dengue se bachav: Apne ghar ke aas paas paani jama na hone dein, coolero ki safai niyamit karein."
+  },
+  {
+    "id": "ambient_sealed_test_056",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Jal shakti mantralaya: Jal hi jeevan hai, paani ki har boond bachayein aur rain water harvesting apnayein."
+  },
+  {
+    "id": "ambient_sealed_test_057",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Cyber dost awareness: Kisi bhi anjaan link par click na karein, digital arrest jaisa koi kanoon nahi hai."
+  },
+  {
+    "id": "ambient_sealed_test_058",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Pulse polio abhiyan: Do boond zindagi ki, 5 saal tak ke sabhi bachho ko polio drop zaroor pilayein."
+  },
+  {
+    "id": "ambient_sealed_test_059",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Traffic police advisory: Helmet hamesha pehnein aur do-pahiya vahan chalate waqt phone ka upayog na karein."
+  },
+  {
+    "id": "ambient_sealed_test_060",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "RBI kehta hai: Savdhan rahein, apna PIN, OTP ya internet banking password kisi ko na dein."
+  },
+  {
+    "id": "ambient_sealed_test_061",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Please make sure the luggage is packed tonight so we can leave early for the station."
+  },
+  {
+    "id": "ambient_sealed_test_062",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "The family get-together was wonderful, everyone enjoyed the traditional music and food."
+  },
+  {
+    "id": "ambient_sealed_test_063",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Yes, I already spoke to her and arranged the taxi so she doesn't have to walk too far."
+  },
+  {
+    "id": "ambient_sealed_test_064",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Did you tell grandmother that the doctor's appointment is scheduled for tomorrow evening?"
+  },
+  {
+    "id": "ambient_sealed_test_065",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Babuji ne kaha hai ki sabhi rishtedaaro ko shaadi ka nimantran patra bhej diya gaya hai."
+  },
+  {
+    "id": "ambient_sealed_test_066",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Beta, zindagi mein kitni bhi mushkilein aayein, sachchai ka rasta kabhi mat chhodna."
+  },
+  {
+    "id": "ambient_sealed_test_067",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Yeh shaadi ka joda kitna pyara lag raha hai tum par, nazar na lage meri gudiya ko."
+  },
+  {
+    "id": "ambient_sealed_test_068",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Maa ji, aaj sham ko hum sab terrace par baithkar purani yaadein taaza karenge."
+  },
+  {
+    "id": "ambient_sealed_test_069",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Choti bahu ne kitni sundar rangoli banayi hai aangan mein, sab log tareef kar rahe hain."
+  },
+  {
+    "id": "ambient_sealed_test_070",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Rohan tum kab samjhoge, parivaar ki khushi se badhkar is duniya mein kuch nahi hota."
+  },
+  {
+    "id": "ambient_sealed_test_071",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Sasural mein sabhi ka aadar karna aur muskurate huye sabki sewa karna hi hamare sanskaar hain."
+  },
+  {
+    "id": "ambient_sealed_test_072",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Aapne Didi ko phone kiya tha? Unhone bataya ki bachho ke exams khatam ho gaye hain."
+  },
+  {
+    "id": "ambient_sealed_test_073",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Bhaiya ki nayi gaadi delivery kal hone wali hai, sabko mithai baantne jana hai."
+  },
+  {
+    "id": "ambient_sealed_test_074",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Nahi maa, bas thoda kaam ka load zyada tha, thodi chai mil jaye toh sab theek ho jayega."
+  },
+  {
+    "id": "ambient_sealed_test_075",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Arre Rohit beta, tum itne pareshan kyu lag rahe ho? Kuch office mein hua hai kya?"
+  },
+  {
+    "id": "ambient_sealed_test_076",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Yeh parivaar hamari taaqat hai, mushkil waqt mein hum sab ko ek sath khade rehna chahiye."
+  },
+  {
+    "id": "ambient_sealed_test_077",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Papa ji ne bola tha ki shadi ki shopping ke liye hum sab log weekend par Chandni Chowk jayenge."
+  },
+  {
+    "id": "ambient_sealed_test_078",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Tumhe pata hai Simran, Rahul ne nayi naukri join kar li hai aur company bohot achi hai."
+  },
+  {
+    "id": "ambient_sealed_test_079",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Aap chinta mat kijiye maaji, maine saare phool aur prasad ka intezam pehle hi kar liya hai."
+  },
+  {
+    "id": "ambient_sealed_test_080",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Bahu, kal subah pooja ki tayari time se kar lena, pandit ji aath baje tak aa jayenge."
+  },
+  {
+    "id": "ambient_sealed_test_081",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Morning news headlines: Global oil prices softened amid steady production numbers."
+  },
+  {
+    "id": "ambient_sealed_test_082",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Municipal corporation started massive tree plantation drive across parks and roadsides."
+  },
+  {
+    "id": "ambient_sealed_test_083",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Defence news: Indian Navy commissioned new stealth guided missile destroyer today."
+  },
+  {
+    "id": "ambient_sealed_test_084",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Court report: Supreme Court reserved verdict on environmental compliance norms for industries."
+  },
+  {
+    "id": "ambient_sealed_test_085",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Daily news roundup: Chief Minister inaugurated five new health clinics in rural districts."
+  },
+  {
+    "id": "ambient_sealed_test_086",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Commodities news: Wheat and rice procurement figures crossed 30 million metric tons this season."
+  },
+  {
+    "id": "ambient_sealed_test_087",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Science news: ISRO announced next planetary exploration roadmap scheduled for early next year."
+  },
+  {
+    "id": "ambient_sealed_test_088",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "National highway authority announced cashless toll collection upgrades across major corridors."
+  },
+  {
+    "id": "ambient_sealed_test_089",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Weather forecast: Heavy rainfall expected in coastal Maharashtra and Gujarat over the weekend."
+  },
+  {
+    "id": "ambient_sealed_test_090",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Sports update: Olympic champion Neeraj Chopra qualified for the Diamond League finals with ease."
+  },
+  {
+    "id": "ambient_sealed_test_091",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "In today's business bulletin: Reserve Bank of India kept repo rates unchanged at 6.5 percent."
+  },
+  {
+    "id": "ambient_sealed_test_092",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Police arrested four cybercriminals operating a fake call center in a special joint operation."
+  },
+  {
+    "id": "ambient_sealed_test_093",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "CBI conducted raids across 10 locations in connection with a corporate financial fraud case."
+  },
+  {
+    "id": "ambient_sealed_test_094",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Cultural news: Rashtriya natya utsav ka aayojan agle mahine Pragati Maidan mein kiya jayega."
+  },
+  {
+    "id": "ambient_sealed_test_095",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Health bulletin: Monsoon ke dauran saaf paani piyein aur machharo se bachav ke upaay karein."
+  },
+  {
+    "id": "ambient_sealed_test_096",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Rail samachar: Tyoharon ke mausam mein railway 200 special trains chalane ja rahi hai."
+  },
+  {
+    "id": "ambient_sealed_test_097",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Aviation update: Naye international airport terminal par passenger facilities ka vistaar kiya ja raha hai."
+  },
+  {
+    "id": "ambient_sealed_test_098",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Automobile report: Electric vehicles ki sale mein is saal 40% growth dekhi gayi hai."
+  },
+  {
+    "id": "ambient_sealed_test_099",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Gold rate update: Sone ke daam mein aaj 200 rupaye prati 10 gram ki girawat darj ki gayi."
+  },
+  {
+    "id": "ambient_sealed_test_100",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Tech news report: Naye satellite launch ke sath space research mein desh ne naya milestone banaya."
+  },
+  {
+    "id": "ambient_sealed_test_101",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Traffic update: Ring road par maintenance work ke chalte traffic dhiimi chal rahi hai, kripya alternate route lein."
+  },
+  {
+    "id": "ambient_sealed_test_102",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Local news: Metro phase four ke naye line ka inauguration agle somvaar ko hone ja raha hai."
+  },
+  {
+    "id": "ambient_sealed_test_103",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "State budget bulletin: Education aur public transport sector ke liye budget allocation mein 12% vriddhi."
+  },
+  {
+    "id": "ambient_sealed_test_104",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "International news: UN Climate summit mein renewable energy targets par agreement sign hua."
+  },
+  {
+    "id": "ambient_sealed_test_105",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Breaking news: Central government ne farmers ke liye nayi kisan yojana ka ailan kiya hai."
+  },
+  {
+    "id": "ambient_sealed_test_106",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Stock market update: Sensex aaj 400 points chadkar 82,000 ke naye star par band hua."
+  },
+  {
+    "id": "ambient_sealed_test_107",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Indian cricket team ne teesra test match 150 runs se jeet liya hai. Captain ne bowling unit ki tareef ki."
+  },
+  {
+    "id": "ambient_sealed_test_108",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Aaj ke mausam samachar: Dilli aur NCR mein agle do dino tak halki barish ki sambhavna hai."
+  },
+  {
+    "id": "ambient_sealed_test_109",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "The tailor promised that the festival alterations would be ready by tomorrow afternoon."
+  },
+  {
+    "id": "ambient_sealed_test_110",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Could you please weigh these green apples and tell me the total amount for the fruits?"
+  },
+  {
+    "id": "ambient_sealed_test_111",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Please give me five hundred grams of fresh paneer and two packets of low-fat milk."
+  },
+  {
+    "id": "ambient_sealed_test_112",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Stationery dukan se do notebooks, pen set aur geometry box le aana bachho ke liye."
+  },
+  {
+    "id": "ambient_sealed_test_113",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Master ji, is kurte ki fitting kal sham tak ho jayegi kya? Parso function mein pehanna hai."
+  },
+  {
+    "id": "ambient_sealed_test_114",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Dukan wale bhaiya, yeh shirt ka size thoda bada lag raha hai, iska medium size mil sakta hai kya?"
+  },
+  {
+    "id": "ambient_sealed_test_115",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Chemist bhaiya, doctor saheb ka yeh parcha dekh lijiye aur do hafte ki dawai de dijiye."
+  },
+  {
+    "id": "ambient_sealed_test_116",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Yeh aam kitne rupaye kilo hain? Meethe hain na ya thode khatte niklenge?"
+  },
+  {
+    "id": "ambient_sealed_test_117",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Bhaiya do kilo aaloo, ek kilo pyaaz aur paanch sau gram shimla mirch taaza wali dena."
+  },
+  {
+    "id": "ambient_sealed_test_118",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Bhaiya aloo aur pyaaz kya bhaav lagaye hain aaj mandi mein? Thoda theek theek lagao."
+  },
+  {
+    "id": "ambient_sealed_test_119",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Whisk the curd smoothly with roasted cumin powder and black salt for a refreshing raita."
+  },
+  {
+    "id": "ambient_sealed_test_120",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "To make crispy dosas, ensure the fermented batter has the right consistency and temperature."
+  },
+  {
+    "id": "ambient_sealed_test_121",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Add a pinch of freshly ground cardamom and roasted cashews to enhance the rich aroma."
+  },
+  {
+    "id": "ambient_sealed_test_122",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Kheer banane ke liye hamesha full cream doodh ka upayog karein aur chawal ko dheemi aanch par pakayein."
+  },
+  {
+    "id": "ambient_sealed_test_123",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Garam garam phulko par thoda sa makhan lagayein aur salad ke sath parosein."
+  },
+  {
+    "id": "ambient_sealed_test_124",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Slow flame par dal ko kam se kam tees minute tak ubalne dein taaki swaad achha aaye."
+  },
+  {
+    "id": "ambient_sealed_test_125",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Ab tamatar ki puree dalkar tab tak pakayein jab tak masala tel na chhodne lage."
+  },
+  {
+    "id": "ambient_sealed_test_126",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Pyaaz ko golden brown hone tak achi tarah bhoon lein, phir usme adrak lehsun ka paste milayein."
+  },
+  {
+    "id": "ambient_sealed_test_127",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Pan mein do chammach desi ghee garam karein aur usme jeera, hing aur hari mirch dalein."
+  },
+  {
+    "id": "ambient_sealed_test_128",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Namaskar dosto, aaj hum banayenge authentic Punjabi dal makhani bilkul restaurant style."
+  },
+  {
+    "id": "ambient_sealed_test_129",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Let us recite the peaceful verses together and pray for the health and happiness of everyone."
+  },
+  {
+    "id": "ambient_sealed_test_130",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "The morning prayer bells in the temple bring an uplifting and serene start to the day."
+  },
+  {
+    "id": "ambient_sealed_test_131",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Daily spiritual meditation calms the mind and helps maintain inner peace and compassion."
+  },
+  {
+    "id": "ambient_sealed_test_132",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Navratri ke shubh avsar par mata rani ki chouki sajayi gayi hai aur bhajan kirtan chal raha hai."
+  },
+  {
+    "id": "ambient_sealed_test_133",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Hanuman Chalisa ka niyamit jaap karne se sabhi sankat aur darr door ho jate hain."
+  },
+  {
+    "id": "ambient_sealed_test_134",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Guru Nanak Dev ji ne naam japne, kirat karne aur vand chhakne ka mahan sandesh diya."
+  },
+  {
+    "id": "ambient_sealed_test_135",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Pandit ji ne bataya ki agle mangalwaar ko Sundarkand ka paath parivaar sahit karna shubh rahega."
+  },
+  {
+    "id": "ambient_sealed_test_136",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Subah subah mandir jakar aarti mein shaamil hona mann ko adbhut shanti pradan karta hai."
+  },
+  {
+    "id": "ambient_sealed_test_137",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Gita ke doosre adhyay mein Bhagwan Shri Krishna karm yog ke baare mein samjhate hain."
+  },
+  {
+    "id": "ambient_sealed_test_138",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Om Jai Jagdish Hare, Swami Jai Jagdish Hare, bhakt jano ke sankat pal mein door kare."
+  },
+  {
+    "id": "ambient_sealed_test_139",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Could you check if the grocery delivery arrived downstairs? The security guard buzzed."
+  },
+  {
+    "id": "ambient_sealed_test_140",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Let's clean the balcony pots this evening and plant the new flowering seeds we bought."
+  },
+  {
+    "id": "ambient_sealed_test_141",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "We should plan a small weekend picnic to the lake near the outskirts of the city."
+  },
+  {
+    "id": "ambient_sealed_test_142",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Geyser ka switch off kar dena nahane ke baad, bijli ki bachat karni chahiye."
+  },
+  {
+    "id": "ambient_sealed_test_143",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Bachhon ko water bottle aur tiffin bag mein theek se pack karke school bhejna."
+  },
+  {
+    "id": "ambient_sealed_test_144",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Gas cylinder khatam hone wala hai, maine online booking kar di hai parso tak deliver ho jayega."
+  },
+  {
+    "id": "ambient_sealed_test_145",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Sunday ko mausi ji ke ghar chalna hai lunch par, unhone specially invite kiya hai."
+  },
+  {
+    "id": "ambient_sealed_test_146",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Ghar ki painting ke liye contractor ko call karke quotation mangwa liya hai."
+  },
+  {
+    "id": "ambient_sealed_test_147",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Beta AC ka remote kahan rakha hai? Kamre mein thodi dhoop zyada aa rahi hai."
+  },
+  {
+    "id": "ambient_sealed_test_148",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Chalo sab log milkar sham ki chai peete hain, maine methi ke pakode banaye hain."
+  },
+  {
+    "id": "ambient_sealed_test_149",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Kal subah dhoodh wala jaldi aayega, kripya bartan bahar rakh dena raat ko hi."
+  },
+  {
+    "id": "ambient_sealed_test_150",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Dadi ji keh rahi thi ki unka chashma shayad living room ki table par reh gaya hai."
+  },
+  {
+    "id": "ambient_sealed_test_151",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Aaj khane mein kya banayein? Dal tadka aur jeera rice bana lein ya roti sabzi?"
+  },
+  {
+    "id": "ambient_sealed_test_152",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Aarav beta, apna homework khatam kar lo phir hum log park mein badminton khelne chalenge."
+  },
+  {
+    "id": "ambient_sealed_test_153",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Sunoji, aaj sham ko sabzi mandi se taaza dhaniya, tamatar aur adrak lete aana."
+  },
+  {
+    "id": "ambient_sealed_test_154",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Cyber security tip: Enable two-factor authentication on all your email and banking accounts for safety."
+  },
+  {
+    "id": "ambient_sealed_test_155",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Jan hit mein jaari: Kisi anjaan vyakti dwara bheje gaye QR code ko scan karke paise receive nahi hote."
+  },
+  {
+    "id": "ambient_sealed_test_156",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Bank awareness advisory: Bank officials will never call you asking for your CVV, debit card expiry, or OTP."
+  },
+  {
+    "id": "ambient_sealed_test_157",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Digital safety PSA: Digital arrest is a scam. Police and law enforcement never call on Skype or WhatsApp to arrest you."
+  },
+  {
+    "id": "ambient_sealed_test_158",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Consumer forum advisory: Har khareedari par pakka bill zaroor lein aur MRP se zyada daam na dein."
+  },
+  {
+    "id": "ambient_sealed_test_159",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Road safety rule: Seat belt lagayein aur lamba safar karte waqt niyamit interval par rest lein."
+  },
+  {
+    "id": "ambient_sealed_test_160",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Swachh Bharat mission: Kachra kude-daan mein hi dalein, geela aur sookha kachra alag karein."
+  },
+  {
+    "id": "ambient_sealed_test_161",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Bijli bachao andolan: Zarurat na hone par lights aur fans band karein, energy efficient appliances use karein."
+  },
+  {
+    "id": "ambient_sealed_test_162",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Income tax advisory: Apni ITR samay par file karein aur kisi anadhikrit vyakti ke sath credentials share na karein."
+  },
+  {
+    "id": "ambient_sealed_test_163",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Dengue se bachav: Apne ghar ke aas paas paani jama na hone dein, coolero ki safai niyamit karein."
+  },
+  {
+    "id": "ambient_sealed_test_164",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Jal shakti mantralaya: Jal hi jeevan hai, paani ki har boond bachayein aur rain water harvesting apnayein."
+  },
+  {
+    "id": "ambient_sealed_test_165",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Cyber dost awareness: Kisi bhi anjaan link par click na karein, digital arrest jaisa koi kanoon nahi hai."
+  },
+  {
+    "id": "ambient_sealed_test_166",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Pulse polio abhiyan: Do boond zindagi ki, 5 saal tak ke sabhi bachho ko polio drop zaroor pilayein."
+  },
+  {
+    "id": "ambient_sealed_test_167",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Traffic police advisory: Helmet hamesha pehnein aur do-pahiya vahan chalate waqt phone ka upayog na karein."
+  },
+  {
+    "id": "ambient_sealed_test_168",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "RBI kehta hai: Savdhan rahein, apna PIN, OTP ya internet banking password kisi ko na dein."
+  },
+  {
+    "id": "ambient_sealed_test_169",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Please make sure the luggage is packed tonight so we can leave early for the station."
+  },
+  {
+    "id": "ambient_sealed_test_170",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "The family get-together was wonderful, everyone enjoyed the traditional music and food."
+  },
+  {
+    "id": "ambient_sealed_test_171",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Yes, I already spoke to her and arranged the taxi so she doesn't have to walk too far."
+  },
+  {
+    "id": "ambient_sealed_test_172",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Did you tell grandmother that the doctor's appointment is scheduled for tomorrow evening?"
+  },
+  {
+    "id": "ambient_sealed_test_173",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Babuji ne kaha hai ki sabhi rishtedaaro ko shaadi ka nimantran patra bhej diya gaya hai."
+  },
+  {
+    "id": "ambient_sealed_test_174",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Beta, zindagi mein kitni bhi mushkilein aayein, sachchai ka rasta kabhi mat chhodna."
+  },
+  {
+    "id": "ambient_sealed_test_175",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Yeh shaadi ka joda kitna pyara lag raha hai tum par, nazar na lage meri gudiya ko."
+  },
+  {
+    "id": "ambient_sealed_test_176",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Maa ji, aaj sham ko hum sab terrace par baithkar purani yaadein taaza karenge."
+  },
+  {
+    "id": "ambient_sealed_test_177",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Choti bahu ne kitni sundar rangoli banayi hai aangan mein, sab log tareef kar rahe hain."
+  },
+  {
+    "id": "ambient_sealed_test_178",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Rohan tum kab samjhoge, parivaar ki khushi se badhkar is duniya mein kuch nahi hota."
+  },
+  {
+    "id": "ambient_sealed_test_179",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Sasural mein sabhi ka aadar karna aur muskurate huye sabki sewa karna hi hamare sanskaar hain."
+  },
+  {
+    "id": "ambient_sealed_test_180",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Aapne Didi ko phone kiya tha? Unhone bataya ki bachho ke exams khatam ho gaye hain."
+  },
+  {
+    "id": "ambient_sealed_test_181",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Bhaiya ki nayi gaadi delivery kal hone wali hai, sabko mithai baantne jana hai."
+  },
+  {
+    "id": "ambient_sealed_test_182",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Nahi maa, bas thoda kaam ka load zyada tha, thodi chai mil jaye toh sab theek ho jayega."
+  },
+  {
+    "id": "ambient_sealed_test_183",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Arre Rohit beta, tum itne pareshan kyu lag rahe ho? Kuch office mein hua hai kya?"
+  },
+  {
+    "id": "ambient_sealed_test_184",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Yeh parivaar hamari taaqat hai, mushkil waqt mein hum sab ko ek sath khade rehna chahiye."
+  },
+  {
+    "id": "ambient_sealed_test_185",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Papa ji ne bola tha ki shadi ki shopping ke liye hum sab log weekend par Chandni Chowk jayenge."
+  },
+  {
+    "id": "ambient_sealed_test_186",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Tumhe pata hai Simran, Rahul ne nayi naukri join kar li hai aur company bohot achi hai."
+  },
+  {
+    "id": "ambient_sealed_test_187",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Aap chinta mat kijiye maaji, maine saare phool aur prasad ka intezam pehle hi kar liya hai."
+  },
+  {
+    "id": "ambient_sealed_test_188",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Bahu, kal subah pooja ki tayari time se kar lena, pandit ji aath baje tak aa jayenge."
+  },
+  {
+    "id": "ambient_sealed_test_189",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "Morning news headlines: Global oil prices softened amid steady production numbers."
+  },
+  {
+    "id": "ambient_sealed_test_190",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Municipal corporation started massive tree plantation drive across parks and roadsides."
+  },
+  {
+    "id": "ambient_sealed_test_191",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Defence news: Indian Navy commissioned new stealth guided missile destroyer today."
+  },
+  {
+    "id": "ambient_sealed_test_192",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "Court report: Supreme Court reserved verdict on environmental compliance norms for industries."
+  },
+  {
+    "id": "ambient_sealed_test_193",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Daily news roundup: Chief Minister inaugurated five new health clinics in rural districts."
+  },
+  {
+    "id": "ambient_sealed_test_194",
+    "category": "religious_prayer",
+    "split": "sealed_test",
+    "text": "Commodities news: Wheat and rice procurement figures crossed 30 million metric tons this season."
+  },
+  {
+    "id": "ambient_sealed_test_195",
+    "category": "cooking_show",
+    "split": "sealed_test",
+    "text": "Science news: ISRO announced next planetary exploration roadmap scheduled for early next year."
+  },
+  {
+    "id": "ambient_sealed_test_196",
+    "category": "shop_talk",
+    "split": "sealed_test",
+    "text": "National highway authority announced cashless toll collection upgrades across major corridors."
+  },
+  {
+    "id": "ambient_sealed_test_197",
+    "category": "tv_news",
+    "split": "sealed_test",
+    "text": "Weather forecast: Heavy rainfall expected in coastal Maharashtra and Gujarat over the weekend."
+  },
+  {
+    "id": "ambient_sealed_test_198",
+    "category": "tv_serial",
+    "split": "sealed_test",
+    "text": "Sports update: Olympic champion Neeraj Chopra qualified for the Diamond League finals with ease."
+  },
+  {
+    "id": "ambient_sealed_test_199",
+    "category": "psa_awareness",
+    "split": "sealed_test",
+    "text": "In today's business bulletin: Reserve Bank of India kept repo rates unchanged at 6.5 percent."
+  },
+  {
+    "id": "ambient_sealed_test_200",
+    "category": "family_chatter",
+    "split": "sealed_test",
+    "text": "Police arrested four cybercriminals operating a fake call center in a special joint operation."
+  }
+]
