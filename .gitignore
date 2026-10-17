@@ -16,7 +16,9 @@ data/
 fixtures/audio/*
 !fixtures/audio/README.md
 !fixtures/audio/demo_scam_hinglish.wav
+fixtures/audio/real/
 eval/out/
 eval/transcripts/
+eval/real_runs/run_*
 .DS_Store
 *.egg-info/
