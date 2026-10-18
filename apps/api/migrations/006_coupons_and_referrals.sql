@@ -32,10 +32,13 @@ CREATE TABLE IF NOT EXISTS coupon_redemptions (
 CREATE TABLE IF NOT EXISTS referrals (
   id TEXT PRIMARY KEY,
   referrer_household_id TEXT NOT NULL,
-  referral_code TEXT UNIQUE NOT NULL,
+  referral_code TEXT NOT NULL,
   referee_household_id TEXT,
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'qualified', 'rewarded')),
   reward_minutes INTEGER DEFAULT 30,
   created_at TEXT NOT NULL,
   qualified_at TEXT
 );
+CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referral_code);
+CREATE INDEX IF NOT EXISTS idx_referrals_referee ON referrals(referee_household_id);
+
