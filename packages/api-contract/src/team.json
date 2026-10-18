@@ -1,0 +1,26 @@
+[
+  {
+    "id": "member-1",
+    "name": "Pritpal Singh",
+    "role": "Founder & AI Systems Lead",
+    "bio": "Building real-time speech guardians and deterministic coercion detection architectures for vulnerable seniors.",
+    "initials": "PS",
+    "hasPhoto": false
+  },
+  {
+    "id": "member-2",
+    "name": "Kavach Core Research",
+    "role": "Linguistic & Speech Engineering",
+    "bio": "Focusing on Indic code-mixed phonetics, ASR acoustic biasing, and psychological escalation stage analysis.",
+    "initials": "KC",
+    "hasPhoto": false
+  },
+  {
+    "id": "member-3",
+    "name": "Elder Care Safety Advisory",
+    "role": "Geriatric Usability & Cognitive Safety",
+    "bio": "Designing non-intrusive tabletop interfaces, low-stress auditory breaks, and ethical caregiver consent protocols.",
+    "initials": "EA",
+    "hasPhoto": false
+  }
+]

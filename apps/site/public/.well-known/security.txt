@@ -1,0 +1,8 @@
+Contact: mailto:security@kavach.ai
+Contact: https://kavach.ai/contact
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: en, hi, gu
+Policy: https://kavach.ai/security
+Acknowledgments: https://kavach.ai/security#acknowledgments
+Hiring: https://kavach.ai/changelog
+Canonical: https://kavach.ai/.well-known/security.txt

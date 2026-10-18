@@ -37,6 +37,7 @@ We are building to WIN: working demo, measured results, authentic engagement. Fu
    (generic "transfer karo" once caused a false alarm). `make test` and `make eval` must pass before you finish.
 9. **Scope discipline:** stay inside the current phase. No new frameworks, no rewrites, no agent-builder, no native app. Ask first for new dependencies.
 10. **Small commits** with clear messages (`feat(api): ...`, `fix(detector): ...`, `docs: ...`).
+11. **UI Theme (CoinCompass Law):** All SaaS frontend interfaces (`packages/ui`, `apps/site`, `apps/app`, `apps/admin`) strictly obey `docs/design/THEME.md` and `.agent/rules/ui-theme.md`: body bg `#e3e8dc`, 28px rounded main frame on gradient `linear-gradient(160deg,#0a2a12 0%,#0d3617 45%,#0a2a12 100%)`, accent lime `#c8f542`, Geist/Inter fonts with Indic fallbacks, `solar:` Iconify icons only, and zero fake stats or testimonials.
 
 ## Session workflow
 Start: read STATUS.md + phase file -> plan in <=8 bullets -> implement -> run `make test` -> manual check in mock UI if UI changed ->

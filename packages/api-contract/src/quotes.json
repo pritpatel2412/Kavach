@@ -1,0 +1,29 @@
+[
+  {
+    "id": "beta-1",
+    "author": "Private Beta Household",
+    "role": "Caregiver for 78-yr-old mother in Pune",
+    "city": "Pune, Maharashtra",
+    "quote": "Kavach gives our family genuine peace of mind. Knowing an old tablet on my mother's desk will speak in my voice the second a fake police caller threatens her is invaluable.",
+    "consent": false,
+    "isBetaPlaceholder": true
+  },
+  {
+    "id": "beta-2",
+    "author": "Early Testing Family",
+    "role": "Supporting retired father in Bengaluru",
+    "city": "Bengaluru, Karnataka",
+    "quote": "My father almost transferred our ancestral savings during a courier narcotics parcel scare. Having a device that catches the pressure stage before the money stage is the only real fix.",
+    "consent": false,
+    "isBetaPlaceholder": true
+  },
+  {
+    "id": "beta-3",
+    "author": "Beta Guardian",
+    "role": "Caregiver for elderly parents in Ahmedabad",
+    "city": "Ahmedabad, Gujarat",
+    "quote": "The live intercom feature is brilliant. Being able to tap one button on my phone and speak directly through the room speaker breaks the scammer's fear trance immediately.",
+    "consent": false,
+    "isBetaPlaceholder": true
+  }
+]

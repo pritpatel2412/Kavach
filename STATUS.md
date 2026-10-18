@@ -12,6 +12,7 @@
 | 4 Guardian onboarding, consent, cloning, alerts | 24-27 Oct | **Done** (SQLite persistence, 5-step wizard, liveness gate, Telegram alert, timeline feedback) | A + B |
 | Sprint 2 Hardening & Scale | 16-17 Oct | **Done** (Bearer auth isolation, device health, live intercom, 68 eval fixtures, camera polish) | A + B |
 | Sprint 3 Live-ready, Honest, Camera-ready | 17 Oct | **Done** (credit caps, silence gate, ambient + blind eval, real audio runner, Windows run.ps1, token hashing, demo kit, claims audit) | A + B |
+| Sprint F SaaS Frontend & CoinCompass Theme | 18 Oct | **Done** (packages/ui, packages/api-contract, apps/site, apps/app, apps/admin, elder kiosk, 10/10 theme audits) | A + B |
 | 5 Launch (nominated post) | 28 Oct | Scaffolded / In preparation | A + B |
 | 6 Eval + hardening (+ optional LLM layer) | 28 Oct-2 Nov | S1 LLM second-opinion layer scaffolded + tested; eval harness active | B / A |
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
@@ -51,6 +52,52 @@
 - **S3-H. Claims Audit:**
   - Authored `docs/CLAIMS.md` with source URLs, retrieval dates, and verification status for every project claim.
   - Replaced unverified ₹1,750 Cr figure across `docs/PITCH.md` with official NCRP government data: **297,727 complaints and ₹4,057.7 crore lost between 2022 and May 2026** (NewsBytes, 6 Jul 2026, citing News18).
+
+## Done in Sprint F ("Kavach SaaS frontend, strict CoinCompass theme")
+- **F0. Design System & Theme Engine (`packages/ui`):**
+  - Strict CoinCompass theme tokens: `#e3e8dc` body background, 28px rounded frame on `linear-gradient(160deg,#0a2a12 0%,#0d3617 45%,#0a2a12 100%)`, `#c8f542` accent lime, 115deg hatch overlay, and WebGL Aurora canvas.
+  - Shared Tailwind preset (`tailwind.preset.js`) and 23 accessible UI components.
+  - Automated Playwright theme audit (`scripts/theme-audit.mjs`): **10 passed, 0 failed** across all ports.
+- **F0/Contract. Typed API Contract & Mock Adapter (`packages/api-contract`):**
+  - Pure TypeScript schemas and mock store for claims, plans, quotes, and team.
+  - Strict production mock guard preventing `NEXT_PUBLIC_MOCK=1` from deploying to production.
+- **F1. Contest-Safe Reskin of `apps/web`:**
+  - `apps/web/theme.css` applied cleanly without altering any DOM ids or JS event handlers.
+  - Verified contest demo suite running offline on port 8000; all 83 backend unit tests green.
+- **F2. Landing Page (`apps/site` on Port 3000):**
+  - Complete 9-section landing experience: Hero with WordReveal H1, 6 floating glass cards, 10 scam families ticker, sourced statistics, 6 features deep-dive, 5-stage story timeline, team avatars, verified quotes, and 28px CTA block.
+  - First load JS: 169 kB (static prerendered).
+- **F3. Pricing Page (`apps/site/pricing`):**
+  - Monthly / Annual toggle (27% savings), 3 tiers (Free, Plus ₹149, Family ₹299), coupon validator (`KAVACH50`), and waitlist API route.
+- **F4. Trust, Content & Compliance Hub (`apps/site`):**
+  - `/features` (deep-dive, speakerphone acoustics, sub-650ms latency pipeline).
+  - `/how-it-works` (second-device living room architecture).
+  - `/learn` and 3 factual guides (`/learn/digital-arrest`, `/learn/courier-parcel`, `/learn/kyc-otp`), each ending with mandatory: *"Hang up immediately and call 1930 or visit cybercrime.gov.in"*.
+  - `/help` (3-minute setup guide & FAQ accordion), `/contact` (SLA & support email).
+  - Full compliance suite with prominent `DRAFT: pending legal review` banner: `/privacy` (zero raw audio, 7-day purge), `/terms`, `/refunds` (14-day guarantee), `/acceptable-use`, `/cookies` (zero ad trackers), `/grievance` (IT Rules 2021 officer details), `/consent-notice` (trilingual EN/HI/GU elder notice), `/security` (`.well-known/security.txt`), `/subprocessors` (Gnani.ai, Razorpay, Telegram).
+  - `/changelog` with real milestones, `/changelog/rss.xml`, `/changelog/feed.json`, and `/status`.
+- **F5. Passwordless Guardian Auth (`apps/app/auth`):**
+  - Mobile phone OTP (`123456`), email magic link, WebAuthn Passkeys, and Google SSO. Strictly zero password fields.
+- **F6. Guardian Portal (`apps/app` on Port 3001):**
+  - 6-step onboarding wizard (household, elder profile, DPDP consent, 3-phrase voice challenge, pairing code, simulated test call).
+  - Real-time dashboard with active status, daily credit guard (12/30 mins), and monthly quotas.
+  - Live incident timeline (`/alerts/[id]`) with one-way Push-to-Talk (PTT) caregiver intercom override and false-positive calibration feedback.
+  - Billing, usage ledger, Razorpay sandbox modal, and GST tax invoice list (`/billing`).
+  - Privacy data rights (`/privacy`): 1-click voice embedding purge and machine-readable JSON household export.
+- **F7. Elder Tabletop Kiosk Mode (`apps/app/elder`):**
+  - Zero WebGL / zero tilt / minimal motion.
+  - High contrast AAA, 48px status text, $\ge 24\text{px}$ body text, 140px giant central touch button.
+  - Instant trilingual language toggle (Hindi, English, Gujarati).
+  - Live intercom override banner ("Caregiver speaking live...") and emergency Level 3 alarm visuals.
+- **F8. Operations & Security Admin Console (`apps/admin` on Port 3002):**
+  - Amber top banner: `ADMIN [MOCK, NOT SECURE, DO NOT DEPLOY]`.
+  - 12 operations modules: telemetry, households with masked PII, tabletop kiosks, false-alarm queue, credit adjustments, detector stage weights, DPDP queue, feature flags, and immutable audit logs.
+  - Privileged step-up re-authentication modal requiring hardware security key / biometric authorization.
+- **F9. Hardening & Verification:**
+  - `make test`: **83 passed**, 0 failed.
+  - `scripts/theme-audit.mjs`: **10 passed, 0 failed** across all active ports.
+  - Responsive visual proof screenshots captured to `docs/img/`.
+  - Zero paid Gnani credits consumed.
 
 ## Latest Numbers
 - **Test Suite (`make test` / `run.ps1 test`):** **83 passing**, 0 failing (100% offline, zero credits consumed)

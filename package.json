@@ -1,0 +1,16 @@
+{
+  "name": "kavach-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev:site": "pnpm --filter @kavach/site dev",
+    "dev:app": "pnpm --filter @kavach/app dev",
+    "dev:admin": "pnpm --filter @kavach/admin dev",
+    "build": "pnpm --filter \"./packages/*\" --filter \"./apps/*\" build",
+    "build:site": "pnpm --filter @kavach/site build",
+    "theme-audit": "node scripts/theme-audit.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

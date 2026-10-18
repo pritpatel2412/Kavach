@@ -1,0 +1,104 @@
+/* CoinCompass Strict Theme Reskin for Kavach Contest Demo (apps/web) */
+:root {
+  --bg: #0a2a12;
+  --card: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.14);
+  --fg: rgba(255, 255, 255, 0.90);
+  --mut: rgba(255, 255, 255, 0.60);
+  --dim: rgba(255, 255, 255, 0.35);
+  --ok: #c8f542;
+  --ok-glow: rgba(200, 245, 66, 0.28);
+  --warn: #f5b942;
+  --warn-glow: rgba(245, 185, 66, 0.35);
+  --bad: #ff5a4d;
+  --bad-glow: rgba(255, 90, 77, 0.40);
+  --line: rgba(255, 255, 255, 0.12);
+  --surface: #0d3617;
+  --lime: #c8f542;
+}
+
+html {
+  background-color: #e3e8dc !important;
+  min-height: 100vh;
+}
+
+body {
+  font-family: 'Geist', 'Inter', 'Noto Sans Devanagari', 'Noto Sans Gujarati', system-ui, sans-serif !important;
+  background: linear-gradient(160deg, #0a2a12 0%, #0d3617 45%, #0a2a12 100%) !important;
+  color: var(--fg) !important;
+  border-radius: 28px !important;
+  margin: 16px auto !important;
+  max-width: 820px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 25px 60px rgba(10, 42, 18, 0.25), 0 0 1px rgba(0, 0, 0, 0.2) !important;
+  position: relative !important;
+  overflow-x: hidden !important;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 9px);
+  z-index: 1;
+}
+
+/* Ensure direct children sit above the hatch overlay */
+body > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Glass cards */
+.card, .panel, .box, fieldset {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-radius: 20px !important;
+}
+
+/* Lime Buttons */
+.btn-primary, button.primary, .btn-start, #btnStart, #btnConsentNext, #btnProceed {
+  background: #c8f542 !important;
+  color: #0a2a12 !important;
+  font-weight: 700 !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 0 20px rgba(200, 245, 66, 0.25) !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-primary:hover, button.primary:hover, .btn-start:hover {
+  background: #b5e332 !important;
+  transform: scale(1.02) !important;
+}
+
+/* Ghost Buttons */
+.btn-ghost, button.secondary, .btn-secondary {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: var(--fg) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 9999px !important;
+}
+
+.btn-ghost:hover, button.secondary:hover {
+  background: rgba(255, 255, 255, 0.10) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  transform: scale(1.02) !important;
+}
+
+/* Form inputs */
+input[type="text"], input[type="tel"], input[type="number"], select, textarea {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: var(--fg) !important;
+  border-radius: 12px !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #c8f542 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(200, 245, 66, 0.3) !important;
+}
