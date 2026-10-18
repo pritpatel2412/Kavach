@@ -123,24 +123,11 @@ def db() -> Iterator[sqlite3.Connection]:
 
 
 def init_db() -> None:
-    with db() as con:
-        con.executescript(SCHEMA)
-        # Safe column migrations for existing SQLite databases
-        for alter in [
-            "ALTER TABLE guardians ADD COLUMN token TEXT",
-            "ALTER TABLE guardians ADD COLUMN token_hash TEXT",
-            "ALTER TABLE elders ADD COLUMN phone TEXT",
-            "ALTER TABLE sessions ADD COLUMN last_heartbeat TEXT",
-            "ALTER TABLE events ADD COLUMN reason_en TEXT",
-            "ALTER TABLE events ADD COLUMN reason_hi TEXT",
-            "ALTER TABLE alerts ADD COLUMN action_token TEXT",
-            "ALTER TABLE sessions ADD COLUMN offline_alert_sent INTEGER DEFAULT 0",
-        ]:
-            try:
-                con.execute(alter)
-            except sqlite3.OperationalError:
-                pass  # column already exists
-    log.info("sqlite ready at %s", db_path())
+    from .migrations import run_migrations
+    target = db_path()
+    run_migrations(target)
+    log.info("sqlite ready and migrated at %s", target)
+
 
 
 def purge_old_events(days: int = 7, now: datetime | None = None) -> int:

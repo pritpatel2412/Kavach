@@ -35,11 +35,38 @@ class Settings:
     llm_provider: str
     llm_api_key: str
     max_stt_minutes_per_day: float
+    # Brand single source of truth
+    brand_name: str
+    brand_domain: str
+    ticket_prefix: str
+    # Admin settings
+    admin_enabled: bool
+    admin_allowed_emails: tuple[str, ...]
+    admin_origin: str
+    secret_key: str
+    # Email settings
+    email_mode: str
+    smtp_host: str
+    smtp_port: int
+    smtp_user: str
+    smtp_pass: str
+    smtp_starttls: bool
+    from_name: str
+    from_email: str
+    reply_to: str
+    email_rate_per_min: int
+    email_daily_cap: int
 
 
 def get_settings() -> Settings:
     # Note on Gnani auth (S3-E): Gnani Prisma and Timbre use 'X-API-Key-ID' exclusively (via GNANI_API_KEY).
     # There is no GNANI_TOKEN in official docs (verified 13 Oct 2026 docs.gnani.ai).
+    allowed_raw = os.getenv("ADMIN_ALLOWED_EMAILS", "")
+    allowed_list = tuple(e.strip().lower() for e in allowed_raw.split(",") if e.strip())
+
+    brand_name = os.getenv("BRAND_NAME", "Kavach").strip()
+    brand_domain = os.getenv("BRAND_DOMAIN", "kavach.ai").strip()
+
     return Settings(
         gnani_api_key=os.getenv("GNANI_API_KEY", ""),
         mock_stt=_bool("KAVACH_MOCK_STT", False),
@@ -61,4 +88,23 @@ def get_settings() -> Settings:
         llm_provider=os.getenv("LLM_PROVIDER", "").strip(),
         llm_api_key=os.getenv("LLM_API_KEY", ""),
         max_stt_minutes_per_day=float(os.getenv("MAX_STT_MINUTES_PER_DAY", "30.0")),
+        brand_name=brand_name,
+        brand_domain=brand_domain,
+        ticket_prefix=os.getenv("TICKET_PREFIX", "KAV").strip().upper(),
+        admin_enabled=_bool("ADMIN_ENABLED", True),  # default True for local/dev/test; in prod deploy explicitly set
+        admin_allowed_emails=allowed_list,
+        admin_origin=os.getenv("ADMIN_ORIGIN", "http://localhost:3002").rstrip("/"),
+        secret_key=os.getenv("KAVACH_SECRET", "kavach_secret_key_2026_non_default"),
+        email_mode=os.getenv("EMAIL_MODE", "console").strip().lower(),
+        smtp_host=os.getenv("SMTP_HOST", "localhost"),
+        smtp_port=int(os.getenv("SMTP_PORT", "1025")),
+        smtp_user=os.getenv("SMTP_USER", ""),
+        smtp_pass=os.getenv("SMTP_PASS", ""),
+        smtp_starttls=_bool("SMTP_STARTTLS", False),
+        from_name=os.getenv("FROM_NAME", f"{brand_name} Security"),
+        from_email=os.getenv("FROM_EMAIL", f"notifications@{brand_domain}"),
+        reply_to=os.getenv("REPLY_TO", f"support@{brand_domain}"),
+        email_rate_per_min=int(os.getenv("EMAIL_RATE_PER_MIN", "60")),
+        email_daily_cap=int(os.getenv("EMAIL_DAILY_CAP", "1000")),
     )
+

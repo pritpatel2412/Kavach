@@ -12,6 +12,7 @@ from starlette.requests import Request
 from . import db
 from .config import get_settings
 from .routes import router as core_router
+from .routes_admin import admin_router
 from .routes_voice import router as voice_router
 from .session import SessionRunner
 
@@ -36,9 +37,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Kavach API", version="0.3.0", lifespan=lifespan)
 
-# S3-F: Locked CORS origins
+# S3-F: Locked CORS origins (includes frontend origins and admin origin)
 _s = get_settings()
-_allowed = list({_s.public_url, "http://localhost:8000", "http://127.0.0.1:8000"})
+_allowed = list({
+    _s.public_url,
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    _s.admin_origin,
+    "http://localhost:3002",
+    "http://127.0.0.1:3002",
+    "http://localhost:3001",
+    "http://localhost:3000",
+})
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_allowed,
@@ -50,6 +60,8 @@ app.add_middleware(SanitizedAccessLogMiddleware)
 
 app.include_router(core_router)
 app.include_router(voice_router)
+app.include_router(admin_router)
+
 
 
 @app.get("/health")
