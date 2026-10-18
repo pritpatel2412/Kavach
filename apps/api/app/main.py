@@ -14,7 +14,9 @@ from .config import get_settings
 from .routes import router as core_router
 from .routes_admin import admin_router
 from .routes_voice import router as voice_router
+from .routes_waitlist import admin_waitlist_router, public_waitlist_router
 from .session import SessionRunner
+
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("kavach")
@@ -61,6 +63,9 @@ app.add_middleware(SanitizedAccessLogMiddleware)
 app.include_router(core_router)
 app.include_router(voice_router)
 app.include_router(admin_router)
+app.include_router(public_waitlist_router)
+app.include_router(admin_waitlist_router)
+
 
 
 

@@ -30,8 +30,9 @@ ROLE_PERMISSIONS = {
         "view_telemetry", "view_tickets", "manage_tickets", "view_coupons",
         "manage_coupons", "adjust_credits", "export_data", "bulk_email",
         "manage_users", "manage_flags", "view_audit", "verify_audit",
-        "view_households", "manage_devices", "view_email", "manage_waitlist"
+        "view_households", "manage_devices", "view_email", "view_waitlist", "manage_waitlist"
     },
+
     "support_agent": {
         "view_telemetry", "view_tickets", "manage_tickets", "view_coupons",
         "view_households", "view_audit", "view_waitlist"
@@ -40,6 +41,26 @@ ROLE_PERMISSIONS = {
         "view_telemetry", "view_tickets", "view_coupons", "view_households", "view_audit"
     }
 }
+
+
+def check_admin_security(request: Request, response: Response) -> None:
+    """Enforce X-Robots-Tag: noindex and admin-enabled gate on all /admin-api paths."""
+    s = get_settings()
+    if not s.admin_enabled:
+        raise HTTPException(status_code=404, detail="Admin API is disabled.")
+
+    # Check origin for cross-origin admin requests
+    origin = request.headers.get("origin")
+    if origin:
+        allowed = {s.admin_origin, "http://localhost:3002", "http://127.0.0.1:3002", "http://localhost:3001"}
+        if origin not in allowed:
+            log.warning("Admin API cross-origin request rejected from %s", origin)
+            raise HTTPException(status_code=403, detail="Cross-origin admin requests rejected.")
+
+    response.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+
 
 
 def _now_iso() -> str:

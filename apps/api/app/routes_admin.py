@@ -7,30 +7,13 @@ from fastapi import APIRouter, Cookie, Depends, Header, HTTPException, Request, 
 from pydantic import BaseModel, Field
 
 from . import admin_auth, audit
+from .admin_auth import check_admin_security
 from .config import get_settings
 
 log = logging.getLogger("kavach.routes_admin")
 
-def check_admin_security(request: Request, response: Response) -> None:
-    """Enforce X-Robots-Tag: noindex and admin-enabled gate on all /admin-api paths."""
-    s = get_settings()
-    if not s.admin_enabled:
-        raise HTTPException(status_code=404, detail="Admin API is disabled.")
-
-    # Check origin for cross-origin admin requests
-    origin = request.headers.get("origin")
-    if origin:
-        allowed = {s.admin_origin, "http://localhost:3002", "http://127.0.0.1:3002", "http://localhost:3001"}
-        if origin not in allowed:
-            log.warning("Admin API cross-origin request rejected from %s", origin)
-            raise HTTPException(status_code=403, detail="Cross-origin admin requests rejected.")
-
-    response.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-
-
 admin_router = APIRouter(prefix="/admin-api", dependencies=[Depends(check_admin_security)])
+
 
 
 class MagicLinkIn(BaseModel):
