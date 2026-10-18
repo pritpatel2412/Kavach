@@ -205,3 +205,187 @@ def post_reveal_pii(
         "authorized": True,
         "message": f"PII reveal authorization granted for {body.entity_type}:{body.entity_id}. Reason audited.",
     }
+
+
+# --- Email Subsystem Endpoints ---
+
+class TestSendIn(BaseModel):
+    template: str = "waitlist_welcome"
+    locale: str = "en"
+
+
+class AddSuppressionIn(BaseModel):
+    email: str
+    reason: str = "manual"
+
+
+@admin_router.get("/email/outbox")
+def get_email_outbox(
+    status: str | None = None,
+    recipient: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
+    session: dict = Depends(admin_auth.require_permission("view_email")),
+):
+    from . import db
+    clauses = []
+    params: list[Any] = []
+    if status:
+        clauses.append("status = ?")
+        params.append(status)
+    if recipient:
+        clauses.append("recipient LIKE ?")
+        params.append(f"%{recipient.strip().lower()}%")
+
+    where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+    query = f"""
+        SELECT id, recipient, template, locale, subject, status, attempts,
+               next_attempt_at, error_message, message_id, campaign_id, ticket_id, created_at, sent_at
+        FROM email_outbox {where}
+        ORDER BY created_at DESC LIMIT ? OFFSET ?;
+    """
+    params.extend([limit, offset])
+
+    with db.db() as conn:
+        cursor = conn.execute(query, params)
+        rows = cursor.fetchall()
+
+    return {
+        "emails": [
+            {
+                "id": r[0],
+                "recipient": r[1],
+                "template": r[2],
+                "locale": r[3],
+                "subject": r[4],
+                "status": r[5],
+                "attempts": r[6],
+                "next_attempt_at": r[7],
+                "error_message": r[8],
+                "message_id": r[9],
+                "campaign_id": r[10],
+                "ticket_id": r[11],
+                "created_at": r[12],
+                "sent_at": r[13],
+            }
+            for r in rows
+        ]
+    }
+
+
+@admin_router.post("/email/outbox/{email_id}/retry")
+def post_retry_email(
+    email_id: str,
+    session: dict = Depends(admin_auth.require_permission("view_email")),
+):
+    from datetime import datetime, timezone
+    from . import db
+    now_iso = datetime.now(timezone.utc).isoformat()
+    with db.db() as conn:
+        count = conn.execute(
+            """
+            UPDATE email_outbox
+            SET status = 'queued', attempts = 0, next_attempt_at = ?, error_message = NULL
+            WHERE id = ?;
+            """,
+            (now_iso, email_id),
+        ).rowcount
+    if not count:
+        raise HTTPException(status_code=404, detail="Email record not found.")
+    return {"ok": True, "message": f"Email {email_id} reset to queued for immediate retry."}
+
+
+@admin_router.get("/email/outbox/{email_id}/preview")
+def get_email_preview(
+    email_id: str,
+    session: dict = Depends(admin_auth.require_permission("view_email")),
+):
+    from . import db
+    with db.db() as conn:
+        cursor = conn.execute(
+            "SELECT subject, html_body, text_body, recipient, template, locale, status FROM email_outbox WHERE id = ?;",
+            (email_id,),
+        )
+        row = cursor.fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="Email record not found.")
+
+    return {
+        "subject": row[0],
+        "html_body": row[1],
+        "text_body": row[2],
+        "recipient": row[3],
+        "template": row[4],
+        "locale": row[5],
+        "status": row[6],
+    }
+
+
+@admin_router.post("/email/test-send")
+def post_test_send(
+    body: TestSendIn,
+    session: dict = Depends(admin_auth.require_permission("view_email")),
+):
+    from .email.sender import enqueue_email, process_outbox_queue
+    recipient = session["email"]
+    eid = enqueue_email(
+        recipient=recipient,
+        template=body.template,
+        locale=body.locale,
+        variables={"name": "Administrator", "rank": 1, "invite_code": "TEST-BETA-2026", "coupon_code": "COMMUNITY50", "expires_in_minutes": 10, "login_link": "http://localhost:3002/auth/verify?token=test"},
+        is_marketing=False,
+    )
+    process_outbox_queue(max_batch=1)
+    return {"ok": True, "email_id": eid, "recipient": recipient, "message": f"Test email enqueued and processed for {recipient}."}
+
+
+@admin_router.get("/email/templates")
+def get_templates(session: dict = Depends(admin_auth.require_permission("view_email"))):
+    from .email.templates import TEMPLATES
+    summary = []
+    for name, locales in TEMPLATES.items():
+        summary.append({
+            "name": name,
+            "available_locales": list(locales.keys()),
+            "sample_subject": locales.get("en", {}).get("subject", ""),
+        })
+    return {"templates": summary}
+
+
+@admin_router.get("/email/suppression")
+def get_suppression_list(
+    limit: int = 100,
+    offset: int = 0,
+    session: dict = Depends(admin_auth.require_permission("view_email")),
+):
+    from .email.suppression import list_suppression_list
+    return {"suppression_list": list_suppression_list(limit=limit, offset=offset)}
+
+
+@admin_router.post("/email/suppression")
+def post_suppression(
+    body: AddSuppressionIn,
+    session: dict = Depends(admin_auth.require_permission("view_email")),
+):
+    from .email.suppression import add_to_suppression_list
+    add_to_suppression_list(body.email, reason=body.reason)
+    return {"ok": True, "message": f"Address {body.email} added to suppression list."}
+
+
+@admin_router.delete("/email/suppression/{email}")
+def delete_suppression(
+    email: str,
+    session: dict = Depends(admin_auth.require_permission("view_email")),
+):
+    from .email.suppression import remove_from_suppression_list
+    removed = remove_from_suppression_list(email)
+    if not removed:
+        raise HTTPException(status_code=404, detail="Email not found in suppression list.")
+    return {"ok": True, "message": f"Address {email} removed from suppression list."}
+
+
+@admin_router.get("/email/domain-auth")
+def get_domain_auth(session: dict = Depends(admin_auth.require_permission("view_email"))):
+    from .email.dns_check import get_domain_dns_checklist
+    return get_domain_dns_checklist()
+
