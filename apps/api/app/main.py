@@ -16,6 +16,7 @@ from .routes_admin import admin_router
 from .routes_analytics import admin_analytics_router
 from .routes_coupons import admin_coupons_router, public_coupons_router
 from .routes_export import admin_export_router
+from .routes_modules import admin_modules_router, public_content_router
 from .routes_support import admin_kb_router, admin_support_router, public_support_router
 from .routes_voice import router as voice_router
 from .routes_waitlist import admin_waitlist_router, public_waitlist_router
@@ -77,6 +78,8 @@ app.include_router(public_coupons_router)
 app.include_router(admin_coupons_router)
 app.include_router(admin_analytics_router)
 app.include_router(admin_export_router)
+app.include_router(admin_modules_router)
+app.include_router(public_content_router)
 
 
 
