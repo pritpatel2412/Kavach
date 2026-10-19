@@ -103,7 +103,7 @@ def db_path() -> Path:
 
 
 def connect() -> sqlite3.Connection:
-    con = sqlite3.connect(str(db_path()), check_same_thread=False)
+    con = sqlite3.connect(str(db_path()), check_same_thread=False, timeout=30.0)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
     return con

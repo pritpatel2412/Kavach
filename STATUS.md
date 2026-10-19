@@ -13,10 +13,71 @@
 | Sprint 2 Hardening & Scale | 16-17 Oct | **Done** (Bearer auth isolation, device health, live intercom, 68 eval fixtures, camera polish) | A + B |
 | Sprint 3 Live-ready, Honest, Camera-ready | 17 Oct | **Done** (credit caps, silence gate, ambient + blind eval, real audio runner, Windows run.ps1, token hashing, demo kit, claims audit) | A + B |
 | Sprint F SaaS Frontend & CoinCompass Theme | 18 Oct | **Done** (packages/ui, packages/api-contract, apps/site, apps/app, apps/admin, elder kiosk, 10/10 theme audits) | A + B |
+| Sprint A Admin Console & Operations Backbone | 18-19 Oct | **Done** (Phases A0-A9: passwordless TOTP, audit hash chain, SMTP outbox, waitlist CRM, support inbox, coupons 60% cap, visual analytics, export center, 137 tests green) | A + B |
 | 5 Launch (nominated post) | 28 Oct | Scaffolded / In preparation | A + B |
 | 6 Eval + hardening (+ optional LLM layer) | 28 Oct-2 Nov | S1 LLM second-opinion layer scaffolded + tested; eval harness active | B / A |
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
 | Buffer | 9-10 Nov | | |
+
+## Done in Sprint A ("Admin console: audit first, then build end to end")
+- **A0. Comprehensive Audit & Architecture Plan:**
+  - Audited full codebase and authored `docs/ADMIN_AUDIT.md` (Exists/Partial/Missing table and reuse decisions).
+  - Authored `docs/ADMIN_PLAN.md` establishing single unified architecture, ANSI SQL migrations, and strict origin isolation.
+- **A1. Foundations & Passwordless Admin Auth:**
+  - Dynamic brand configuration in `apps/api/app/config.py` (`BRAND_NAME`, `BRAND_DOMAIN`, `TICKET_PREFIX`).
+  - Zero passwords: Single-use 10-minute email magic links + mandatory RFC 6238 TOTP (`pyotp`).
+  - Admin CLI bootstrap: `python -m app.admin_cli bootstrap-totp <email>`.
+  - Cryptographic append-only hash-chained audit log in `apps/api/app/audit.py` with PII masking and anti-tamper verification.
+  - Dedicated router mounted at `/admin-api` with separate session cookies, origin validation, and `ADMIN_ENABLED=1` gate.
+- **A2. Email Subsystem (SMTP & Outbox):**
+  - Outbox pattern in `apps/api/app/email/` with exponential retry backoff, daily volume cap (`EMAIL_DAILY_CAP`), rate limiter (`EMAIL_RATE_PER_MIN`), and local Mailpit / aiosmtpd support.
+  - Localized templates in English, Hindi, and Gujarati with strict CR/LF header injection prevention and RFC 8058 one-click unsubscribe headers.
+  - Domain DNS authentication validator checking SPF, DKIM, DMARC, and rDNS.
+- **A3. Waitlist End-to-End CRM:**
+  - Public `POST /api/waitlist` with honeypot bot defense, per-IP rate limits, double opt-in verification links, and unsubscribe portal.
+  - Admin Waitlist CRM with multi-attribute filtering, PII masking, single-use invite code generator, and throttled broadcast campaign manager.
+- **A4. Support Ticket System & Knowledge Base:**
+  - Public intake `/api/support` with automated P0 Scam Emergency protocol dispatching national 1930 / cybercrime.gov.in guidance.
+  - Passwordless customer magic portal at `/api/support/t/{token}` with public replies vs internal team notes, SLA countdown timers, canned macros, and CSAT rating collection.
+  - Public knowledge base articles at `/api/help/articles`.
+- **A5. Coupons & Referral Engine:**
+  - Integer paise price math with 18% GST calculation, strict 60% discount ceiling, and 15-minute atomic reservation holds preventing double-spending.
+  - Referral codes granting automated bonus minutes upon referee qualifying payment.
+  - Payment boundary with `PaymentProvider` interface, `FakePaymentProvider` for full test lifecycles, and `RazorpayProvider` webhook signature skeleton.
+- **A6. Visual Analytics & Real Rollups:**
+  - Real-time telemetry, period-over-period sparklines, 5-stage conversion funnel, and cost/margin breakdown at `/admin-api/analytics/*`.
+  - Synthetic data generator `scripts/seed_demo_data.py` (refuses in production via `ENV=production` check; populates waitlist, households, tickets, coupons, and rollups with `is_demo=1`).
+- **A7. Central Data Export Center:**
+  - Multi-format streaming exports: CSV, XLSX (`openpyxl`), JSON, and print-ready HTML report.
+  - Hardened security: Formula injection neutralization (`=`, `+`, `-`, `@`, `\t`, `\r` prefixed with `'`), UTF-8 BOM (`\ufeff`) for Microsoft Excel Indic script display, and step-up TOTP verification for unmasked PII.
+- **A8. Remaining Operations Modules:**
+  - Households & elders (suspend/restore with step-up), tabletop kiosks (heartbeat & revoking), false-alarm review queue with staged dictionary proposals, credit ledger adjustments with 10-minute cooling period, changelog RSS 2.0 XML feed (`/api/changelog/rss`), feature flags, and DPDP 30-day statutory SLA data rights queue.
+- **A9. QA, Hardening & Documentation:**
+  - Authored `docs/ADMIN_RUNBOOK.md`, `docs/EMAIL_DELIVERABILITY.md`, `docs/SUPPORT_PLAYBOOK.md`, and updated `docs/CLAIMS.md` and `docs/ARCHITECTURE.md`.
+  - Deep security test suite in `apps/api/tests/test_admin_security_deep.py` proving SQL injection prevention, XSS neutralization, CORS origin rejection, CSRF token validation, brute-force lockout, and customer portal token IDOR protection.
+  - Next.js Admin UI (`apps/admin`) upgraded with CoinCompass theme, amber ADMIN bar, DEMO DATASET badge, and Ctrl/Cmd+K command palette.
+  - Test suite expanded from 83 to **137 passing tests**, 0 failing (100% offline).
+
+## Latest Numbers
+- **Test Suite (`make test` / `run.ps1 test`):** **137 passing**, 0 failing (100% offline, zero credits consumed)
+- **Evaluation Harness (`eval/run_eval.py` - Synthetic Text Tests):**
+  - **Clean (WER 0%):** Scam Recall: **36/36 (100.0%)** [90.4%, 100.0%] · Benign False Alarms: **0/32 (0.0%)** [0.0%, 10.7%]
+  - **WER 10%:** Scam Recall: **36/37 (97.3%)** [86.2%, 99.5%] · Benign False Alarms: **1/33 (3.0%)** [0.5%, 15.3%]
+  - **WER 20%:** Scam Recall: **36/37 (97.3%)** [86.2%, 99.5%] · Benign False Alarms: **0/33 (0.0%)** [0.0%, 10.4%]
+  - **WER 30%:** Scam Recall: **27/37 (73.0%)** [57.0%, 84.6%] · Benign False Alarms: **1/33 (3.0%)** [0.5%, 15.3%]
+  - **Unseen Test Split (WER 20%):** **19/19 (100.0%)** [83.2%, 100.0%]
+- **Ambient False Alarm Benchmark (400 segments):**
+  - **0 / 400 false alarms** (0.0 alerts / 1,000 segments, 95% Wilson CI: [0.0, 9.5] / 1,000)
+- **Independent Blind Evaluation (`eval/run_blind.py` - Unseen Scripts):**
+  - **Scam Recall (L2+):** **2 / 10 (20.0%)** [5.7%, 51.0%]
+  - **Benign False Alarms:** **0 / 10 (0.0%)** [0.0%, 27.8%]
+- **Credits Spent:** 0 / 5,000 (100% budget intact)
+
+## Next 3 Actions
+1. Execute guided live check with real key: `python scripts/live_check.py --yes` (consumes ~2.5 credits).
+2. Record credit consumption row in `docs/CREDITS_LOG.md`.
+3. Record 60-second vertical video demo using `apps/web/demo.html` for competition submission.
+
 
 ## Done in Sprint 3 ("Live-ready, honest, camera-ready")
 - **S3-A. Listening Modes & Credit Guard:**

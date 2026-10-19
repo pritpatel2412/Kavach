@@ -1,0 +1,39 @@
+# Gitleaks Configuration for Kavach
+title = "Kavach Secret Detection Rules"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Global Allowlist for synthetic mock fixtures and tests"
+paths = [
+  '''apps/api/tests/.*''',
+  '''eval/.*''',
+  '''fixtures/.*'''
+]
+regexes = [
+  '''mock_.*''',
+  '''test_.*''',
+  '''dummy_.*'''
+]
+
+[[rules]]
+id = "gnani-api-key"
+description = "Detected potential Gnani AI API Key"
+regex = '''(?i)(gnani[_-]?api[_-]?key|x[_-]api[_-]key[_-]id)\s*[:=]\s*['"][a-zA-Z0-9_\-]{24,}['"]'''
+secretGroup = 0
+keywords = ["gnani", "api_key", "x-api-key-id"]
+
+[[rules]]
+id = "razorpay-secret"
+description = "Detected potential Razorpay Key Secret"
+regex = '''(?i)(rzp_live_[a-zA-Z0-9]{14,}|razorpay[_-]?secret)\s*[:=]\s*['"][a-zA-Z0-9_\-]{16,}['"]'''
+secretGroup = 0
+keywords = ["rzp_live", "razorpay"]
+
+[[rules]]
+id = "smtp-password"
+description = "Detected potential SMTP Password"
+regex = '''(?i)(smtp[_-]?pass(word)?)\s*[:=]\s*['"][^'"]{8,}['"]'''
+secretGroup = 0
+keywords = ["smtp_pass", "smtp_password"]

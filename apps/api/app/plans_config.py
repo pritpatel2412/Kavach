@@ -206,6 +206,10 @@ def reserve_coupon(
     expires_iso = (now + timedelta(minutes=hold_minutes)).isoformat()
 
     with db.db() as conn:
+        try:
+            conn.execute("BEGIN IMMEDIATE;")
+        except Exception:
+            pass
         # Check coupon existence and caps
         cursor = conn.execute(
             "SELECT max_redemptions, current_redemptions, max_per_user, is_active, expires_at FROM coupons WHERE code = ?;",

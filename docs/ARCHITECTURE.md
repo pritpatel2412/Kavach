@@ -80,3 +80,43 @@ Server -> Client JSON Events:
 - `sessions`: `id`, `elder_id`, `started_at`, `ended_at`, `max_score`, `max_level`, `synthetic`, `feedback`, `last_heartbeat`
 - `events`: `id`, `session_id`, `ts`, `segment_index`, `text_excerpt` (<=160 chars), `stages`, `score`, `level`, `reason_en`, `reason_hi`
 - `alerts`: `id`, `session_id`, `ts`, `level`, `delivered`, `action_token`
+
+---
+
+## SaaS & Admin Architecture (Sprint A)
+
+```
+[Public Marketing Site & Waitlist]    [Admin Console (Next.js 14)]      [Customer Support Portal]
+Origin: http://localhost:3000          Origin: http://localhost:3002     Origin: http://localhost:8000
+(or https://<BRAND_DOMAIN>)           (or https://admin.<BRAND_DOMAIN>) (/support/t/<token>)
+             |                                    |                                    |
+             v                                    v                                    v
+       POST /api/waitlist                 /admin-api/*                      GET/POST /api/support/*
+       POST /api/coupons/validate         (CORS restricted to admin origin; (Signed magic link;
+       POST /api/support                   Requires ADMIN_ENABLED=1;         IDOR protected)
+             |                             Cookie: kavach_admin_session;       |
+             |                             Mandatory TOTP + Step-Up)           |
+             \------------------------------------+----------------------------/
+                                                  |
+                                                  v
+                                      [FastAPI Application Gateway]
+                                                  |
+                         +------------------------+------------------------+
+                         |                        |                        |
+                         v                        v                        v
+                 [SQLite Database]       [Email Outbox Queue]     [Export & Audit Engine]
+               (Numbered Migrations:     (Console / Local Mailpit (Anti-Formula Injection;
+                001 through 011;          aiosmtpd / SMTP;         UTF-8 BOM Indic text;
+                WAL mode + FKs)           Backoff + Suppression)   SHA-256 Hash Chain)
+```
+
+### Admin Endpoints (`/admin-api`)
+- `POST /admin-api/auth/request-link` & `POST /admin-api/auth/verify-totp`: Passwordless auth.
+- `GET/POST /admin-api/waitlist`: Waitlist CRM, single-use invite generator, campaign composer.
+- `GET/POST /admin-api/tickets`: Support inbox, SLA clocks, internal notes, macros, merge.
+- `GET/POST /admin-api/coupons`: Coupon promotions, 60% cap enforcement, simulation sandbox.
+- `GET/POST /admin-api/export`: CSV, XLSX, JSON, HTML reports with formula injection neutralization.
+- `GET/POST /admin-api/email`: Outbox queue, template renderer (en/hi/gu), DNS authentication check.
+- `GET /admin-api/analytics/*`: Real-time telemetry, conversion funnel, cost/margin breakdown.
+- `GET /admin-api/audit/logs` & `POST /admin-api/audit/verify-chain`: Immutable SHA-256 chained audit.
+
