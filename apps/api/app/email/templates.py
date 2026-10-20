@@ -60,6 +60,48 @@ TEMPLATES: dict[str, dict[str, dict[str, str]]] = {
             "text": "Your {brand_name} Admin Magic Link: {login_link}\n\nExpires in {expires_in_minutes} minutes. Hardware TOTP required upon verification.",
         }
     },
+    "guardian_login_link": {
+        "en": {
+            "subject": "Your {brand_name} Guardian Login Link",
+            "html": """
+              <h2>Guardian Portal Login</h2>
+              <p>Hello,</p>
+              <p>Click the secure button below to sign in to your {brand_name} Guardian account and monitor your family's devices.</p>
+              <div style="text-align: center;">
+                <a href="{login_link}" class="btn">Sign In to Kavach Guardian</a>
+              </div>
+              <p style="font-size: 13px; color: #78716c;">This single-use link is valid for {expires_in_minutes} minutes.</p>
+              <p style="font-size: 12px; color: #a8a29e;">If you did not request this login link, you can safely ignore this email.</p>
+            """,
+            "text": "Your {brand_name} Guardian Login Link: {login_link}\n\nValid for {expires_in_minutes} minutes.",
+        },
+        "hi": {
+            "subject": "आपका {brand_name} गार्जियन लॉगिन लिंक",
+            "html": """
+              <h2>गार्जियन पोर्टल लॉगिन</h2>
+              <p>नमस्ते,</p>
+              <p>अपने परिवार के सुरक्षा उपकरणों की निगरानी करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
+              <div style="text-align: center;">
+                <a href="{login_link}" class="btn">गार्जियन पोर्टल में प्रवेश करें</a>
+              </div>
+              <p style="font-size: 13px; color: #78716c;">यह लिंक {expires_in_minutes} मिनट के लिए मान्य है।</p>
+            """,
+            "text": "आपका {brand_name} गार्जियन लॉगिन लिंक: {login_link}\n\nवैधता: {expires_in_minutes} मिनट।",
+        },
+        "gu": {
+            "subject": "તમારું {brand_name} ગાર્ડિયન લૉગિન લિંક",
+            "html": """
+              <h2>ગાર્ડિયન પોર્ટલ લૉગિન</h2>
+              <p>નમસ્તે,</p>
+              <p>તમારા પરિવારના સુરક્ષા સાધનોની દેખરેખ રાખવા માટે નીચે આપેલા બટન પર ક્લિક કરો.</p>
+              <div style="text-align: center;">
+                <a href="{login_link}" class="btn">ગાર્ડિયન પોર્ટલમાં પ્રવેશ કરો</a>
+              </div>
+              <p style="font-size: 13px; color: #78716c;">આ લિંક {expires_in_minutes} મિનિટ માટે માન્ય છે.</p>
+            """,
+            "text": "તમારું {brand_name} ગાર્ડિયન લૉગિન લિંક: {login_link}\n\nમાન્યતા: {expires_in_minutes} મિનિટ.",
+        }
+    },
     "waitlist_confirm": {
         "en": {
             "subject": "Confirm your {brand_name} early access waitlist spot",

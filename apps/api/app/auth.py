@@ -1,19 +1,27 @@
 """Guardian token authentication dependency."""
 from __future__ import annotations
 
-from fastapi import Header, HTTPException
+from fastapi import Cookie, Header, HTTPException
 
 from . import db
 
 
-def require_guardian(authorization: str | None = Header(None)) -> dict:
-    if not authorization or not authorization.startswith("Bearer "):
+def require_guardian(
+    authorization: str | None = Header(None),
+    kavach_guardian_session: str | None = Cookie(None),
+) -> dict:
+    raw_token = None
+    if authorization and authorization.startswith("Bearer "):
+        raw_token = authorization.split("Bearer ", 1)[1].strip()
+    elif kavach_guardian_session:
+        raw_token = kavach_guardian_session.strip()
+
+    if not raw_token:
         raise HTTPException(
             status_code=401,
-            detail={"error": "unauthorized", "message": "Authorization: Bearer <token> required"},
+            detail={"error": "unauthorized", "message": "Authorization: Bearer <token> or guardian session required"},
         )
-    token = authorization.split("Bearer ", 1)[1].strip()
-    guardian = db.get_guardian_by_token(token)
+    guardian = db.get_guardian_by_token(raw_token)
     if not guardian:
         raise HTTPException(
             status_code=401,

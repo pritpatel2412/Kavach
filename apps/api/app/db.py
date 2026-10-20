@@ -166,8 +166,26 @@ def get_guardian(gid: str) -> dict[str, Any] | None:
 def get_guardian_by_token(token: str) -> dict[str, Any] | None:
     if not token:
         return None
-    th = hashlib.sha256(token.encode("utf-8")).hexdigest()
     with db() as con:
+        # Check active session in guardian_sessions table first
+        now = datetime.now(timezone.utc).isoformat()
+        try:
+            s_row = con.execute(
+                """
+                SELECT g.* FROM guardian_sessions gs
+                JOIN guardians g ON gs.guardian_id = g.id
+                WHERE gs.session_id = ? AND gs.revoked = 0 AND gs.expires_at > ?
+                """,
+                (token, now),
+            ).fetchone()
+            if s_row:
+                con.execute("UPDATE guardian_sessions SET last_activity = ? WHERE session_id = ?", (now, token))
+                return _row(s_row)
+        except Exception:
+            pass
+
+        # Check legacy token or token_hash in guardians table
+        th = hashlib.sha256(token.encode("utf-8")).hexdigest()
         return _row(con.execute("SELECT * FROM guardians WHERE token_hash=? OR token=?", (th, token)).fetchone())
 
 
