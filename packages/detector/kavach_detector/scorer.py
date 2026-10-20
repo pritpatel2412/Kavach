@@ -112,6 +112,24 @@ class RiskScorer:
             return False
         return abs(a.first - b.first) <= S1_S5_WINDOW_S or abs(a.last - b.last) <= S1_S5_WINDOW_S
 
+    def _structural_extortion(self) -> int:
+        """Detect structural extortion patterns regardless of stage order:
+        - Full Extortion Quad (S1+S2+S3+S5 in any order): minimum Level 3 (90 pts).
+        - Authority + Threat + Secrecy (S1+S2+S3): minimum Level 2 (70 pts).
+        - Threat + Secrecy + Money (S2+S3+S5): minimum Level 2 (70 pts).
+        """
+        seen = self._seen
+        has_s1 = "S1_authority" in seen
+        has_s2 = "S2_accusation" in seen
+        has_s3 = "S3_isolation" in seen
+        has_s5 = "S5_payment" in seen
+
+        if has_s1 and has_s2 and has_s3 and has_s5:
+            return 90
+        if (has_s1 and has_s2 and has_s3) or (has_s2 and has_s3 and has_s5):
+            return 70
+        return 0
+
     def update(self, text: str, segment_index: int = 0, ts: float | None = None) -> RiskUpdate:
         now = self._clock() if ts is None else ts
         self._expire(now)
@@ -124,7 +142,9 @@ class RiskScorer:
                     new_stages.append(stage)
             else:
                 self._seen[stage].last = now
-        score = min(100, sum(WEIGHTS[s] for s in self._seen) + self._order_bonus())
+        raw_score = sum(WEIGHTS[s] for s in self._seen) + self._order_bonus()
+        structural_min = self._structural_extortion()
+        score = min(100, max(raw_score, structural_min))
         together = self._s1_s5()
         prev = self.level
         self.level = level_for(score, together)

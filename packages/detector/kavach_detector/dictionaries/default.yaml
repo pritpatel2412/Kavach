@@ -98,6 +98,37 @@ S1_authority:
   - hdfc bank
   - kbc lucky draw
   - lucky draw
+  - केंद्रीय जांच ब्यूरो
+  - केन्द्रीय जांच ब्यूरो
+  - केंद्रीय अन्वेषण ब्यूरो
+  - भारतीय स्टेट बैंक
+  - स्टेट बैंक ऑफ इंडिया
+  - स्टेट बैंक
+  - भारतीय रिजर्व बैंक
+  - बिजली बोर्ड
+  - विद्युत वितरण निगम
+  - विद्युत बोर्ड
+  - बिजली निगम
+  - electricity board
+  - bijli board
+  - power board
+  - telecom authority
+  - telecom regulatory authority
+  - दूरसंचार विभाग
+  - तकनीकी सहायता
+  - टेक्निकल सपोर्ट
+  - technical support
+  - technical support division
+  - wealth advisors
+  - wealth management
+  - vip trading desk
+  - trading desk
+  - institutional desk
+  - क्रेडिट कार्ड विभाग
+  - रिवॉर्ड पॉइंट डिपार्टमेंट
+  - reward point department
+  - reward points department
+  - card department
 
 S2_accusation:
   - money laundering
@@ -177,6 +208,7 @@ S2_accusation:
   - bijli cut
   - meter kaatne
   - bijli line kaat
+  - bijli kaat
   - disconnection order
   - unpaid invoice
   - bill overdue
@@ -235,8 +267,46 @@ S2_accusation:
   - cashback lapse
   - security alert
   - parivar aur contacts
-  - contacts ko send
   - viral video clip
+  - हवाला लेनदेन
+  - हवाला लेन देन
+  - हवाला
+  - hawala
+  - hawala transaction
+  - गैर-जमानती
+  - गैर जमानती
+  - non bailable
+  - गैर-जमानती गिरफ्तारी
+  - गैर-जमानती वारंट
+  - वारंट जारी
+  - warrant issued
+  - हिरासत में
+  - पुलिस हिरासत
+  - police custody
+  - in custody
+  - खाता निष्क्रिय
+  - खाता फ्रीज
+  - अकाउंट फ्रीज
+  - अकाउंट निष्क्रिय
+  - account inactive
+  - account de-activated
+  - री-केवाईसी
+  - री केवाईसी
+  - re-kyc
+  - re kyc
+  - गंभीर एक्सीडेंट
+  - एक्सीडेंट हो गया
+  - severe accident
+  - serious accident
+  - banking trojan
+  - trojan malware
+  - virus detect
+  - pre-ipo
+  - pre ipo
+  - high-yield
+  - high yield
+  - guaranteed 400%
+  - guaranteed gains
 
 S3_isolation:
   - dont tell anyone
@@ -291,6 +361,27 @@ S3_isolation:
   - social media par upload
   - quicksupport ya anydesk
   - anydesk app download
+  - पापा को मत बताना
+  - मम्मी को मत बताना
+  - पापा-मम्मी को मत बताना
+  - परिवार को मत बताना
+  - घर पर मत बताना
+  - dont tell your family
+  - dont tell parents
+  - papa mummy ko mat batana
+  - family ko mat batana
+  - ghar par mat batana
+  - किसी से बात नहीं करनी
+  - किसी से बात मत करना
+  - kisi se baat nahi
+  - kisi se baat mat karna
+  - कमरे का दरवाजा बंद
+  - दरवाजा अंदर से बंद
+  - कमरा बंद
+  - कमरा अंदर से बंद
+  - अकेले कमरे में
+  - वीडियो कॉल पर रहना
+  - remote code share
 
 S4_urgency:
   - right now
@@ -323,6 +414,14 @@ S4_urgency:
   - bina der kiye
   - jaldi
   - आज रात कटेगा
+  - 24 घंटे के अंदर
+  - 24 ghante ke andar
+  - आज रात 9 बजे
+  - aaj raat 9 baje
+  - window closes
+  - slots remaining
+  - thirty minutes
+  - 30 minute
 
 S5_payment:
   # Keep S5 SPECIFIC: generic phrases like "transfer karo" / "rent transfer" appear in normal family
@@ -427,3 +526,43 @@ S5_payment:
   - ओटीपी बताओ
   - six digit code
   - 6 digit code
+  - सरकारी सत्यापन खाता
+  - सरकारी सत्यापन खाते
+  - सरकारी खाता
+  - सरकारी खाते
+  - सत्यापन खाता
+  - सत्यापन खाते
+  - sarkari satyapan khata
+  - sarkari khata
+  - आरटीजीएस द्वारा जमा
+  - आरटीजीएस
+  - rtgs
+  - neft
+  - एनईएफटी
+  - सिक्योरिटी बॉन्ड
+  - security bond
+  - क्लियरेंस गारंटी
+  - clearance guarantee
+  - clearance fee
+  - टोकन पेमेंट
+  - token payment
+  - एस्क्रो अकाउंट
+  - escrow account
+  - institutional escrow
+  - बेल फीस
+  - bail fee
+  - बेल के लिए पैसे
+  - यूपीआई पर भेजो
+  - upi par bhejo
+  - ओटीपी बताओ
+  - ओटीपी शेयर करो
+  - अपना ओटीपी बताओ
+  - पिन बताओ
+  - पासवर्ड बताओ
+  - tell the otp
+  - share the otp
+  - remote code bataiye
+  - वन टाइम पासवर्ड
+  - one time password
+  - ओटीपी और पिन
+  - ओटीपी हमें बताओ

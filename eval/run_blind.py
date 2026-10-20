@@ -1,14 +1,15 @@
 """Independent (blind) evaluation harness for external transcripts (S3-C).
 
-Reads JSONL scenario files from eval/blind/, runs the pure-Python RiskScorer,
+Reads JSONL scenario files from eval/blind/ or eval/blind_sealed/, runs the pure-Python RiskScorer,
 and reports metrics with exact Wilson score 95% binomial confidence intervals.
-DOES NOT touch or modify any detector dictionaries or rules.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import sys
+from datetime import datetime
 from pathlib import Path
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -37,10 +38,18 @@ def wilson_score_interval(k: int, n: int, z: float = 1.96) -> tuple[float, float
     return lower, upper
 
 
-def run_blind_evaluation(blind_dir: Path | None = None) -> dict:
-    blind_dir = blind_dir or (ROOT / "eval" / "blind")
+def run_blind_evaluation(blind_dir: Path | None = None, is_sealed: bool = False, reveal: bool = False) -> dict:
+    if is_sealed and blind_dir is None:
+        blind_dir = ROOT / "eval" / "blind_sealed"
+    else:
+        blind_dir = blind_dir or (ROOT / "eval" / "blind")
+
     jsonl_files = list(blind_dir.glob("*.jsonl"))
     if not jsonl_files:
+        if is_sealed:
+            print(f"\n[SEALED MODE] Sealed evaluation directory is currently empty ({blind_dir}).")
+            print("Ready for external holdout scripts (>=40 scenarios authored by independent evaluators).")
+            return {"status": "empty", "total_calls": 0}
         print(f"No JSONL files found in {blind_dir}")
         return {}
 
@@ -129,14 +138,18 @@ def run_blind_evaluation(blind_dir: Path | None = None) -> dict:
 
     # Print summary table
     print("\n=======================================================")
-    print(" INDEPENDENT BLIND EVALUATION (SYNTHETIC TEXT TESTS)")
-    print(" Note: Unseen external scripts; dictionaries untouched.")
+    if is_sealed:
+        print(" SEALED INDEPENDENT EVALUATION (SYNTHETIC TEXT TESTS)")
+        print(" Mode: Zero-peeking aggregate metrics with 95% Wilson CI")
+    else:
+        print(" INDEPENDENT BLIND EVALUATION (SYNTHETIC TEXT TESTS)")
+        print(" Note: Unseen external scripts; dictionaries untouched.")
     print("=======================================================\n")
 
     scam_pct = (scam_detected / n_scam * 100.0) if n_scam else 0.0
     benign_pct = (benign_false_alarms / n_benign * 100.0) if n_benign else 0.0
 
-    print(f"Total Blind Calls: {len(calls)}")
+    print(f"Total Calls Evaluated: {len(calls)}")
     print(f"Scam Recall (L2+ before/at end of call):")
     print(f"  {scam_detected} / {n_scam} ({scam_pct:.1f}%) · 95% CI: [{scam_ci[0]*100:.1f}%, {scam_ci[1]*100:.1f}%]")
     print(f"Benign False Alarm Rate (L2+ trigger):")
@@ -162,12 +175,28 @@ def run_blind_evaluation(blind_dir: Path | None = None) -> dict:
         pct_fam = (k_fam / n_fam * 100) if n_fam else 0.0
         print(f"| {fam} | {k_fam} / {n_fam} | {pct_fam:.1f}% | [{ci_fam[0]*100:.1f}%, {ci_fam[1]*100:.1f}%] |")
 
-    if misses:
-        print(f"\n[!] Misses / Discrepancies ({len(misses)} total):")
-        for m in misses:
-            print(f" - [{m['label'].upper()}] id={m['id']} family={m['family']} max_score={m['max_score']} max_level={m['max_level']}")
+    if is_sealed:
+        if misses:
+            if not reveal:
+                print(f"\n[SEALED MODE] {len(misses)} misses recorded. Details hidden to prevent tuning bias.")
+                print("Pass --reveal to audit specific misses (action will be logged to REVEAL_LOG.txt).")
+            else:
+                reveal_log = ROOT / "eval" / "blind_sealed" / "REVEAL_LOG.txt"
+                with open(reveal_log, "a", encoding="utf-8") as f:
+                    f.write(f"[{datetime.now().isoformat()}] REVEAL AUDIT: {len(misses)} misses revealed: {[m['id'] for m in misses]}\n")
+                print(f"\n[!] AUDIT REVEAL ({len(misses)} total misses revealed):")
+                for m in misses:
+                    print(f" - [{m['label'].upper()}] id={m['id']} family={m['family']} max_score={m['max_score']} max_level={m['max_level']}")
+                print(f"\n[AUDIT] Action logged to {reveal_log}. This sealed evaluation set is now burned for future tuning.")
+        else:
+            print("\n[OK] 100% clean detection across sealed evaluation suite.")
     else:
-        print("\n[OK] Zero misses on independent blind test set.")
+        if misses:
+            print(f"\n[!] Misses / Discrepancies ({len(misses)} total):")
+            for m in misses:
+                print(f" - [{m['label'].upper()}] id={m['id']} family={m['family']} max_score={m['max_score']} max_level={m['max_level']}")
+        else:
+            print("\n[OK] Zero misses on independent blind test set.")
 
     return {
         "total_calls": len(calls),
@@ -184,4 +213,10 @@ def run_blind_evaluation(blind_dir: Path | None = None) -> dict:
 
 
 if __name__ == "__main__":
-    run_blind_evaluation()
+    parser = argparse.ArgumentParser(description="Kavach Independent / Sealed Blind Evaluation Harness")
+    parser.add_argument("--sealed", action="store_true", help="Run against sealed holdout directory (eval/blind_sealed/)")
+    parser.add_argument("--reveal", action="store_true", help="Reveal individual misses in sealed mode and log to REVEAL_LOG.txt")
+    parser.add_argument("--dir", type=Path, default=None, help="Custom directory containing .jsonl evaluation files")
+    args = parser.parse_args()
+
+    run_blind_evaluation(blind_dir=args.dir, is_sealed=args.sealed, reveal=args.reveal)

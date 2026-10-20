@@ -4,7 +4,7 @@
 
 Kavach runs on a second device next to a phone on speaker. It streams audio to **Gnani Prisma** (Indian-language STT),
 scores the stages of a "digital arrest" scam script, and speaks a warning with **Gnani Timbre** (optionally a *consented*
-cloned family voice via voice cloning), while alerting a guardian via Telegram. Calls used for testing are synthetic or role-played.
+cloned family voice via voice cloning), while alerting a guardian via Telegram. All evaluation metrics derive from synthetic text tests. Kavach does NOT intercept phone calls; it listens acoustically over speakerphone on a second device.
 
 ## Demo Quick Start (Zero Credits, Fully Offline)
 

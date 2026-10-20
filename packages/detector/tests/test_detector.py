@@ -76,3 +76,32 @@ def test_benign_rent_transfer_with_police_mention():
     # Regression: fuzzy match once turned "transfer kar dungi" into S5 and, with "police", forced L3.
     sc, _ = run(["Doctor ne kaha police verification ke baad form bharna", "Main rent transfer kar dungi shaam ko"])
     assert sc.max_level == 0
+
+
+def test_structural_extortion_rules():
+    # S1 (authority) + S2 (threat) + S3 (secrecy) triggers L2 even without S4/S5
+    sc, ups = run([
+        "Calling from Supreme Court cyber cell",
+        "Arrest warrant is issued for illegal activities",
+        "Do not tell your family members about this call",
+    ])
+    assert sc.max_level >= 2
+    assert "S1_authority" in sc._seen
+    assert "S2_accusation" in sc._seen
+    assert "S3_isolation" in sc._seen
+
+    # S2 (accusation) + S3 (secrecy) + S5 (bail money) triggers L2 without S1
+    sc2, _ = run([
+        "Accident ho gaya hai, college police ne pakad liya",
+        "Papa mummy ko mat batana please",
+        "Bail fee turant transfer karo",
+    ])
+    assert sc2.max_level >= 2
+
+
+def test_verb_inflection_matching():
+    # Test that verb inflections (batayein, bataiye, kijiye, karein) normalize and match
+    assert normalise("apna otp batayein") == normalise("apna otp batao")
+    assert normalise("kisi se baat mat kijiye") == normalise("kisi se baat mat karo")
+    assert normalise("paisa transfer kijiye") == normalise("paisa transfer karo")
+
