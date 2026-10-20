@@ -22,7 +22,7 @@ export default function ConsentNoticePage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-surface text-caption font-bold text-primary">
             {/* @ts-expect-error solar icon */}
             <iconify-icon icon="solar:verified-check-bold" width="16" height="16" />
-            <span>Trilingual Senior Citizen Notice · DPDP 2023 Aligned</span>
+            <span>Trilingual Senior Citizen Notice · Statutory Version: 2026-10-elder-v1</span>
           </div>
 
           <h1 className="text-display font-bold text-ink tracking-tight">
@@ -30,7 +30,7 @@ export default function ConsentNoticePage() {
           </h1>
 
           <p className="text-lead text-body font-medium">
-            This notice is designed for household display or reading aloud before activating Kavach on a living room tablet.
+            This notice must be reviewed and accepted directly by the senior citizen on the tabletop device before pairing.
           </p>
         </div>
 
@@ -80,7 +80,7 @@ export default function ConsentNoticePage() {
                   Notice to Senior Household Members
                 </h2>
                 <div className="text-caption font-mono text-muted pt-1">
-                  Plain English · No Fine Print
+                  Plain English · Notice ID: 2026-10-elder-v1
                 </div>
               </div>
 
@@ -89,10 +89,13 @@ export default function ConsentNoticePage() {
                   <strong>What this tablet does:</strong> This device has been placed on the table by your family to protect you from telephone extortion, fake police threats, and banking fraud.
                 </p>
                 <p>
-                  <strong>When it listens:</strong> It only listens when you take an incoming phone call on <em>Speakerphone</em>. If you talk privately on the earpiece, Kavach cannot hear.
+                  <strong>When it listens &amp; where audio goes:</strong> It only listens when you take an incoming phone call on <em>Speakerphone</em>. Live speech audio is streamed securely to Gnani.ai for speech-to-text transcription (retention governed per Gnani terms, to be confirmed). The scam detection rules and database run on our server.
                 </p>
                 <p>
-                  <strong>Zero Recording of Conversations:</strong> Your voice and conversations are <em>never recorded or saved as audio files</em>. Kavach only checks whether a caller is pretending to be police or ordering you to transfer money.
+                  <strong>Zero Permanent Audio Storage:</strong> Audio conversations are <em>never stored as audio files on our servers</em>. High-risk transcript excerpts (max 160 characters) are erased automatically after 7 days.
+                </p>
+                <p>
+                  <strong>Direct Elder Tap Consent:</strong> Under our privacy policy, your caregiver cannot consent on your behalf with a checkbox. You must explicitly tap &ldquo;I Understand &amp; Consent&rdquo; on this tablet screen to activate protection.
                 </p>
                 <p>
                   <strong>Warning Alerts:</strong> If a caller tries to scare or isolate you, this tablet will loudly warn you using your son or daughter’s voice, and will notify your family immediately.
@@ -111,7 +114,7 @@ export default function ConsentNoticePage() {
                   घर के वरिष्ठ सदस्यों के लिए सूचना
                 </h2>
                 <div className="text-caption font-mono text-muted pt-1">
-                  सरल हिन्दी भाषा · कोई गुप्त नियम नहीं
+                  सरल हिन्दी भाषा · सूचना प्रारूप: 2026-10-elder-v1
                 </div>
               </div>
 
@@ -120,10 +123,13 @@ export default function ConsentNoticePage() {
                   <strong>यह टैबलेट क्या करता है:</strong> आपके परिवार ने आपको फर्जी पुलिस, डिजिटल अरेस्ट और बैंक धोखाधड़ी के फोन कॉल्स से बचाने के लिए यह कवच डिवाइस रखा है।
                 </p>
                 <p>
-                  <strong>यह कब सुनता है:</strong> यह केवल तभी सुनता है जब आप किसी अनजान कॉल को <em>स्पीकरफोन (Speakerphone)</em> पर रखकर बात करते हैं।
+                  <strong>यह कब सुनता है और आवाज़ कहाँ जाती है:</strong> यह केवल तभी सुनता है जब आप कॉल को <em>स्पीकर (Speakerphone)</em> पर रखते हैं। आवाज़ को केवल शब्दों में बदलने (STT) के लिए सुरक्षित रूप से Gnani.ai को भेजा जाता है (Gnani के नियमों के अनुसार सुरक्षित)। धोखाधड़ी की जांच हमारे सर्वर पर होती है।
                 </p>
                 <p>
-                  <strong>बातचीत की कोई रिकॉर्डिंग नहीं:</strong> आपकी कोई भी व्यक्तिगत बातचीत या आवाज़ <em>रिकॉर्ड या सेव नहीं की जाती</em>। यह केवल यह जांचता है कि कहीं फोन करने वाला आपको डरा-धमका तो नहीं रहा।
+                  <strong>बातचीत की कोई रिकॉर्डिंग नहीं:</strong> आपके सर्वर पर कोई भी आवाज़ या बातचीत रिकॉर्ड करके नहीं रखी जाती। केवल संदिग्ध शब्दों के छोटे अंश 7 दिन बाद अपने आप मिट जाते हैं।
+                </p>
+                <p>
+                  <strong>बुजुर्ग की सीधी सहमति:</strong> कोई अन्य व्यक्ति आपकी जगह सहमति नहीं दे सकता। आपको इस स्क्रीन पर &ldquo;मुझे समझ आ गया - सहमति है&rdquo; पर स्वयं टैप करना होगा।
                 </p>
                 <p>
                   <strong>सावधानी चेतावनी:</strong> यदि कोई ठग आपको धमकाता है, तो यह टैबलेट आपके बेटे या बेटी की आवाज़ में चेतावनी देगा और आपके परिवार को तुरंत संदेश भेजेगा।
@@ -142,7 +148,7 @@ export default function ConsentNoticePage() {
                   ઘરના વડીલ સભ્યો માટે સૂચના
                 </h2>
                 <div className="text-caption font-mono text-muted pt-1">
-                  સરળ ગુજરાતી ભાષા · કોઈ છૂપી શરતો નથી
+                  સરળ ગુજરાતી ભાષા · સૂચના આવૃત્તિ: 2026-10-elder-v1
                 </div>
               </div>
 
@@ -151,10 +157,13 @@ export default function ConsentNoticePage() {
                   <strong>આ ટેબ્લેટ શું કરે છે:</strong> તમારા પરિવારે તમને નકલી પોલીસ અને બેંક છેતરપિંડીના કોલથી બચાવવા માટે આ કવચ ડિવાઇસ રાખ્યું છે.
                 </p>
                 <p>
-                  <strong>આ ક્યારે સાંભળે છે:</strong> જ્યારે તમે ફોન <em>સ્પીકર (Speakerphone)</em> પર રાખીને વાત કરો છો ત્યારે જ આ સાંભળે છે.
+                  <strong>આ ક્યારે સાંભળે છે અને અવાજ ક્યાં જાય છે:</strong> જ્યારે તમે ફોન <em>સ્પીકર (Speakerphone)</em> પર રાખીને વાત કરો છો ત્યારે જ આ સાંભળે છે. ઓડિયો માત્ર લખાણમાં રૂપાંતરિત કરવા Gnani.ai પર મોકલવામાં આવે છે. છેતરપિંડીની ચકાસણી અમારા સર્વર પર થાય છે.
                 </p>
                 <p>
-                  <strong>કોઈ પણ ઓડિયો રેકોર્ડિંગ થતું નથી:</strong> તમારી કોઈપણ વાતચીત <em>સેવ કે રેકોર્ડ કરવામાં આવતી નથી</em>. આ ફક્ત છેતરપિંડીના શબ્દો ઓળખવા માટે જ છે.
+                  <strong>કોઈ પણ ઓડિયો રેકોર્ડિંગ થતું નથી:</strong> અમારી સિસ્ટમ પર તમારી વાતચીત સેવ કરવામાં આવતી નથી.
+                </p>
+                <p>
+                  <strong>વડીલની સીધી સંમતિ:</strong> તમારી સંમતિ કોઈ બીજું આપી શકતું નથી. તમારે સ્ક્રીન પર જાતે જ લીલું બટન દબાવીને સંમતિ આપવાની રહેશે.
                 </p>
                 <p>
                   <strong>ચેતવણી:</strong> જો કોઈ તમને ડરાવવાનો પ્રયાસ કરશે, તો આ ડિવાઇસ તમારા સંતાનના અવાજમાં તમને સાવધાન કરશે અને પરિવારને જાણ કરશે.

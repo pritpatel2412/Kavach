@@ -8,21 +8,19 @@ cloned family voice via voice cloning), while alerting a guardian via Telegram. 
 
 ## Demo Quick Start (Zero Credits, Fully Offline)
 
-## Demo Quick Start (Zero Credits, Fully Offline)
-
 ### Windows (PowerShell)
 ```powershell
 .\run.ps1 setup          # create venv + install dependencies
-.\run.ps1 test           # 79 offline unit tests (0 credits)
+.\run.ps1 test           # 163 offline unit tests (0 credits)
 .\run.ps1 dev-mock       # runs offline mock server on http://localhost:8000/?mock=1&judge=1
 .\run.ps1 eval           # evaluate multi-lingual WER noise & 400 ambient segments
-.\run.ps1 blind-eval     # run independent blind evaluation with exact Wilson 95% CIs
+.\run.ps1 blind-eval     # run blind evaluation suite with exact Wilson 95% CIs
 ```
 
 ### Linux / macOS (Make)
 ```bash
 make setup          # venv + dependencies + .env
-make test           # 79 offline tests (0 paid credits)
+make test           # 163 offline tests (0 paid credits)
 make dev-mock       # runs with KAVACH_MOCK_STT=1 on http://localhost:8000/?mock=1&judge=1
 make eval           # evaluate detector across WER levels and ambient audio
 ```
@@ -71,4 +69,21 @@ To run with live microphone audio and real Gnani API services:
 - **Prisma v3 Realtime Stream** (`wss://api.vachana.ai/stt/v3/stream`)
 - **Prisma REST STT** (`POST https://api.vachana.ai/stt/v3`) for enrollment liveness
 - **Timbre v2.5 TTS** (`POST https://api.vachana.ai/api/v1/tts/inference`)
-- **Vachana VC v1** (`POST /api/v1/tts/voice-clone/embeddings`) for consented guardian voice cloning
+- **Vachana VC v1** (`POST https://api.vachana.ai/api/v1/tts/voice-clone/embeddings`) for consented guardian voice cloning
+
+---
+
+## Evaluation Results & Integrity Disclosures (Synthetic Text Tests)
+
+All evaluation metrics are measured on **synthetic text tests** and degraded audio simulations without live telecom interception.
+
+| Evaluation Benchmark | Scam Recall (L2+ trigger) | 95% Wilson CI | Benign False Alarm Rate (L2+) | 95% Wilson CI |
+|---|---|---|---|---|
+| **Original Holdout Evaluation (Sprint 3 Baseline)** | **2 / 10 (20.0%)** | [5.7%, 51.0%] | 0 / 10 (0.0%) | [0.0%, 27.8%] |
+| **Development Set After Revision (Sprint X Re-eval)** | **10 / 10 (100.0%)** | [72.2%, 100.0%] | 0 / 10 (0.0%) | [0.0%, 27.8%] |
+| **Speakerphone Simulation (WER 20%)** | **36 / 37 (97.3%)** | [86.2%, 99.5%] | 0 / 33 (0.0%) | [0.0%, 10.4%] |
+| **Continuous Household Ambient (400 segments)** | — | — | **0 / 400 (0.0 per 1k)** | [0.0, 9.5] |
+
+> **Evaluation Integrity Note:**  
+> The 20 scenarios in `eval/blind/` were inspected during failure analysis in Sprint X (documented in `docs/DETECTION_REPORT.md`), and detector dictionaries and structural rules were revised to resolve Hindi verb inflections and regional authority phrasing. Consequently, `eval/blind` is **BURNED as a true blind holdout**; its 10/10 result is reported strictly as "development set after revision", and the true holdout score remains the original **2/10**. Future uninspected holdout evaluations must use `eval/blind_sealed/`, which remains strictly uninspected and empty until provided by an external evaluator.  
+> *Post-transcript processing latency in mock replay is < 650 ms (excludes STT network latency and speech-end detection).*

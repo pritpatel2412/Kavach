@@ -1,0 +1,173 @@
+{
+  "version": "2026.10.20-sprint-y",
+  "generated_at": "2026-10-20T21:45:00Z",
+  "testing": {
+    "offline_unit_tests": 163,
+    "credits_consumed": 0,
+    "framework": "pytest",
+    "mock_mode_default": true
+  },
+  "scam_families": {
+    "count": 10,
+    "families": [
+      {
+        "id": "digital_arrest",
+        "name": "Digital Arrest (CBI / Police)",
+        "hindi_name": "डिजिटल अरेस्ट (सीबीआई/पुलिस)",
+        "icon": "shield-warning-bold"
+      },
+      {
+        "id": "courier_fedex",
+        "name": "Customs / FedEx Narcotics Parcel",
+        "hindi_name": "कूरियर पार्सल (ड्रग्स/कस्टम्स)",
+        "icon": "box-minimalistic-bold"
+      },
+      {
+        "id": "electricity",
+        "name": "Electricity Disconnection Tonight",
+        "hindi_name": "बिजली बिल बकाया नोटिस",
+        "icon": "bolt-bold"
+      },
+      {
+        "id": "kyc_bank",
+        "name": "KYC & Bank Account Block",
+        "hindi_name": "बैंक खाता व पैन ब्लॉक",
+        "icon": "card-broken-bold"
+      },
+      {
+        "id": "sim_trai",
+        "name": "TRAI SIM Deactivation",
+        "hindi_name": "ट्राई सिम कार्ड ब्लॉक",
+        "icon": "sim-card-bold"
+      },
+      {
+        "id": "relative_distress",
+        "name": "Relative in Hospital / Custody",
+        "hindi_name": "बेटे/रिश्तेदार का एक्सीडेंट या कस्टडी",
+        "icon": "hospital-bold"
+      },
+      {
+        "id": "remote_access",
+        "name": "Remote Access (AnyDesk / TeamViewer)",
+        "hindi_name": "स्क्रीन शेयरिंग / एनीडेस्क ऐप",
+        "icon": "monitor-bold"
+      },
+      {
+        "id": "investment",
+        "name": "Fake Pre-IPO / High Return Trading",
+        "hindi_name": "फर्जी ट्रेडिंग व शेयर बाजार मुनाफा",
+        "icon": "chart-bold"
+      },
+      {
+        "id": "otp_pin",
+        "name": "Lottery Prize / Bill Refund OTP",
+        "hindi_name": "रिफंड व लॉटरी ओटीपी फ्रॉड",
+        "icon": "key-minimalistic-bold"
+      },
+      {
+        "id": "sextortion",
+        "name": "Video Call Blackmail",
+        "hindi_name": "वीडियो कॉल ब्लैकमेल",
+        "icon": "video-frame-bold"
+      }
+    ]
+  },
+  "plans": {
+    "free": {
+      "id": "free",
+      "name": "Free (Caregiver Starter)",
+      "monthly_inr": 0,
+      "monthly_paise": 0,
+      "yearly_inr": 0,
+      "yearly_paise": 0,
+      "gst_inclusive": true,
+      "minutes_per_month": 30,
+      "reserve_minutes": 10,
+      "elders": 1,
+      "devices": 1
+    },
+    "plus": {
+      "id": "plus",
+      "name": "Plus (Individual Elder)",
+      "monthly_inr": 149,
+      "monthly_paise": 14900,
+      "yearly_inr": 1299,
+      "yearly_paise": 129900,
+      "gst_inclusive": true,
+      "minutes_per_month": 150,
+      "reserve_minutes": 30,
+      "elders": 1,
+      "devices": 2
+    },
+    "family": {
+      "id": "family",
+      "name": "Family (Multi-Household)",
+      "monthly_inr": 299,
+      "monthly_paise": 29900,
+      "yearly_inr": 2499,
+      "yearly_paise": 249900,
+      "gst_inclusive": true,
+      "minutes_per_month": 400,
+      "reserve_minutes": 60,
+      "elders": 3,
+      "devices": 5
+    }
+  },
+  "gst_rate": 0.18,
+  "sourced_statistics": {
+    "ncrp": {
+      "period": "2022 to May 2026",
+      "complaints": 297727,
+      "loss_crore": 4057.7,
+      "source": "National Cybercrime Reporting Portal (NCRP) via NewsBytes / News18 (6 Jul 2026)",
+      "citation_url": "https://www.newsbytesapp.com/news/science/india-s-digital-arrest-scam-causes-4-000cr-losses-in-3-years/story"
+    },
+    "pune_police": {
+      "period": "19 months",
+      "elder_cases": 136,
+      "loss_crore_plus": 100,
+      "avg_loss_per_fir_lakhs": 73.5,
+      "single_highest_victim_loss_crore": 10.75,
+      "source": "Pune Cyber Police official report via Punekar News (21 Sep 2026)",
+      "citation_url": "https://www.punekarnews.in/?p=245348"
+    }
+  },
+  "evaluation_metrics": {
+    "type": "synthetic text tests",
+    "original_blind_holdout": {
+      "status": "BURNED / RECLASSIFIED AS DEV SET AFTER REVISION",
+      "scam_recall": "2 / 10 (20.0%)",
+      "scam_recall_ci95": "[5.7%, 51.0%]",
+      "false_alarm_rate": "0 / 10 (0.0%)",
+      "false_alarm_ci95": "[0.0%, 27.8%]"
+    },
+    "revised_dev_set": {
+      "status": "development set after revision",
+      "scam_recall": "10 / 10 (100.0%)",
+      "scam_recall_ci95": "[72.2%, 100.0%]",
+      "false_alarm_rate": "0 / 10 (0.0%)"
+    },
+    "synthetic_telephony_eval": {
+      "wer_20_speakerphone_recall": "36 / 37 (97.3%)",
+      "wer_20_ci95": "[86.2%, 99.5%]",
+      "ambient_segments_tested": 400,
+      "ambient_false_alarms": 0,
+      "ambient_rate_per_1k": "0.0 alerts / 1,000 segments"
+    },
+    "latency": {
+      "post_transcript_processing_mock_replay_ms": "< 650 ms",
+      "note": "Measured in mock replay; excludes STT network latency and speech-end detection"
+    }
+  },
+  "privacy": {
+    "dpdp_alignment": "designed toward DPDP 2023 principles; not legally reviewed",
+    "statutory_elder_notice_version": "2026-10-elder-v1",
+    "elder_consent_mechanism": "direct tap on paired device screen",
+    "audio_transit": "streamed to Gnani Prisma STT (retention per Gnani terms, to be confirmed)",
+    "detector_host": "server-side (FastAPI / kavach_detector)",
+    "database_host": "server-side (SQLite)",
+    "voice_embeddings_storage": "server-side (SQLite, AES-256 encrypted, permanently deletable)",
+    "neon_database_region": "AWS Singapore (ap-southeast-1)",
+    "ai_gateway_default": "OFF (strictly consent-gated, zero transcripts routed by default)"
+  }
+}

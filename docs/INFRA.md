@@ -1,82 +1,94 @@
-# Kavach Cloud Infrastructure & Neon Integration Architecture
+# Kavach Cloud Infrastructure & Systems Architecture
 
-> **Document Version:** 1.0.0 · **Date:** 20 Oct 2026 · **Sprint:** X (Blockers, Truth, and Contest-Critical)  
+> **Document Version:** 2.0.0 · **Date:** 20 Oct 2026 · **Sprint:** Y ("Make every claim true")  
 > **Source of Truth:** AGENTS.md, docs/ARCHITECTURE.md, docs/SAFETY.md, docs/CLAIMS.md  
-> **Security Invariant:** Zero raw audio or transcript data leaves the local device without explicit consent; no personal data reaches third-party AI gateways.
+> **Integrity Invariant:** Every architectural claim must match code reality. Zero unsupported promises.
 
 ---
 
-## 1. Executive Summary & Topology
+## 1. System Topology & Data Flow
 
-Kavach employs a **hybrid edge-and-cloud architecture**:
-- **Edge Kiosk Listener (Local Device):** Runs on the elder's tabletop device (e.g., tablet or Raspberry Pi). Real-time speech-to-text (Gnani Prisma STT) and rule-based scam detection (14 scam families, 5 escalation stages) execute strictly with client-side VAD silence gating. Raw microphone audio is never written to disk or sent to cloud analytics.
-- **Local Edge Persistence (SQLite):** Fast, zero-network transactional persistence on the edge for high-speed offline operation during network flakiness.
-- **Central SaaS Cloud (Neon Serverless PostgreSQL):** Cloud operational store for multi-household fleet health, support tickets, billing state, and audit logs.
+Kavach operates a client-server architecture with managed third-party speech AI and serverless cloud services:
 
 ```
-+-------------------------------------------------------------------------------+
-|                             EDGE DEVICE (ELDER KIOSK)                        |
-|  Mic -> AudioWorklet (16kHz PCM) -> VAD Gating -> Gnani Prisma WebSocket     |
-|                                         |                                     |
-|                       kavach_detector (Python/JS Engine)                     |
-|                                         |                                     |
-|                                 SQLite Edge DB                                |
-+-------------------------------------------------------------------------------+
-                                         | (Aggregated telemetry & incident alerts only)
++-----------------------------------------------------------------------------------+
+|                         TABLETOP ELDER KIOSK (CLIENT BROWSER)                     |
+|  - Tabletop tablet/phone runs AudioWorklet (16 kHz PCM 16-bit)                    |
+|  - Listens only when incoming call is on speakerphone                             |
+|  - Explicit Elder Consent: Tap on device records notice version (2026-10-elder-v1)|
++-----------------------------------------------------------------------------------+
+                                         |
+                       WebSocket Audio Stream (1024-byte frames)
                                          v
-+-------------------------------------------------------------------------------+
-|                            CLOUD SAAS (FASTAPI / NEON)                        |
-|                                                                               |
-|   [Neon Lakebase Postgres]          [Neon Auth / JWKS]    [Neon AI Gateway]  |
-|   Region: AWS ap-southeast-1        OAuth & Session Keys   Status: DEFAULT OFF|
-|   Data: Fleet / Tickets / Billing   No PII Stored          Consent Gated: YES |
-|   Zero Audio / Zero Transcripts                            Zero Audio Routed  |
-+-------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------+
+|                          KAVACH BACKEND SERVER (FASTAPI)                          |
+|                                                                                   |
+|  1. Audio Forwarding: Pipes raw PCM frames to Gnani Prisma STT WebSocket          |
+|     (Audio retention per Gnani platform terms, to be confirmed)                   |
+|                                                                                   |
+|  2. Scam Detection Engine (kavach_detector):                                      |
+|     - Runs directly on our server (pure Python, regex & deterministic scoring)     |
+|     - Evaluates 5 scam stages (Authority, Accusation, Isolation, Urgency, Payment) |
+|                                                                                   |
+|  3. Voice Synthesis & Interventions:                                              |
+|     - Consented guardian voice embeddings stored server-side in SQLite (AES-256)   |
+|     - Permanent deletion supported via DELETE /api/guardians/{id}/voice           |
+|                                                                                   |
+|  4. Local Server Persistence (SQLite):                                            |
+|     - Events, alerts, guardian tokens, device pairing tokens                      |
+|     - Transcript excerpts capped at 160 chars; auto-purged after 7 days           |
++-----------------------------------------------------------------------------------+
+             |                                                  |
+             | Telemetry & Billing Sync                         | Speech Recognition
+             v                                                  v
++------------------------------------------+    +-----------------------------------+
+|     NEON SERVERLESS POSTGRESQL           |    |       GNANI.AI PLATFORM           |
+|  Region: AWS Singapore (ap-southeast-1)  |    |  Location: India Central          |
+|  Data: Accounts, Billing, Audit Ledger   |    |  Services: Prisma STT, Timbre TTS|
+|  Zero Audio / Zero Transcripts Stored    |    |  Retention: Per Gnani terms (TBC) |
+|                                          |    +-----------------------------------+
+|  [Neon AI Gateway]                       |
+|  Status: DEFAULT OFF                     |
+|  Transcripts Routed: NONE (by default)   |
+|  Consent-gated for optional admin ops    |
++------------------------------------------+
 ```
 
 ---
 
-## 2. Neon Cloud Services Audit
+## 2. Privacy & Data Boundary Audit
 
-### 2.1 Neon Serverless PostgreSQL (Lakebase)
-- **Region:** AWS Asia Pacific (Singapore, `ap-southeast-1`).
-- **Connection Model:** Dual-mode connection pooling:
-  - Pooled endpoint (`-pooler.ap-southeast-1.neon.tech:5432`) for serverless FastAPI web workers.
-  - Direct endpoint (`ep-*.ap-southeast-1.neon.tech:5432`) for migrations and administrative tasks.
-- **Data Model & Classification:**
-  - **Permitted Data:** Aggregated incident telemetry (stage counts, timestamp, threat level, duration), support ticket records, coupon redemption ledger, billing subscriptions, and device fleet heartbeats.
-  - **Prohibited Data:** Raw audio streams, voice cloning biometrics (stored locally on device only), and unmasked Aadhaar/PAN or bank credentials.
-  - **Portability:** All 12 schema migrations (`apps/api/migrations/*.sql`) are authored in ANSI SQL compatible with both SQLite 3.35+ and PostgreSQL 15+.
+### 2.1 Call Audio & Transcription Streaming
+- **Audio Transit:** Audio captured by the browser worklet is streamed through the Kavach server directly to Gnani Prisma STT (`wss://api.vachana.ai/stt/v3/stream`) for real-time transcription.
+- **Server Storage:** The Kavach server does not write raw incoming audio chunks to disk or object storage.
+- **Third-Party Retention:** Audio data retention by Gnani is governed by Gnani platform terms of service (retention policy to be confirmed in writing).
+- **Transcript Excerpts:** Only high-risk snippets (maximum 160 characters) surrounding detected scam trigger phrases are saved in the server's operational SQLite database for caregiver review, with an automated 7-day TTL purge.
 
-### 2.2 Neon Managed Auth
-- **Endpoint:** `NEON_AUTH_BASE_URL` with public key verification via `NEON_AUTH_JWKS_URL`.
-- **Function:** Key rotation and cryptographic signature verification for administrative and guardian sessions.
-- **Privacy Boundary:** Authentication tokens contain only opaque user identifiers (`sub`) and role claims; no phone numbers or elder details are stored in auth tokens.
+### 2.2 Detector & Database Execution
+- **Detection Engine:** The 5-stage deterministic detector (`kavach_detector`) executes **on our backend server**, not in third-party cloud LLMs.
+- **Voice Embeddings:** Voice cloning embeddings and pre-rendered emergency warning audio clips are stored **server-side** on our backend server. Embeddings are encrypted at rest with AES-256 and can be permanently erased at any time by the guardian via `DELETE /api/guardians/{id}/voice`.
+- **Operational Database:** The local operational store (SQLite) runs directly on the backend server.
 
-### 2.3 Neon AI Gateway (Privacy & Safety Boundary)
+### 2.3 Neon Serverless PostgreSQL
+- **Hosting Region:** AWS Asia Pacific (Singapore, `ap-southeast-1`). Note: Unlike domestic Indian services, Neon cloud infrastructure is physically hosted in Singapore.
+- **Data Scope:** Multi-household fleet heartbeats, support tickets, coupon redemption ledgers, billing subscriptions, and cryptographic audit logs.
+- **Prohibited Data:** Zero raw call audio, zero call transcripts, and zero biometric voice embeddings are ever synced to Neon.
+
+### 2.4 Neon AI Gateway
 - **Status:** **DEFAULT OFF** and **STRICTLY CONSENT-GATED**.
-- **Can any transcript or personal data reach the AI Gateway?**  
-  **ABSOLUTELY NOT.** The detector engine (`kavach_detector`) is 100% deterministic, rule-based, and offline. It does not use LLMs for live call classification.
-- **Consent Gating:** In optional administrative analysis (e.g. support ticket summarization or drafting support responses), the AI Gateway is invoked only when:
-  1. The guardian or administrator explicitly toggles AI assistance.
-  2. All PII (names, phone numbers, addresses, account numbers) is stripped using client-side regex masking before dispatch.
-  3. No raw audio or real-time call transcript ever enters this pathway.
-- **Contest Compliance:** Free-tier demo operations run completely without the AI Gateway, ensuring zero paid API token expenditures.
+- **Transcript Routing:** By default, **NO call transcripts or voice data are ever sent to the AI Gateway**.
+- **Administrative Scope:** The AI Gateway is reserved exclusively for optional administrative text assistance (e.g., summarizing support ticket threads), requiring explicit admin opt-in and client-side PII masking. It is never in the live call detection path.
+
+### 2.5 Elder Consent Protocol
+- **Direct Consent Requirement:** Under our DPDP-oriented design, consent cannot be granted by a guardian checking a box on behalf of another adult.
+- **Device Pairing:** When pairing a tabletop tablet (`POST /api/devices/pair`), the senior citizen must explicitly review the plain-language notice and tap to consent directly on that device screen.
+- **Traceability:** The pairing payload records `elder_consent: true`, the exact ISO timestamp (`elder_consent_ts`), and the statutory notice version (`notice_version: "2026-10-elder-v1"`).
 
 ---
 
-## 3. Health & Diagnostics Security (`/api/neon-health`)
+## 3. Portability & Migration Invariants
 
-The health endpoint (`GET /api/neon-health` or `GET /api/neon/status`) reports connectivity latency and operational status while enforcing strict secret protection:
-- **No Credentials Exposed:** Database URLs, passwords, API tokens, and connection strings are masked at the service boundary.
-- **Masking Filter:** `_sanitize_error()` strips credentials from any underlying database driver exception before serializing into JSON.
-- **Robots / Crawlers:** Administrative and infrastructure endpoints return `X-Robots-Tag: noindex, nofollow` to prevent search engine indexing.
-
----
-
-## 4. Database Portability Guidelines
-
-When writing new migrations or queries:
+When writing new migrations or database queries:
 1. Use standard ANSI SQL data types (`TEXT`, `INTEGER`, `REAL`).
 2. Timestamps must be stored as ISO 8601 UTC strings (`YYYY-MM-DDTHH:MM:SSZ`).
 3. For upserts, use ANSI standard `ON CONFLICT (...) DO UPDATE` supported by both modern SQLite and PostgreSQL.

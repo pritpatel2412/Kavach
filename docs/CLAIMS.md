@@ -11,10 +11,10 @@
 |---|---|---|---|
 | **297,727 digital arrest / cyber extortion complaints, ₹4,057.7 crore lost (2022 to May 2026)** | Government data from National Cybercrime Reporting Portal (NCRP), reviewed by News18, cited by NewsBytes: [NewsBytes: India's digital arrest scam causes ₹4,000cr losses in 3 years](https://www.newsbytesapp.com/news/science/india-s-digital-arrest-scam-causes-4-000cr-losses-in-3-years/story) | Retrieved: 6 Jul 2026 | **[VERIFIED]** Primary benchmark statistic |
 | **15,215 complaints and ₹481.1 crore lost in first five months of 2026** | NCRP / News18 data via NewsBytes article cited above | Retrieved: 6 Jul 2026 | **[VERIFIED]** |
-| **Pune senior citizens lost >₹100 crore across 136 cases in 19 months (one 82-yr-old lost ₹10.75 crore)** | Punekar News: [Pune Cyber Police Report](https://www.punekarnews.in/?p=245348) | Retrieved: 21 Sep 2026 | **[VERIFIED]** |
+| **Pune senior citizens lost >₹100 crore across 136 cases in 19 months (one 82-yr-old lost ₹10.75 crore)** | Punekar News: [Pune Cyber Police Report](https://www.punekarnews.in/?p=245348) | Retrieved: 21 Sep 2026 | **[VERIFIED]** Average loss in this sourced police dataset was ~₹73.5 lakhs per reported FIR |
 | **₹1,750 crore lost in first six months of 2024** | Previously cited in early draft | Replaced with verified ₹4,057.7 crore NCRP multi-year data | **[SUPERSEDED / REMOVED]** |
-| **Elderly victims lose entire life savings (avg ₹30–80 lakhs per incident)** | Pune Police case studies & NCRP complaint clusters | Measured across reported FIR clusters | **[VERIFIED]** Case ranges |
-| **Over 80% urban Indian households have a retired, functional smartphone/tablet** | Industry estimates of smartphone replacement cycles | Market observation | **[ESTIMATE]** Clearly labeled as hardware thesis |
+| **Elderly victims lose entire life savings (avg ₹30–80 lakhs per incident)** | Previously cited generic range | Removed in favor of exact sourced Pune Police dataset (~₹73.5L avg across 136 FIRs) | **[SUPERSEDED / REMOVED]** |
+| **Second-device deployment thesis** | Relies on availability of a spare phone or tablet in the home on speakerphone | Architectural assumption; generic "80% households" statistic removed | **[ARCHITECTURE THESIS]** |
 
 ---
 
@@ -53,18 +53,21 @@ $$\text{Alerts/Hour} = \frac{\text{Alerts}}{1,000\text{ segments}} \times \frac{
 
 ---
 
-## 3. Independent Blind Evaluation Claims
+## 3. Independent Blind Evaluation Claims (Synthetic Text Tests)
 
 - **Measurement Script:** `eval/run_blind.py`
 - **Measurement Fixtures:** `eval/blind/blind_test_scenarios.jsonl` (20 scenarios: 10 scam, 10 benign)
-- **Constraint:** Scripts written independently without viewing detector dictionaries. Dictionaries were strictly **not** retrofitted to fix misses.
+- **Dataset Status:** **BURNED / RECLASSIFIED AS DEVELOPMENT SET AFTER REVISION**
+  - *Integrity Note:* The original holdout test resulted in **2 / 10** scam recall. Failure analysis was conducted in Sprint X (documented in `docs/DETECTION_REPORT.md`), and detector dictionaries and rules in `packages/detector/` were tuned to address verb inflections, regional terminology, and structural extortion phrasing.
+  - As a result of this inspection and tuning, `eval/blind` is burned as a clean holdout. The true holdout result is reported solely as the original **2/10**. Performance of **10/10** is reported strictly as "development set after revision".
+  - Clean holdouts must be placed into `eval/blind_sealed/` by an independent human evaluator; that folder remains strictly uninspected and empty until provided.
 
-| Metric | Baseline Result | Post-Generalization Result | 95% Wilson CI (Post) | Status |
-|---|---|---|---|---|
-| **Scam Recall (L2+ trigger)** | 2 / 10 (20.0%) | **10 / 10 (100.0%)** | [72.2%, 100.0%] | **[VERIFIED]** |
-| **Benign False Alarm Rate (L2+ trigger)** | 0 / 10 (0.0%) | **0 / 10 (0.0%)** | [0.0%, 27.8%] | **[VERIFIED]** |
+| Split / Scenario | Scam Recall (L2+ trigger) | 95% Wilson CI | Benign False Alarm Rate (L2+) | 95% Wilson CI | Status |
+|---|---|---|---|---|---|
+| **Original Holdout Evaluation (Sprint 3 Baseline)** | **2 / 10 (20.0%)** | [5.7%, 51.0%] | 0 / 10 (0.0%) | [0.0%, 27.8%] | **[VERIFIED - ORIGINAL HOLDOUT]** |
+| **Development Set After Revision (Sprint X Re-eval)** | **10 / 10 (100.0%)** | [72.2%, 100.0%] | 0 / 10 (0.0%) | [0.0%, 27.8%] | **[DEVELOPMENT SET AFTER REVISION]** |
 
-*Insight & Generalization:* As documented in detail in `docs/DETECTION_REPORT.md`, the initial 2/10 blind score revealed misses due to Hindi verb inflections (e.g., `कीजिए` vs `करो`), phonetic ASR variants (`पार्सल` vs `पार्सल`), and structural extortion phrasing. Rather than copying blind phrases into dictionaries, we generalized Hindi verb stemming in `normalise.py`, expanded institutional and urgency synonym families in `default.yaml`, and introduced composite structural rules (`authority + threat + secrecy + money`) in `scorer.py`. This lifted blind recall to 100.0% while keeping false alarm rate strictly at 0.0%.
+*Methodological Note:* All metrics above are from synthetic text tests.
 
 ---
 
@@ -72,8 +75,8 @@ $$\text{Alerts/Hour} = \frac{\text{Alerts}}{1,000\text{ segments}} \times \frac{
 
 | Claim | Measurement / Reference | Status |
 |---|---|---|
-| **Deterministic RiskScorer latency < 1 ms** | Benchmarked in `packages/detector/tests/`: pure Python in-memory regex scan over tokens | **[VERIFIED]** |
-| **End-to-End time-to-warning < 650 ms** | Replay session benchmark: time from receiving final transcript fragment to emitting WebSocket alert state | **[VERIFIED]** |
+| **Deterministic RiskScorer latency < 1 ms** | Benchmarked in `packages/detector/tests/`: pure Python in-memory regex scan over tokens | **[VERIFIED]** (synthetic text tests) |
+| **Post-transcript processing latency in mock replay < 650 ms** | Replay session benchmark: time from receiving final transcript fragment to emitting WebSocket alert state (excludes STT network latency and speech-end detection) | **[VERIFIED: MOCK REPLAY ONLY]** |
 | **Zero-Interception Second Device Architecture** | Acoustic room capture via Web Audio Worklet at 16 kHz PCM 16-bit. No telecom network taps or SIM interception. | **[VERIFIED]** Architecture ground truth |
 
 ---
@@ -82,11 +85,11 @@ $$\text{Alerts/Hour} = \frac{\text{Alerts}}{1,000\text{ segments}} \times \frac{
 
 | Claim | Implementation & Enforcement | Status |
 |---|---|---|
-| **Zero raw audio storage** | Verified in `apps/api/app/session.py` and `worklet.js`: audio chunks are piped straight to STT WebSocket and discarded immediately from memory. | **[VERIFIED]** |
+| **Zero raw audio storage on Kavach servers** | Verified in `apps/api/app/session.py` and `worklet.js`: audio chunks are piped straight to STT WebSocket and discarded immediately from memory. Call audio is streamed to Gnani for transcription (retention per Gnani terms, to be confirmed). | **[VERIFIED]** |
 | **Transcript truncation & 7-day TTL** | `apps/api/app/db.py`: excerpts capped at 160 characters; SQLite purge runs on start. | **[VERIFIED]** |
 | **Tokens hashed at rest (SHA-256)** | `apps/api/app/db.py`: `guardians.token_hash` stores SHA-256 hex; raw token is emitted once upon creation. | **[VERIFIED]** |
 | **Purpose-scoped signed links** | `apps/api/app/signed_token.py`: HMAC-SHA256 tokens carry explicit purpose claim (`alert_view` vs `intercom`). Intercom rejects alert view tokens. | **[VERIFIED]** |
-| **DPDP Act (Digital Personal Data Protection Act 2023) alignment** | Consent checkbox + liveness challenge phrase for voice cloning; guardian-initiated voice profile deletion endpoint (`DELETE /api/guardians/{id}/voice`). | **[VERIFIED]** |
+| **Designed toward DPDP; not legally reviewed** | Consent granted on paired elder device (tap + notice version `2026-10-elder-v1`); guardian-initiated voice profile deletion (`DELETE /api/guardians/{id}/voice`). Has not undergone formal legal or statutory review. | **[DESIGN INTENT - NOT LEGALLY REVIEWED]** |
 
 ---
 
@@ -94,7 +97,7 @@ $$\text{Alerts/Hour} = \frac{\text{Alerts}}{1,000\text{ segments}} \times \frac{
 
 | Claim | Reference | Status |
 |---|---|---|
-| **Estimated STT cost: ~1.5 credits/min** | `docs/CREDITS_LOG.md` & Gnani Prisma rate table | **[VERIFIED]** |
+| **Estimated STT cost: ~1.5 credits/min** | Estimated rate noted in `docs/CREDITS_LOG.md`; unverified against official Gnani billing API report. | **[UNMEASURED]** |
 | **Zero live credits without explicit flag** | Enforced by `--yes` requirement in `scripts/real_eval.py` and `scripts/live_check.py` | **[VERIFIED]** |
 | **Daily STT cap (30 min / day)** | Enforced in `apps/api/app/session.py` via `apps/api/app/db.py` `daily_usage` table. | **[VERIFIED]** |
 
@@ -110,5 +113,5 @@ $$\text{Alerts/Hour} = \frac{\text{Alerts}}{1,000\text{ segments}} \times \frac{
 | **Cryptographic Hash-Chained Audit Log** | Every administrative mutation stores the SHA-256 hash of the previous row (`apps/api/app/audit.py`), creating an immutable verifiable ledger. Tested in `apps/api/tests/test_audit_hash_chain.py`. | **[VERIFIED]** |
 | **Anti-Formula Injection in Exports** | All CSV and Excel export cells starting with `=`, `+`, `-`, `@`, `\t`, or `\r` are prefixed with `'` to neutralize DDE/formula execution. Tested in `apps/api/tests/test_export_safety.py`. | **[VERIFIED]** |
 | **Atomic Coupon Concurrency Protection** | Coupon reservation holds (15 minutes) prevent double-spending or over-redemption under parallel requests. Tested in `apps/api/tests/test_coupons_concurrency.py`. | **[VERIFIED]** |
-| **100% Offline Test Coverage (137 tests green)** | Entire test suite executes offline without consuming paid Gnani credits. | **[VERIFIED]** |
+| **100% Offline Test Coverage (163 tests green)** | Entire test suite executes offline without consuming paid Gnani credits. Verified in `apps/api/tests/` and `packages/detector/tests/`. | **[VERIFIED]** |
 

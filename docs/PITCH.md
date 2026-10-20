@@ -6,7 +6,7 @@
 
 ## 1. The Problem: India's "Digital Arrest" Epidemic
 - **The Scale:** According to government data from the National Cybercrime Reporting Portal (NCRP), reported by News18 and cited by NewsBytes (6 Jul 2026), citizens registered **297,727 digital arrest and extortion complaints** resulting in **₹4,057.7 crore lost** between 2022 and May 2026.
-- **Vulnerable Demographic:** Senior citizens and retirees are disproportionately targeted (accounting for over 70% of high-value losses), with individual elderly victims losing their entire life savings and pension corpus (averaging ₹30–80 lakhs per incident).
+- **Vulnerable Demographic:** Senior citizens and retirees are disproportionately targeted (accounting for over 70% of high-value losses), with elderly victims losing entire life savings (Pune Cyber Police reported 136 senior citizen cases in 19 months totaling >₹100 crore, averaging ~₹73.5 lakhs per reported FIR; one 82-year-old lost ₹10.75 crore).
 - **The Psychological Trap:** Scammers weaponize false authority (CBI, Police, ED, Customs, Supreme Court), state coercion, and extreme isolation ("stay on camera, do not disconnect, keep this confidential"). Under acute panic, elders experience cognitive paralysis and comply with "safe account" liquidation demands.
 - **The Critical Gap:** Telco spam filters and Truecaller only screen known phone numbers before a call begins. Once an elder answers an untracked VoIP number or spoofed SIM, **zero protection exists during the actual conversation**.
 
@@ -15,7 +15,7 @@
 ## 2. Why Now?
 1. **Proliferation of Coercive Scripting:** Scammers no longer rely on simple lottery tricks; they deploy structured multi-stage interrogation protocols lasting 20 to 180 minutes.
 2. **Accessible Speech AI:** Gnani AI's high-speed STT (Prisma) and voice cloning (Timbre) allow millisecond-level transcript processing and human-quality voice intervention on the edge.
-3. **Hardware Repurposing:** Over 80% of urban Indian households have a retired, functional smartphone or tablet resting in a drawer that can serve as a dedicated tabletop guardian.
+3. **Hardware Repurposing:** Millions of urban Indian households possess a retired, functional smartphone or tablet resting in a drawer that can serve as a dedicated tabletop guardian without purchasing new hardware.
 
 ---
 
@@ -57,9 +57,9 @@ Tested across **70 synthetic call transcripts** (37 scam calls, 33 adversarial b
 | **Benign False Alarm Rate (L2+)** | **0/32 (0.0%)** [0.0%, 10.7%] | **1/33 (3.0%)** [0.5%, 15.3%] | **0/33 (0.0%)** [0.0%, 10.4%] | **1/33 (3.0%)** [0.5%, 15.3%] |
 | **Unseen Test Split Recall** | **19/19 (100.0%)** [83.2%, 100.0%] | **19/19 (100.0%)** [83.2%, 100.0%] | **19/19 (100.0%)** [83.2%, 100.0%] | **14/19 (73.7%)** [51.2%, 88.2%] |
 | **Household Ambient False Alerts** | **0 / 400 (0.0 per 1k)** [0.0, 9.5] | — | — | — |
-| **Detection Speed (Time to Warning)** | < 650 ms | < 650 ms | < 650 ms | < 750 ms |
+| **Post-Transcript Processing Speed** | < 650 ms | < 650 ms | < 650 ms | < 750 ms |
 
-*Result: In synthetic text tests, Kavach flags scams before the victim reaches the payment stage in 97.3% of cases at typical speakerphone ASR error rates (WER 20%), with zero false alarms on 400 household ambient background segments (TV news, serials, PSAs, religious broadcasts).*
+*Result: In synthetic text tests, Kavach flags scams before the victim reaches the payment stage in 97.3% of cases at typical speakerphone ASR error rates (WER 20%), with zero false alarms on 400 household ambient background segments (TV news, serials, PSAs, religious broadcasts). Post-transcript processing is measured in mock replay and excludes STT network latency and speech-end detection.*
 
 ---
 

@@ -15,8 +15,15 @@ export default function SubprocessorsPage() {
       name: 'Gnani.ai (Gnani Innovations Pvt. Ltd.)',
       role: 'Speech Recognition (Prisma STT) & Voice Synthesis (Timbre TTS)',
       location: 'Bengaluru, Karnataka, India',
-      dataScope: 'Acoustic audio stream for real-time transcription and consented voice profile embeddings.',
-      transfer: 'Domestic India (No cross-border transfer)',
+      dataScope: 'Acoustic audio stream for real-time speech-to-text transcription (retention governed per Gnani terms, to be confirmed); consented voice sample for guardian cloning.',
+      transfer: 'Domestic India (No cross-border audio transfer)',
+    },
+    {
+      name: 'Neon, Inc. (Serverless PostgreSQL)',
+      role: 'Cloud Operational Database, Fleet Telemetry & Audit Logs',
+      location: 'Singapore (AWS ap-southeast-1)',
+      dataScope: 'Account metadata, device pairing tokens, billing status, and cryptographic audit hashes. Zero audio or call transcripts are stored in Neon.',
+      transfer: 'International transfer (Singapore - AWS ap-southeast-1)',
     },
     {
       name: 'Telegram Messenger Inc. (Bot API)',
@@ -91,6 +98,13 @@ export default function SubprocessorsPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="bg-surface border border-hairline rounded-md p-6 space-y-2">
+          <h3 className="font-heading font-bold text-ink text-ui">AI Gateway &amp; Large Language Model Boundary</h3>
+          <p className="text-caption text-body leading-relaxed">
+            By default, <strong>no AI gateway receives call transcripts or audio</strong>. Scam detection is evaluated entirely by our deterministic, rule-based Python detector running on our own server. Third-party AI assistance (such as Neon AI Gateway) is strictly consent-gated and disabled by default, reserved solely for optional administrative workflows with all PII masked.
+          </p>
         </div>
 
         <SiteFooter />

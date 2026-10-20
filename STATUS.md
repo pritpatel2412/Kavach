@@ -17,10 +17,38 @@
 | Sprint T Full-System Test Campaign & Evidence Report | 19 Oct | **Done** (14 testing layers, 487 total checks, 96.5% pass rate, 0 flaky tests, ISO 29119 artifacts) | A + B |
 | Sprint R Visual & Structural Redesign (DESIGN.md) | 20 Oct | **Done** (cool-gray ground #f2f4f7, white cards, brand green #30a83c, 540px pills, Mulish font, 33 routes, 100% build green, 139 tests green, docs/redesign/REPORT.md) | A + B |
 | Sprint X Blockers, Truth & Contest-Critical | 20 Oct | **Done** (X1-X9 complete: blind eval generalization, support portal D-007, waitlist confirmed & RFC 8058, GST pricing golden tests, passwordless auth & device pairing, D-001..D-009 defects closed, Neon cloud docs & consent-gated AI gateway, automated security gates, contest demo orchestration & runbook, 162 unit tests green) | A + B |
+| Sprint Y Make Every Claim True | 20 Oct | **Done** (Y1-Y6 complete: blind set marked burned, unsupported claims pruned, privacy truth & elder tap consent, single facts.json source, GST pricing math golden, D-001..D-009 regression evidence, 163 tests green, 0 credits) | A + B |
 | 5 Launch (nominated post) | 28 Oct | Scaffolded / In preparation | A + B |
 | 6 Eval + hardening (+ optional LLM layer) | 28 Oct-2 Nov | S1 LLM second-opinion layer scaffolded + tested; eval harness active | B / A |
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
 | Buffer | 9-10 Nov | | |
+
+## Done in Sprint Y ("Make every claim true")
+- **Y1. Blind Evaluation Truth & Burned Set Disclosure:**
+  - Formally marked `eval/blind` as `BURNED / RECLASSIFIED AS DEV SET` in `eval/blind/README.md`.
+  - Disclosed in `CLAIMS.md` and `README.md` that the true holdout baseline was **2/10** (Sprint 3); 10/10 is labeled strictly as "development set after revision".
+  - Retracted claim that dictionaries were not retrofitted. Labeled all metrics as "synthetic text tests". Kept `eval/blind_sealed/` empty and pristine for independent human evaluator sets.
+- **Y2. Pruning & Correcting Unsupported Claims:**
+  - Removed "99.98% reliability" from status page (`apps/site/src/app/status/page.tsx`); replaced with real automated test suite status (163 tests green).
+  - Removed "bug bounty" from security page (`apps/site/src/app/security/page.tsx`) and `INVENTORY.md`.
+  - Sourced Pune Cyber Police figures (136 cases, >₹100 Cr, ~₹73.5L avg per FIR) in `CLAIMS.md` and `PITCH.md`; deleted unsourced "80% households" and "30-80 lakh" claims.
+  - Relabeled latency claim: "post-transcript processing in mock replay; excludes STT and speech-end detection".
+  - Marked STT cost "~1.5 credits/min" as `[UNMEASURED]`.
+  - Changed "DPDP alignment [VERIFIED]" to "designed toward DPDP 2023 principles; not legally reviewed".
+- **Y3. Privacy Truth & Direct Elder Consent:**
+  - Rewrote `docs/INFRA.md`, `/privacy`, `/consent-notice`, and `/subprocessors` stating that call audio streams to Gnani for transcription (retention per Gnani terms, TBC), detector and SQLite run on our server, voice embeddings are stored server-side (AES-256 encrypted, deletable), Neon PostgreSQL runs in AWS Singapore (`ap-southeast-1`), and no AI gateway receives transcripts by default.
+  - Required elder consent to be granted directly by the ELDER on the paired device (explicit tap + statutory notice version `2026-10-elder-v1`), not by the guardian's proxy checkbox.
+- **Y4. Single Source of Truth & Consistency:**
+  - Authored `scripts/generate_facts.py` generating `packages/api-contract/src/facts.json` (163 unit tests, 10 scam families, plans Free/Plus/Family).
+  - Fixed duplicate README heading and voice cloning endpoint URL (`https://api.vachana.ai`).
+  - Stripped all local machine absolute paths (`c:/Users/...`) from all repo documentation.
+- **Y5. Pricing Math Correctness & Golden Tests:**
+  - Corrected `calculate_pricing` in `apps/api/app/plans_config.py` so checkout total with no coupon equals advertised GST-inclusive total, and `DEMO50` on 14900-paise plan yields exact **7450 total paise (GST inside: 6314 base + 1136 GST)**, eliminating the 1-paisa rounding truncation anomaly.
+  - Verified with golden unit tests in `apps/api/tests/test_coupons_concurrency.py`.
+- **Y6. Defect Regressions & Reconciled Test Documentation:**
+  - Verified D-001..D-009 are closed with regression tests in `apps/api/tests/test_defect_regressions.py` (added D-007 public site url assertion; 10/10 tests pass green).
+  - Reconciled 0/189 vs 181/189 contradiction in `docs/testing/results.json`, `docs/testing/coverage.csv`, and `docs/testing/REPORT_SUMMARY.md`.
+  - Authored comprehensive `docs/testing/REPORT_SUMMARY.md`: separated unique test IDs (261 unique IDs) from executions (487 runs); removed "production-ready"; added GO/NO-GO decision matrix (GO for contest demo, CONDITIONAL NO-GO for private beta).
 
 ## Done in Sprint X ("Blockers, Truth and Contest-Critical")
 - **X1. Detector Truth & Blind Holdout Generalization:**
@@ -253,7 +281,7 @@
   - Zero paid Gnani credits consumed.
 
 ## Latest Numbers
-- **Test Suite (`make test` / `run.ps1 test`):** **83 passing**, 0 failing (100% offline, zero credits consumed)
+- **Test Suite (`make test` / `run.ps1 test` / `pytest`):** **163 passing**, 0 failing (100% offline, zero credits consumed)
 - **Evaluation Harness (`eval/run_eval.py` - Synthetic Text Tests):**
   - **Clean (WER 0%):** Scam Recall: **36/36 (100.0%)** [90.4%, 100.0%] · Benign False Alarms: **0/32 (0.0%)** [0.0%, 10.7%]
   - **WER 10%:** Scam Recall: **36/37 (97.3%)** [86.2%, 99.5%] · Benign False Alarms: **1/33 (3.0%)** [0.5%, 15.3%]
@@ -262,9 +290,10 @@
   - **Unseen Test Split (WER 20%):** **19/19 (100.0%)** [83.2%, 100.0%]
 - **Ambient False Alarm Benchmark (400 segments):**
   - **0 / 400 false alarms** (0.0 alerts / 1,000 segments, 95% Wilson CI: [0.0, 9.5] / 1,000)
-- **Independent Blind Evaluation (`eval/run_blind.py` - Unseen Scripts):**
-  - **Scam Recall (L2+):** **2 / 10 (20.0%)** [5.7%, 51.0%]
-  - **Benign False Alarms:** **0 / 10 (0.0%)** [0.0%, 27.8%]
+- **Independent Evaluation (`eval/run_blind.py` - Synthetic Text Tests):**
+  - **Original Holdout Evaluation (Sprint 3 Baseline):** Scam Recall: **2 / 10 (20.0%)** [5.7%, 51.0%] · Benign False Alarms: **0 / 10 (0.0%)** [0.0%, 27.8%]
+  - **Development Set After Revision (Sprint X Re-eval):** Scam Recall: **10 / 10 (100.0%)** [72.2%, 100.0%] · Benign False Alarms: **0 / 10 (0.0%)** [0.0%, 27.8%]
+  - *Integrity Note:* `eval/blind` is marked **BURNED** due to inspection/tuning; clean holdouts remain in uninspected `eval/blind_sealed/` awaiting human provision.
 - **Credits Spent:** 0 / 5,000 (100% budget intact)
 
 ## Next 3 Actions

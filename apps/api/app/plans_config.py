@@ -94,7 +94,31 @@ def calculate_pricing(
             is_new_customer=is_new_customer,
         )
         if coupon_result["valid"]:
-            discount_paise = coupon_result["discount_paise"]
+            if coupon_result.get("discount_type") == "percent":
+                effective_percent = min(coupon_result.get("discount_value", 0), MAX_DISCOUNT_PERCENT)
+                # Percent discount applies to the advertised GST-inclusive total
+                total_paise = round(advertised_paise * (1.0 - effective_percent / 100.0))
+                if coupon_result.get("max_discount_paise") is not None:
+                    max_disc = coupon_result["max_discount_paise"]
+                    if (advertised_paise - total_paise) > max_disc:
+                        total_paise = advertised_paise - max_disc
+                taxable_paise = round(total_paise / (1 + GST_RATE))
+                gst_paise = total_paise - taxable_paise
+                discount_paise = base_paise - taxable_paise
+                coupon_result["discount_paise"] = discount_paise
+                return {
+                    "plan_id": plan_id,
+                    "billing_cycle": billing_cycle,
+                    "advertised_paise": advertised_paise,
+                    "base_paise": base_paise,
+                    "discount_paise": discount_paise,
+                    "taxable_paise": taxable_paise,
+                    "gst_paise": gst_paise,
+                    "total_paise": total_paise,
+                    "coupon": coupon_result,
+                }
+            else:
+                discount_paise = coupon_result["discount_paise"]
 
     taxable_paise = max(0, base_paise - discount_paise)
     gst_paise = round(taxable_paise * GST_RATE)
@@ -197,6 +221,8 @@ def validate_coupon(
         "valid": True,
         "status": "valid",
         "discount_type": d_type,
+        "discount_value": d_val,
+        "max_discount_paise": max_disc,
         "discount_paise": calculated_discount,
         "message": f"{d_val}% discount applied!" if d_type == "percent" else f"₹{calculated_discount / 100:.2f} discount applied!",
     }

@@ -23,13 +23,13 @@
 | `/learn/kyc-otp` | Page (Static) | Guide on bank account freeze & Aadhaar update deception | Knowledge Hub |
 | `/contact` | Page (Static) | Customer support intake form, office address, security escalation | Form, emergency advisory |
 | `/help` | Page (Static) | Self-help FAQ and knowledge base article links | Accordion, article list |
-| `/status` | Page (Static) | Real-time telemetry, 99.98% reliability, live Neon Cloud status | StatusDot, GlassCard |
+| `/status` | Page (Static) | Real-time telemetry, automated test suite verification, live Neon Cloud status | StatusDot, GlassCard |
 | `/changelog` | Page (Static) | Product release history and update notes | Changelog timeline |
 | `/changelog/feed.json` | API Feed | JSON feed of recent product releases | Application JSON |
 | `/changelog/rss.xml` | API Feed | RSS 2.0 XML syndication feed | Application XML |
-| `/privacy` | Page (Static) | DPDP Act 2023 compliance, data retention, zero-audio promise | Legal Document |
+| `/privacy` | Page (Static) | DPDP Act 2023 design intent, data retention, streaming STT disclosure | Legal Document |
 | `/terms` | Page (Static) | Terms of service, disclaimer of call interception | Legal Document |
-| `/security` | Page (Static) | Security architecture, encryption, bug bounty, safe harbor | Security Disclosure |
+| `/security` | Page (Static) | Security architecture, encryption, coordinated vulnerability disclosure (RFC 9116), safe harbor | Security Disclosure |
 | `/acceptable-use` | Page (Static) | Prohibited activities, voice cloning owner-only policy | Policy Document |
 | `/consent-notice` | Page (Static) | Explicit biometric consent notice for synthetic cloning | Statutory Notice |
 | `/grievance` | Page (Static) | Grievance Officer details per IT Rules 2021 | Compliance Card |

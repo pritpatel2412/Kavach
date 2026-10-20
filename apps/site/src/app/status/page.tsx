@@ -19,12 +19,12 @@ export default function StatusPage() {
   }, []);
 
   const subsystems = [
-    { name: 'Gnani Prisma Streaming STT Gateway (India Central)', status: 'operational', uptime: '99.99%', latency: '218 ms' },
-    { name: 'Kavach 5-Stage Psychological Rule Engine', status: 'operational', uptime: '100.0%', latency: '0.8 ms' },
-    { name: 'Gnani Timbre Familial Voice Synthesis', status: 'operational', uptime: '99.95%', latency: '342 ms' },
-    { name: 'Telegram Caregiver Webhook Dispatch', status: 'operational', uptime: '99.98%', latency: '412 ms' },
-    { name: 'Guardian API & Authentication Service', status: 'operational', uptime: '100.0%', latency: '14 ms' },
-    { name: 'Tabletop Tablet Sync & Heartbeat WebSocket', status: 'operational', uptime: '99.97%', latency: '32 ms' },
+    { name: 'Gnani Prisma Streaming STT Gateway (India Central)', status: 'operational', mode: 'API Platform (Live / Mock)', latency: '~200-300 ms' },
+    { name: 'Kavach 5-Stage Psychological Rule Engine', status: 'operational', mode: 'Pure Python In-Memory', latency: '< 1.0 ms' },
+    { name: 'Gnani Timbre Familial Voice Synthesis', status: 'operational', mode: 'Vachana REST (Live / Prerender)', latency: '~350 ms' },
+    { name: 'Telegram Caregiver Webhook Dispatch', status: 'operational', mode: 'Async HTTPS Webhook', latency: '~400 ms' },
+    { name: 'Guardian API & Authentication Service', status: 'operational', mode: 'FastAPI / SQLite / Neon', latency: '< 15 ms' },
+    { name: 'Tabletop Tablet Sync & Heartbeat WebSocket', status: 'operational', mode: 'WebSocket Protocol', latency: '< 20 ms' },
   ];
 
   return (
@@ -48,17 +48,17 @@ export default function StatusPage() {
           </p>
         </div>
 
-        {/* Global Uptime Card */}
+        {/* Test Suite Telemetry Card */}
         <div className="bg-surface border border-hairline rounded-md p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm">
           <div className="space-y-1">
             <div className="text-caption font-bold text-primary uppercase">
-              30-Day Pipeline Reliability
+              Automated Verification Status
             </div>
-            <div className="text-display font-bold text-ink">99.98%</div>
-            <p className="text-caption text-body font-medium">Zero audio pipeline drops during active speakerphone sessions</p>
+            <div className="text-display font-bold text-ink">100% Offline Passing</div>
+            <p className="text-caption text-body font-medium">163 unit &amp; regression tests green · 0 flaky runs · Zero live credits consumed</p>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="primary">Operational</Badge>
+            <Badge variant="primary">Verified Green</Badge>
           </div>
         </div>
 
@@ -91,7 +91,7 @@ export default function StatusPage() {
                   <div className="text-muted text-micro font-mono">P95 Latency: {sub.latency}</div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-body font-bold">{sub.uptime}</span>
+                  <span className="font-mono text-caption text-body font-medium">{sub.mode}</span>
                   <Badge variant="primary">{sub.status}</Badge>
                 </div>
               </div>

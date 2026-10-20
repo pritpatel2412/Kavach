@@ -55,6 +55,7 @@ class PairingCodeIn(BaseModel):
 class PairDeviceIn(BaseModel):
     code: str = Field(..., min_length=6, max_length=10)
     elder_consent: bool
+    notice_version: str = Field(default="2026-10-elder-v1")
     label: str | None = None
 
 
@@ -421,6 +422,7 @@ def pair_device_with_code(body: PairDeviceIn):
         "elder_id": elder_id,
         "guardian_id": guardian_id,
         "elder_consent_ts": consent_ts,
+        "notice_version": body.notice_version,
         "label": label,
     }
 

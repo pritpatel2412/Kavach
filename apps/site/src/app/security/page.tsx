@@ -27,9 +27,9 @@ export default function SecurityArchitecturePage() {
       badge: 'Storage',
     },
     {
-      title: 'Sovereign Indian Data Infrastructure',
-      desc: 'All speech recognition, text synthesis, and database operations execute within verified data centers located physically within the Republic of India, complying fully with DPDP Act 2023 localization.',
-      badge: 'Compliance',
+      title: 'Speech Processing & Regional Infrastructure',
+      desc: 'Speech recognition and synthesis execute through Gnani.ai data centers within India. Operational databases are hosted on serverless PostgreSQL in AWS Singapore (ap-southeast-1) with zero audio or call transcripts stored.',
+      badge: 'Infrastructure',
     },
   ];
 

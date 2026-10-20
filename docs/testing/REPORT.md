@@ -55,7 +55,7 @@ All tests were executed against a local offline test harness adhering to the str
 
 ## 3. Detailed Defect Ledger
 
-All defects discovered during the test campaign are cataloged below and persisted in [docs/testing/defects.csv](file:///c:/Users/pritp/Downloads/kavach/docs/testing/defects.csv).
+All defects discovered during the test campaign are cataloged below and persisted in [`docs/testing/defects.csv`](./defects.csv).
 
 | ID | Severity | Area | Symptom & Test Identifier | Root Cause | Suggested Fix | Effort |
 | :--- | :---: | :--- | :--- | :--- | :--- | :---: |

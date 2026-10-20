@@ -118,13 +118,13 @@ def test_golden_values_for_every_plan_cycle_and_coupon_type():
     assert pm_none["gst_paise"] == 2273
     assert pm_none["total_paise"] == 14900  # 12627 + 2273 = 14900
 
-    # (b) DEMO50 (50% off pre-GST base)
+    # (b) DEMO50 (50% off advertised GST-inclusive price: ₹74.50 = 7450 paise total)
     pm_demo50 = calculate_pricing("plus", "monthly", coupon_code="DEMO50")
     assert pm_demo50["base_paise"] == 12627
-    assert pm_demo50["discount_paise"] == 6314
-    assert pm_demo50["taxable_paise"] == 6313
+    assert pm_demo50["discount_paise"] == 6313
+    assert pm_demo50["taxable_paise"] == 6314
     assert pm_demo50["gst_paise"] == 1136
-    assert pm_demo50["total_paise"] == 7449  # ₹74.49
+    assert pm_demo50["total_paise"] == 7450  # ₹74.50 exact (GST inside: 6314 + 1136)
 
     # (c) DEMOHDFC (flat ₹50 = 5000 paise off pre-GST base)
     pm_hdfc = calculate_pricing("plus", "monthly", coupon_code="DEMOHDFC")
@@ -143,10 +143,10 @@ def test_golden_values_for_every_plan_cycle_and_coupon_type():
 
     py_demo50 = calculate_pricing("plus", "yearly", coupon_code="DEMO50")
     assert py_demo50["base_paise"] == 110085
-    assert py_demo50["discount_paise"] == 55042
-    assert py_demo50["taxable_paise"] == 55043
+    assert py_demo50["discount_paise"] == 55043
+    assert py_demo50["taxable_paise"] == 55042
     assert py_demo50["gst_paise"] == 9908
-    assert py_demo50["total_paise"] == 64951
+    assert py_demo50["total_paise"] == 64950  # ₹649.50 exact
 
     py_hdfc = calculate_pricing("plus", "yearly", coupon_code="DEMOHDFC")
     assert py_hdfc["base_paise"] == 110085
@@ -166,8 +166,8 @@ def test_golden_values_for_every_plan_cycle_and_coupon_type():
     assert fm_demo50["base_paise"] == 25339
     assert fm_demo50["discount_paise"] == 12670
     assert fm_demo50["taxable_paise"] == 12669
-    assert fm_demo50["gst_paise"] == 2280
-    assert fm_demo50["total_paise"] == 14949
+    assert fm_demo50["gst_paise"] == 2281
+    assert fm_demo50["total_paise"] == 14950  # ₹149.50 exact
 
     fm_hdfc = calculate_pricing("family", "monthly", coupon_code="DEMOHDFC")
     assert fm_hdfc["base_paise"] == 25339

@@ -61,6 +61,25 @@ def test_d006_how_it_works_anchor_present_on_landing():
     assert 'id="how-it-works"' in content
 
 
+def test_d007_support_portal_url_uses_public_site_url():
+    """D-007: Support ticket creation must generate portal_url pointing to public site."""
+    s = get_settings()
+    with TestClient(app) as c:
+        res = c.post(
+            "/api/support",
+            json={
+                "name": "Regression Tester",
+                "email": "d007@example.com",
+                "category": "feedback",
+                "subject": "D007 Verification",
+                "message": "Verify portal URL format",
+            },
+        )
+        assert res.status_code == 200
+        portal_url = res.json()["portal_url"]
+        assert portal_url.startswith(f"{s.public_site_url}/support/t/")
+
+
 def test_d008_form_inputs_have_aria_labels():
     """D-008: Pricing inputs and SiteHeader search must have accessible aria-labels."""
     pricing_page = ROOT / "apps" / "site" / "src" / "app" / "pricing" / "page.tsx"

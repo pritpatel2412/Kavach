@@ -142,8 +142,9 @@ def run_blind_evaluation(blind_dir: Path | None = None, is_sealed: bool = False,
         print(" SEALED INDEPENDENT EVALUATION (SYNTHETIC TEXT TESTS)")
         print(" Mode: Zero-peeking aggregate metrics with 95% Wilson CI")
     else:
-        print(" INDEPENDENT BLIND EVALUATION (SYNTHETIC TEXT TESTS)")
-        print(" Note: Unseen external scripts; dictionaries untouched.")
+        print(" DEVELOPMENT SET RE-EVALUATION (SYNTHETIC TEXT TESTS)")
+        print(" Note: eval/blind is BURNED (inspected in Sprint X); original holdout was 2/10.")
+        print(" Performance shown is for the development set after revision.")
     print("=======================================================\n")
 
     scam_pct = (scam_detected / n_scam * 100.0) if n_scam else 0.0

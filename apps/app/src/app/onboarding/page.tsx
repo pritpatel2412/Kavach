@@ -218,13 +218,22 @@ export default function OnboardingPage() {
                   <Icon name="arrow-right-up-linear" size={12} />
                 </a>
               </div>
+ 
+              <div className="p-4 rounded-md bg-canvas border border-hairline space-y-2">
+                <div className="text-caption font-bold text-ink uppercase tracking-wider font-mono">
+                  Direct Elder Consent Requirement (DPDP Policy)
+                </div>
+                <p className="text-caption text-body leading-relaxed">
+                  Under India&apos;s DPDP framework, consent cannot be granted by a proxy or guardian checkbox. During device pairing (Step 5), {elderName} must review the plain-language notice and grant explicit consent directly by tapping the prompt on the tabletop tablet screen (Notice version: <strong className="font-mono text-primary font-bold">2026-10-elder-v1</strong>).
+                </p>
+              </div>
 
               <div className="pt-2">
                 <Checkbox
                   id="consent-check"
                   checked={consentAcknowledged}
                   onChange={(e) => setConsentAcknowledged(e.target.checked)}
-                  label={`I confirm that ${elderName} is aware that this tablet assists during speakerphone calls.`}
+                  label={`I acknowledge that ${elderName} must directly tap to grant consent on the tabletop tablet screen during device setup.`}
                 />
               </div>
 
@@ -377,7 +386,7 @@ export default function OnboardingPage() {
                   {pairingCode}
                 </div>
                 <p className="text-ui text-body max-w-sm mx-auto">
-                  On the tablet, navigate to <code className="text-green-strong font-mono font-bold">localhost:3001/elder</code> and enter this code to lock the device into Tabletop Mode.
+                  On the tablet, navigate to <code className="text-green-strong font-mono font-bold">localhost:3001/elder</code>, enter this code, and have <strong>{elderName}</strong> tap the on-screen consent prompt (Notice version <code className="font-mono text-primary font-bold">2026-10-elder-v1</code>) to activate Tabletop Mode.
                 </p>
               </div>
 

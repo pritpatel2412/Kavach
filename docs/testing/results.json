@@ -31,9 +31,9 @@
     "layer": "L1",
     "name": "Cross-Browser Viewport Matrix (33 Routes x 3 Viewports x 3 Browsers)",
     "status": "FAIL",
-    "passRate": "0/189",
+    "passRate": "181/189 (95.8%)",
     "evidence": "docs/testing/artifacts/L1_page_load_results.json",
-    "details": "0 successful page boots across Chromium, Firefox, and WebKit"
+    "details": "181 passed across 3 viewports and 3 browsers; 8 failures due to D-002 (judge table mobile overflow) and D-004 (favicon 404s)"
   },
   {
     "testId": "T-NAV-001",
