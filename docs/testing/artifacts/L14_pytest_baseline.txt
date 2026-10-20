@@ -1,0 +1,10 @@
+=== L14 REGRESSION BASELINE: PYTEST RUN ===
+Timestamp: 2026-10-19T06:21:24Z
+Command: .venv\Scripts\python.exe -m pytest --tb=short
+Platform: win32 -- Python 3.12.1, pytest-9.1.1, pluggy-1.7.0
+Rootdir: C:\Users\pritp\Downloads\kavach
+Config: pytest.ini
+
+Summary: 139 passed, 13 warnings in 133.78s (0:02:13)
+Result: PASS
+Status: GREEN (100% offline, zero Gnani credits consumed)

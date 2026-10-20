@@ -49,14 +49,14 @@ class WaitlistTagIn(BaseModel):
 
 
 class WaitlistInviteIn(BaseModel):
-    coupon_code: str = "KAVACH50"
+    coupon_code: str = "DEMO50"
 
 
 class BulkActionIn(BaseModel):
     ids: list[str] = Field(min_length=1)
     action: str = Field(pattern="^(tag|resend_confirm|invite|delete)$")
     tag: str | None = None
-    coupon_code: str | None = "KAVACH50"
+    coupon_code: str | None = "DEMO50"
 
 
 class CreateCampaignIn(BaseModel):

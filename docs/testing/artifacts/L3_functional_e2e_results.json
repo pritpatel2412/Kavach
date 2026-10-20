@@ -1,0 +1,137 @@
+[
+  {
+    "testId": "T-E2E-001",
+    "name": "Pricing Page Load",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Title: Kavach · Real-Time Scam-Call Guardian for Indian Elders",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-002",
+    "name": "Coupon Validation (DEMO50)",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "DEMO50 valid! Discount: 6314 paise, Total: 7449 paise",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-003",
+    "name": "Coupon Rejection (INVALID_XYZ_99)",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Non-existent code gracefully returned valid=false",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-004",
+    "name": "Waitlist Signup Submission",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Accepted: Thank you! Please check your email to confirm your waitlist reservation.",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-005",
+    "name": "Waitlist Double Opt-in Confirm Link",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Confirmed! Priority rank: 37",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-006",
+    "name": "Waitlist RFC 8058 Unsubscribe Link",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Contact added to suppression list",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-007",
+    "name": "Waitlist Honeypot Defense",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Honeypot trapped bot submission without persisting",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-008",
+    "name": "Support Intake & P0 Emergency",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Ticket: KAV-000117",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-009",
+    "name": "Customer Portal API Access",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Portal API retrieved ticket KAV-000117 (Status: open, Priority: urgent)",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-010",
+    "name": "Customer Portal Reply",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Customer message appended to thread",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-011",
+    "name": "Admin Origin Isolation",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Non-3002 origin rejected with HTTP 403",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-012",
+    "name": "Admin Magic Link Request",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Magic link generated for admin@kavach.ai",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-013",
+    "name": "Audit Hash Chain Verification",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "SHA-256 rolling digest cryptographically valid across 1 audit events",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-014",
+    "name": "Judge Mode Dashboard Initialization",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Judge panel armed with stage telemetry and audio mute",
+    "passRate": "3/3",
+    "status": "PASS"
+  },
+  {
+    "testId": "T-E2E-015",
+    "name": "STT Credit Quota & Usage Telemetry",
+    "passedCount": 3,
+    "totalRuns": 3,
+    "details": "Quota: 30 min/day, Used today: 0 min",
+    "passRate": "3/3",
+    "status": "PASS"
+  }
+]

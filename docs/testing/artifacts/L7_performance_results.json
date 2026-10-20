@@ -1,0 +1,26 @@
+[
+  {
+    "testId": "T-PERF-001",
+    "name": "API Concurrency Throughput (30 reqs)",
+    "status": "PASS",
+    "details": "Total time: 601.9ms, Avg per req: 20.06ms, All HTTP 200: true"
+  },
+  {
+    "testId": "T-PERF-002",
+    "name": "Next.js Frontend TTFB & Payload Transfer",
+    "status": "PASS",
+    "details": "TTFB: 149.2ms, HTML Payload: 57.0 KB"
+  },
+  {
+    "testId": "T-PERF-003",
+    "name": "Process Memory Soak & Heap Health",
+    "status": "PASS",
+    "details": "Node test runner Heap Used: 9.5 MB, RSS: 63.1 MB (Healthy bounded footprint)"
+  },
+  {
+    "testId": "T-PERF-004",
+    "name": "Sliding Window Rate Limiter Active Defense",
+    "status": "PASS",
+    "details": "Burst handled: accepted initial requests (HTTP 200) and throttled excessive rate (HTTP 429)"
+  }
+]

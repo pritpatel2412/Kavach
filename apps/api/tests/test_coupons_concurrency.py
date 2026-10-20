@@ -61,11 +61,12 @@ def test_integer_paise_and_gst_math():
         )
 
     res = calculate_pricing("plus", "monthly", coupon_code="TEST20")
-    assert res["base_paise"] == 14900
-    assert res["discount_paise"] == round(14900 * 0.20)  # 2980 paise
-    assert res["taxable_paise"] == 14900 - 2980          # 11920 paise
-    assert res["gst_paise"] == round(11920 * 0.18)       # 2146 paise
-    assert res["total_paise"] == 11920 + 2146            # 14066 paise
+    assert res["advertised_paise"] == 14900
+    assert res["base_paise"] == 12627                    # pre-GST base (round(14900 / 1.18))
+    assert res["discount_paise"] == round(12627 * 0.20)  # 2525 paise
+    assert res["taxable_paise"] == 12627 - 2525          # 10102 paise
+    assert res["gst_paise"] == round(10102 * 0.18)       # 1818 paise
+    assert res["total_paise"] == 10102 + 1818            # 11920 paise
 
     # Cap test: 90% coupon must be capped at 60%
     with db.db() as conn:
@@ -77,8 +78,125 @@ def test_integer_paise_and_gst_math():
             (now_iso,),
         )
     cap_res = calculate_pricing("plus", "monthly", coupon_code="GREEDY90")
-    assert cap_res["discount_paise"] == round(14900 * 0.60)
-    assert cap_res["taxable_paise"] == 14900 - 8940
+    assert cap_res["discount_paise"] == round(12627 * 0.60)  # 7576 paise
+    assert cap_res["taxable_paise"] == 12627 - 7576          # 5051 paise
+    assert cap_res["gst_paise"] == round(5051 * 0.18)        # 909 paise
+    assert cap_res["total_paise"] == 5051 + 909              # 5960 paise
+
+
+def test_golden_values_for_every_plan_cycle_and_coupon_type():
+    """X4: Comprehensive golden-value tests for every plan x cycle x coupon type."""
+    now_iso = datetime.now(timezone.utc).isoformat()
+    with db.db() as conn:
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO coupons (code, discount_type, discount_value, min_order_paise, max_per_user, is_active, created_by, created_at)
+            VALUES 
+                ('DEMO50', 'percent', 50, 0, 1, 1, 'owner@kavach.ai', ?),
+                ('DEMOHDFC', 'flat', 5000, 0, 1, 1, 'owner@kavach.ai', ?);
+            """,
+            (now_iso, now_iso),
+        )
+
+    # 1. Free plan
+    for cycle in ("monthly", "yearly"):
+        for ccode in (None, "DEMO50", "DEMOHDFC"):
+            res = calculate_pricing("free", cycle, coupon_code=ccode)
+            assert res["advertised_paise"] == 0
+            assert res["base_paise"] == 0
+            assert res["discount_paise"] == 0
+            assert res["gst_paise"] == 0
+            assert res["total_paise"] == 0
+
+    # 2. Plus Monthly (advertised ₹149 = 14900 paise)
+    # (a) No coupon: total equals advertised price
+    pm_none = calculate_pricing("plus", "monthly", coupon_code=None)
+    assert pm_none["advertised_paise"] == 14900
+    assert pm_none["base_paise"] == 12627
+    assert pm_none["discount_paise"] == 0
+    assert pm_none["taxable_paise"] == 12627
+    assert pm_none["gst_paise"] == 2273
+    assert pm_none["total_paise"] == 14900  # 12627 + 2273 = 14900
+
+    # (b) DEMO50 (50% off pre-GST base)
+    pm_demo50 = calculate_pricing("plus", "monthly", coupon_code="DEMO50")
+    assert pm_demo50["base_paise"] == 12627
+    assert pm_demo50["discount_paise"] == 6314
+    assert pm_demo50["taxable_paise"] == 6313
+    assert pm_demo50["gst_paise"] == 1136
+    assert pm_demo50["total_paise"] == 7449  # ₹74.49
+
+    # (c) DEMOHDFC (flat ₹50 = 5000 paise off pre-GST base)
+    pm_hdfc = calculate_pricing("plus", "monthly", coupon_code="DEMOHDFC")
+    assert pm_hdfc["base_paise"] == 12627
+    assert pm_hdfc["discount_paise"] == 5000
+    assert pm_hdfc["taxable_paise"] == 7627
+    assert pm_hdfc["gst_paise"] == 1373
+    assert pm_hdfc["total_paise"] == 9000  # ₹90.00
+
+    # 3. Plus Yearly (advertised ₹1,299 = 129900 paise)
+    py_none = calculate_pricing("plus", "yearly", coupon_code=None)
+    assert py_none["advertised_paise"] == 129900
+    assert py_none["base_paise"] == 110085
+    assert py_none["gst_paise"] == 19815
+    assert py_none["total_paise"] == 129900  # 110085 + 19815 = 129900
+
+    py_demo50 = calculate_pricing("plus", "yearly", coupon_code="DEMO50")
+    assert py_demo50["base_paise"] == 110085
+    assert py_demo50["discount_paise"] == 55042
+    assert py_demo50["taxable_paise"] == 55043
+    assert py_demo50["gst_paise"] == 9908
+    assert py_demo50["total_paise"] == 64951
+
+    py_hdfc = calculate_pricing("plus", "yearly", coupon_code="DEMOHDFC")
+    assert py_hdfc["base_paise"] == 110085
+    assert py_hdfc["discount_paise"] == 5000
+    assert py_hdfc["taxable_paise"] == 105085
+    assert py_hdfc["gst_paise"] == 18915
+    assert py_hdfc["total_paise"] == 124000
+
+    # 4. Family Monthly (advertised ₹299 = 29900 paise)
+    fm_none = calculate_pricing("family", "monthly", coupon_code=None)
+    assert fm_none["advertised_paise"] == 29900
+    assert fm_none["base_paise"] == 25339
+    assert fm_none["gst_paise"] == 4561
+    assert fm_none["total_paise"] == 29900  # 25339 + 4561 = 29900
+
+    fm_demo50 = calculate_pricing("family", "monthly", coupon_code="DEMO50")
+    assert fm_demo50["base_paise"] == 25339
+    assert fm_demo50["discount_paise"] == 12670
+    assert fm_demo50["taxable_paise"] == 12669
+    assert fm_demo50["gst_paise"] == 2280
+    assert fm_demo50["total_paise"] == 14949
+
+    fm_hdfc = calculate_pricing("family", "monthly", coupon_code="DEMOHDFC")
+    assert fm_hdfc["base_paise"] == 25339
+    assert fm_hdfc["discount_paise"] == 5000
+    assert fm_hdfc["taxable_paise"] == 20339
+    assert fm_hdfc["gst_paise"] == 3661
+    assert fm_hdfc["total_paise"] == 24000
+
+    # 5. Family Yearly (advertised ₹2,499 = 249900 paise)
+    fy_none = calculate_pricing("family", "yearly", coupon_code=None)
+    assert fy_none["advertised_paise"] == 249900
+    assert fy_none["base_paise"] == 211780
+    assert fy_none["gst_paise"] == 38120
+    assert fy_none["total_paise"] == 249900  # 211780 + 38120 = 249900
+
+    fy_demo50 = calculate_pricing("family", "yearly", coupon_code="DEMO50")
+    assert fy_demo50["base_paise"] == 211780
+    assert fy_demo50["discount_paise"] == 105890
+    assert fy_demo50["taxable_paise"] == 105890
+    assert fy_demo50["gst_paise"] == 19060
+    assert fy_demo50["total_paise"] == 124950
+
+    fy_hdfc = calculate_pricing("family", "yearly", coupon_code="DEMOHDFC")
+    assert fy_hdfc["base_paise"] == 211780
+    assert fy_hdfc["discount_paise"] == 5000
+    assert fy_hdfc["taxable_paise"] == 206780
+    assert fy_hdfc["gst_paise"] == 37220
+    assert fy_hdfc["total_paise"] == 244000
+
 
 
 def test_public_coupon_validate_api():

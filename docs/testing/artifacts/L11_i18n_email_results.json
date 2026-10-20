@@ -1,0 +1,26 @@
+[
+  {
+    "testId": "T-EML-001",
+    "name": "Multi-Language Email Template Rendering (en/hi/gu)",
+    "status": "PASS",
+    "details": "Successfully rendered 27 template-locale permutations without missing key errors"
+  },
+  {
+    "testId": "T-EML-002",
+    "name": "RFC 8058 One-Click List-Unsubscribe Header",
+    "status": "PASS",
+    "details": "Marketing emails attach List-Unsubscribe and List-Unsubscribe-Post: List-Unsubscribe=One-Click"
+  },
+  {
+    "testId": "T-EML-003",
+    "name": "SMTP Header Injection CRLF Neutralization",
+    "status": "PASS",
+    "details": "Injected \\r\\n carriage returns in header values strictly trapped with ValueError"
+  },
+  {
+    "testId": "T-EML-004",
+    "name": "Email Suppression List Gatekeeper",
+    "status": "PASS",
+    "details": "Suppressed email addresses blocked from delivery; active contacts permitted"
+  }
+]

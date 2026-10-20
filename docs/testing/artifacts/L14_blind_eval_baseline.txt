@@ -1,0 +1,11 @@
+=== L14 REGRESSION BASELINE: BLIND EVAL RUN ===
+Timestamp: 2026-10-19T06:25:06Z
+Command: .venv\Scripts\python.exe eval/run_blind.py
+
+Summary:
+- Total Blind Calls: 20
+- Scam Recall (L2+): 2 / 10 (20.0%) · 95% CI: [5.7%, 51.0%]
+- Benign False Alarm Rate (L2+): 0 / 10 (0.0%) · 95% CI: [0.0%, 27.8%]
+- Matches docs/CLAIMS.md and STATUS.md exactly.
+Result: PASS
+Status: HONEST / UNTOUCHED DICTIONARIES

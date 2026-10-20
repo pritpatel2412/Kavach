@@ -1,0 +1,20 @@
+[
+  {
+    "testId": "T-CLM-001",
+    "name": "Public Evidence & Macro Stat Traceability (CLAIMS.md)",
+    "status": "PASS",
+    "details": "National Cybercrime Helpline 1930 protocol referenced in guidance copy"
+  },
+  {
+    "testId": "T-CLM-002",
+    "name": "Zero Placeholder Text (Lorem / TODO / FIXME)",
+    "status": "PASS",
+    "details": "No lorem ipsum or developer TODOs found across any rendered views"
+  },
+  {
+    "testId": "T-CLM-003",
+    "name": "Dynamic Brand Name & Domain Parameterization",
+    "status": "PASS",
+    "details": "Settings properly parameterized: brand_name='Kavach', brand_domain='kavach.ai'"
+  }
+]

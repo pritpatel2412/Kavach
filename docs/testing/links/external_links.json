@@ -1,0 +1,22 @@
+{
+  "https://www.newsbytesapp.com/news/science/india-s-digital-arrest-scam-causes-4-000cr-losses-in-3-years/story": {
+    "source": "http://localhost:3000/",
+    "status": 200
+  },
+  "https://www.punekarnews.in/?p=245348": {
+    "source": "http://localhost:3000/",
+    "status": 200
+  },
+  "https://cybercrime.gov.in": {
+    "source": "http://localhost:3000/",
+    "status": 200
+  },
+  "https://github.com/pritp/kavach": {
+    "source": "http://localhost:3000/",
+    "status": 404
+  },
+  "http://localhost:8000/?mock=1&judge=1": {
+    "source": "http://localhost:3000/features",
+    "status": 200
+  }
+}

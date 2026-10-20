@@ -1,0 +1,38 @@
+[
+  {
+    "testId": "T-RT-001",
+    "name": "WebSocket Session Handshake",
+    "status": "PASS",
+    "details": "Connected successfully, received state: {\"type\":\"state\",\"state\":\"listening\",\"lang\":\"hi\",\"mock\":true,\"session_id\":\"a63f170ed22043c480432ee5c159dccf\",\"stt_minutes_today\":0.40623333333332995,\"max_stt_minutes_per_day\":30}"
+  },
+  {
+    "testId": "T-RT-002",
+    "name": "1024-byte PCM16 Realtime Cadence Streaming",
+    "status": "PASS",
+    "details": "Sent 5 frames of 1024 bytes without socket error"
+  },
+  {
+    "testId": "T-RT-003",
+    "name": "Malformed Frame Server Resilience",
+    "status": "PASS",
+    "details": "Server handled malformed binary/text frames without crashing (Health: ok)"
+  },
+  {
+    "testId": "T-RT-004",
+    "name": "Echo Gate Silence Substitution",
+    "status": "PASS",
+    "details": "FR-5 echo gate substitutes exact 1024-byte silence frame when warning plays, preserving VAD cadence"
+  },
+  {
+    "testId": "T-RT-005",
+    "name": "Abrupt Socket Closure Cleanup",
+    "status": "PASS",
+    "details": "Server safely caught WebSocketDisconnect and cleaned session state without hanging threads"
+  },
+  {
+    "testId": "T-RT-006",
+    "name": "Email Outbox Enqueue & State Machine",
+    "status": "PASS",
+    "details": "Outbox item created in state 'queued' with attempts=0"
+  }
+]

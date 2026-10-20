@@ -31,12 +31,12 @@ export default function BillingPage() {
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
-    if (couponCode.trim().toUpperCase() === 'KAVACH50') {
+    if (couponCode.trim().toUpperCase() === 'DEMO50') {
       setDiscountPercent(50);
-      setCouponStatus('success: KAVACH50 applied! 50% discount for first 3 months.');
+      setCouponStatus('success: DEMO50 applied! 50% discount for first 3 months.');
     } else {
       setDiscountPercent(0);
-      setCouponStatus('error: Invalid coupon code. Try KAVACH50 for beta discount.');
+      setCouponStatus('error: Invalid coupon code. Please check your beta invite email.');
     }
   };
 
@@ -203,7 +203,7 @@ export default function BillingPage() {
           <form onSubmit={handleApplyCoupon} className="flex flex-col sm:flex-row gap-3 max-w-md">
             <input
               type="text"
-              placeholder="e.g. KAVACH50"
+              placeholder="e.g. DEMO50"
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
               className="px-4 py-2 rounded-full border border-hairline bg-surface text-ink text-ui font-mono uppercase focus:outline-none focus:border-primary flex-1"

@@ -1,0 +1,12 @@
+=== L14 REGRESSION BASELINE: EVAL RUN ===
+Timestamp: 2026-10-19T06:23:02Z
+Command: .venv\Scripts\python.exe eval/run_eval.py
+
+Summary:
+- Clean: 36/36 (100.0%) [90.4%, 100.0%] | Benign False Alarms: 0/32 (0.0%)
+- WER 10%: 36/37 (97.3%) | Benign False Alarms: 1/33 (3.0%)
+- Typical Speakerphone (WER 20%): 36/37 (97.3%) | Benign False Alarms: 0/33 (0.0%)
+- Unseen Test Split (WER 20%): 19/19 (100.0%) | Benign False Alarms: 0/15 (0.0%)
+- Ambient False Alarm Benchmark (400 segments): 0 / 400 (0.0 alerts / 1,000 segments)
+Result: PASS
+Status: GREEN (100% offline, zero Gnani credits consumed)

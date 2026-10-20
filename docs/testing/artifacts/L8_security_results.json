@@ -1,0 +1,32 @@
+[
+  {
+    "testId": "T-SEC-001",
+    "name": "Anonymous Admin API Rejection Sweep",
+    "status": "PASS",
+    "details": "Protected 5/5 sensitive admin endpoints (HTTP 401/403)"
+  },
+  {
+    "testId": "T-SEC-002",
+    "name": "Admin Origin Isolation Enforcement",
+    "status": "PASS",
+    "details": "Cross-origin request strictly rejected with HTTP 403 (Forbidden)"
+  },
+  {
+    "testId": "T-SEC-003",
+    "name": "CSRF Token Enforcement on State Mutations",
+    "status": "PASS",
+    "details": "Mutating POST without CSRF header rejected with HTTP 403"
+  },
+  {
+    "testId": "T-SEC-004",
+    "name": "Zero Server Secrets / API Keys in Client HTML",
+    "status": "PASS",
+    "details": "No raw credentials, database strings, or Gnani tokens leaked in rendered client HTML"
+  },
+  {
+    "testId": "T-SEC-005",
+    "name": "API Content-Type & Transport Hygiene",
+    "status": "PASS",
+    "details": "Response sets proper Content-Type: application/json"
+  }
+]

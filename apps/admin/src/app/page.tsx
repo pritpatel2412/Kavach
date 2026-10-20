@@ -55,7 +55,7 @@ export default function AdminConsolePage() {
   const [replyText, setReplyText] = useState('');
 
   // Coupon Simulator state
-  const [simCode, setSimCode] = useState('KAVACH50');
+  const [simCode, setSimCode] = useState('DEMO50');
   const [simPlan, setSimPlan] = useState('plan_plus');
   const [simResult, setSimResult] = useState<string | null>(null);
 
@@ -119,7 +119,7 @@ export default function AdminConsolePage() {
   };
 
   const handleSimulateCoupon = () => {
-    if (simCode.toUpperCase() === 'KAVACH50') {
+    if (simCode.toUpperCase() === 'DEMO50') {
       setSimResult('VALID: 50% discount applies to Plus/Family. Discounted price: ₹74.50 (pre-tax: ₹63.14 + ₹11.36 GST). 60% cap respected.');
     } else if (simCode.toUpperCase() === 'DIWALI60') {
       setSimResult('VALID: 60% discount ceiling reached. Discounted price: ₹59.60. Max allowed.');
@@ -156,7 +156,7 @@ export default function AdminConsolePage() {
     { type: 'Waitlist', id: 'WL-402', title: 'Meera Shah (Ahmedabad, Gujarati)', module: 'waitlist' },
     { type: 'Ticket', id: 'KAV-000101', title: 'SCAM EMERGENCY: Live CBI Digital Arrest Call', module: 'support' },
     { type: 'Ticket', id: 'KAV-000102', title: 'Billing: GST Invoice for Plus Plan Renewal', module: 'support' },
-    { type: 'Coupon', id: 'KAVACH50', title: '50% off Plus/Family quarterly promotion', module: 'coupons' },
+    { type: 'Coupon', id: 'DEMO50', title: '50% off Plus/Family quarterly promotion', module: 'coupons' },
     { type: 'Coupon', id: 'DIWALI60', title: '60% festive cap discount code', module: 'coupons' },
   ];
 
@@ -664,7 +664,7 @@ export default function AdminConsolePage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-surface border border-hairline rounded-md p-5 space-y-2 text-xs font-mono">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-ink text-sm">KAVACH50</span>
+                    <span className="font-bold text-ink text-sm">DEMO50</span>
                     <span className="px-2 py-0.5 rounded-sm bg-green-surface text-green-strong text-[10px] font-bold border border-green-light">50% OFF</span>
                   </div>
                   <div className="text-body">Plus &amp; Family Plans · Max 3 months</div>

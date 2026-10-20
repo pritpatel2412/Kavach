@@ -1,0 +1,560 @@
+[
+  {
+    "testId": "T-REG-001",
+    "layer": "L14",
+    "name": "Pytest Offline Unit & Integration Suite",
+    "status": "PASS",
+    "passRate": "139/139 (100%)",
+    "evidence": "docs/testing/artifacts/L14_pytest_baseline.txt",
+    "details": "139 passed in 133.78s with zero failures"
+  },
+  {
+    "testId": "T-REG-002",
+    "layer": "L14",
+    "name": "Multilingual Synthetic Eval Suite",
+    "status": "PASS",
+    "passRate": "36/36 (100%)",
+    "evidence": "docs/testing/artifacts/L14_eval_baseline.txt",
+    "details": "100% clean recall, 97.3% at WER 20%, 0.0 ambient false alarms across 400 segments"
+  },
+  {
+    "testId": "T-REG-003",
+    "layer": "L14",
+    "name": "Independent Blind Holdout Scenarios",
+    "status": "PASS",
+    "passRate": "Locked Baseline",
+    "evidence": "docs/testing/artifacts/L14_blind_eval_baseline.txt",
+    "details": "2/10 recall, 0/10 false alarms without touching detector dictionaries"
+  },
+  {
+    "testId": "T-SMOKE-001",
+    "layer": "L1",
+    "name": "Cross-Browser Viewport Matrix (33 Routes x 3 Viewports x 3 Browsers)",
+    "status": "FAIL",
+    "passRate": "0/189",
+    "evidence": "docs/testing/artifacts/L1_page_load_results.json",
+    "details": "0 successful page boots across Chromium, Firefox, and WebKit"
+  },
+  {
+    "testId": "T-NAV-001",
+    "layer": "L2",
+    "name": "Internal & External Link Crawl Integrity",
+    "status": "FAIL",
+    "passRate": "34/35 internal routes ok (1 broken external github link)",
+    "evidence": "docs/testing/links/broken_links.json",
+    "details": "Identified D-005 (broken GitHub repo owner) and D-006 (landing page anchor mismatch)"
+  },
+  {
+    "testId": "T-E2E-001",
+    "layer": "L3",
+    "name": "Pricing Page Load",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Title: Kavach · Real-Time Scam-Call Guardian for Indian Elders"
+  },
+  {
+    "testId": "T-E2E-002",
+    "layer": "L3",
+    "name": "Coupon Validation (DEMO50)",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "DEMO50 valid! Discount: 6314 paise, Total: 7449 paise"
+  },
+  {
+    "testId": "T-E2E-003",
+    "layer": "L3",
+    "name": "Coupon Rejection (INVALID_XYZ_99)",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Non-existent code gracefully returned valid=false"
+  },
+  {
+    "testId": "T-E2E-004",
+    "layer": "L3",
+    "name": "Waitlist Signup Submission",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Accepted: Thank you! Please check your email to confirm your waitlist reservation."
+  },
+  {
+    "testId": "T-E2E-005",
+    "layer": "L3",
+    "name": "Waitlist Double Opt-in Confirm Link",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Confirmed! Priority rank: 37"
+  },
+  {
+    "testId": "T-E2E-006",
+    "layer": "L3",
+    "name": "Waitlist RFC 8058 Unsubscribe Link",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Contact added to suppression list"
+  },
+  {
+    "testId": "T-E2E-007",
+    "layer": "L3",
+    "name": "Waitlist Honeypot Defense",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Honeypot trapped bot submission without persisting"
+  },
+  {
+    "testId": "T-E2E-008",
+    "layer": "L3",
+    "name": "Support Intake & P0 Emergency",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Ticket: KAV-000117"
+  },
+  {
+    "testId": "T-E2E-009",
+    "layer": "L3",
+    "name": "Customer Portal API Access",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Portal API retrieved ticket KAV-000117 (Status: open, Priority: urgent)"
+  },
+  {
+    "testId": "T-E2E-010",
+    "layer": "L3",
+    "name": "Customer Portal Reply",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Customer message appended to thread"
+  },
+  {
+    "testId": "T-E2E-011",
+    "layer": "L3",
+    "name": "Admin Origin Isolation",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Non-3002 origin rejected with HTTP 403"
+  },
+  {
+    "testId": "T-E2E-012",
+    "layer": "L3",
+    "name": "Admin Magic Link Request",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Magic link generated for admin@kavach.ai"
+  },
+  {
+    "testId": "T-E2E-013",
+    "layer": "L3",
+    "name": "Audit Hash Chain Verification",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "SHA-256 rolling digest cryptographically valid across 1 audit events"
+  },
+  {
+    "testId": "T-E2E-014",
+    "layer": "L3",
+    "name": "Judge Mode Dashboard Initialization",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Judge panel armed with stage telemetry and audio mute"
+  },
+  {
+    "testId": "T-E2E-015",
+    "layer": "L3",
+    "name": "STT Credit Quota & Usage Telemetry",
+    "status": "PASS",
+    "passRate": "3/3",
+    "evidence": "docs/testing/artifacts/L3_functional_e2e_results.json",
+    "details": "Quota: 30 min/day, Used today: 0 min"
+  },
+  {
+    "testId": "T-RT-001",
+    "layer": "L4",
+    "name": "WebSocket Session Handshake",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L4_realtime_resilience_results.json",
+    "details": "Connected successfully, received state: {\"type\":\"state\",\"state\":\"listening\",\"lang\":\"hi\",\"mock\":true,\"session_id\":\"a63f170ed22043c480432ee5c159dccf\",\"stt_minutes_today\":0.40623333333332995,\"max_stt_minutes_per_day\":30}"
+  },
+  {
+    "testId": "T-RT-002",
+    "layer": "L4",
+    "name": "1024-byte PCM16 Realtime Cadence Streaming",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L4_realtime_resilience_results.json",
+    "details": "Sent 5 frames of 1024 bytes without socket error"
+  },
+  {
+    "testId": "T-RT-003",
+    "layer": "L4",
+    "name": "Malformed Frame Server Resilience",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L4_realtime_resilience_results.json",
+    "details": "Server handled malformed binary/text frames without crashing (Health: ok)"
+  },
+  {
+    "testId": "T-RT-004",
+    "layer": "L4",
+    "name": "Echo Gate Silence Substitution",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L4_realtime_resilience_results.json",
+    "details": "FR-5 echo gate substitutes exact 1024-byte silence frame when warning plays, preserving VAD cadence"
+  },
+  {
+    "testId": "T-RT-005",
+    "layer": "L4",
+    "name": "Abrupt Socket Closure Cleanup",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L4_realtime_resilience_results.json",
+    "details": "Server safely caught WebSocketDisconnect and cleaned session state without hanging threads"
+  },
+  {
+    "testId": "T-RT-006",
+    "layer": "L4",
+    "name": "Email Outbox Enqueue & State Machine",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L4_realtime_resilience_results.json",
+    "details": "Outbox item created in state 'queued' with attempts=0"
+  },
+  {
+    "testId": "T-INP-001",
+    "layer": "L5",
+    "name": "XSS Injection Payload Neutralization",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L5_form_input_robustness_results.json",
+    "details": "Stored verbatim in JSON string; no script execution or unescaped HTML injection"
+  },
+  {
+    "testId": "T-INP-002",
+    "layer": "L5",
+    "name": "SQL Injection Immunity (Parameterized SQL)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L5_form_input_robustness_results.json",
+    "details": "Injection string 'admin' OR '1'='1' --' safely evaluated without syntax error or auth bypass"
+  },
+  {
+    "testId": "T-INP-003",
+    "layer": "L5",
+    "name": "Multilingual Indic Unicode Integrity",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L5_form_input_robustness_results.json",
+    "details": "Devanagari and Gujarati Unicode glyphs, ZWJ sequences, and emojis round-tripped with zero mojibake"
+  },
+  {
+    "testId": "T-INP-004",
+    "layer": "L5",
+    "name": "Field Boundary Enforcement (Max Length)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L5_form_input_robustness_results.json",
+    "details": "Oversized input (5,000 chars) strictly rejected with HTTP 422 (Unprocessable Entity)"
+  },
+  {
+    "testId": "T-INP-005",
+    "layer": "L5",
+    "name": "Rapid Concurrent Double-Submit Stability",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L5_form_input_robustness_results.json",
+    "details": "Concurrent submissions handled idempotently and safely without race lock or 500 crashes"
+  },
+  {
+    "testId": "T-A11Y-001",
+    "layer": "L6",
+    "name": "Page Semantic Landmarks & Single H1",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L6_accessibility_results.json",
+    "details": "H1 count: 1 (\"Hang\nup.\nIt's\na\nscam....\"), <main>: true, <nav>: true"
+  },
+  {
+    "testId": "T-A11Y-002",
+    "layer": "L6",
+    "name": "Form Control Label Association (WCAG 1.3.1 / 4.1.2)",
+    "status": "FAIL",
+    "passRate": "0/1",
+    "evidence": "docs/testing/artifacts/L6_accessibility_results.json",
+    "details": "Unlabeled controls found: Try KAVACH50, kavach_bot_check"
+  },
+  {
+    "testId": "T-A11Y-003",
+    "layer": "L6",
+    "name": "Image Non-Text Content Alternatives (WCAG 1.1.1)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L6_accessibility_results.json",
+    "details": "All images have alt attributes (meaningful or decorative)"
+  },
+  {
+    "testId": "T-A11Y-004",
+    "layer": "L6",
+    "name": "Sequential Keyboard Focus Traversal (WCAG 2.1.1)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L6_accessibility_results.json",
+    "details": "Tab cycle traversed interactive DOM elements: A (Kavach) -> A (How it works) -> A (Features) -> A (Pricing) -> A (Story)"
+  },
+  {
+    "testId": "T-A11Y-005",
+    "layer": "L6",
+    "name": "200% Zoom Responsive Reflow (WCAG 1.4.10)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L6_accessibility_results.json",
+    "details": "Reflow passed: scrollWidth (640px) <= clientWidth (640px)"
+  },
+  {
+    "testId": "T-A11Y-006",
+    "layer": "L6",
+    "name": "Elder Interface Visual Prominence & Large Typography",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L6_accessibility_results.json",
+    "details": "Elder screen rendered primary typography at 48px"
+  },
+  {
+    "testId": "T-PERF-001",
+    "layer": "L7",
+    "name": "API Concurrency Throughput (30 reqs)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L7_performance_results.json",
+    "details": "Total time: 601.9ms, Avg per req: 20.06ms, All HTTP 200: true"
+  },
+  {
+    "testId": "T-PERF-002",
+    "layer": "L7",
+    "name": "Next.js Frontend TTFB & Payload Transfer",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L7_performance_results.json",
+    "details": "TTFB: 149.2ms, HTML Payload: 57.0 KB"
+  },
+  {
+    "testId": "T-PERF-003",
+    "layer": "L7",
+    "name": "Process Memory Soak & Heap Health",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L7_performance_results.json",
+    "details": "Node test runner Heap Used: 9.5 MB, RSS: 63.1 MB (Healthy bounded footprint)"
+  },
+  {
+    "testId": "T-PERF-004",
+    "layer": "L7",
+    "name": "Sliding Window Rate Limiter Active Defense",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L7_performance_results.json",
+    "details": "Burst handled: accepted initial requests (HTTP 200) and throttled excessive rate (HTTP 429)"
+  },
+  {
+    "testId": "T-SEC-001",
+    "layer": "L8",
+    "name": "Anonymous Admin API Rejection Sweep",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L8_security_results.json",
+    "details": "Protected 5/5 sensitive admin endpoints (HTTP 401/403)"
+  },
+  {
+    "testId": "T-SEC-002",
+    "layer": "L8",
+    "name": "Admin Origin Isolation Enforcement",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L8_security_results.json",
+    "details": "Cross-origin request strictly rejected with HTTP 403 (Forbidden)"
+  },
+  {
+    "testId": "T-SEC-003",
+    "layer": "L8",
+    "name": "CSRF Token Enforcement on State Mutations",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L8_security_results.json",
+    "details": "Mutating POST without CSRF header rejected with HTTP 403"
+  },
+  {
+    "testId": "T-SEC-004",
+    "layer": "L8",
+    "name": "Zero Server Secrets / API Keys in Client HTML",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L8_security_results.json",
+    "details": "No raw credentials, database strings, or Gnani tokens leaked in rendered client HTML"
+  },
+  {
+    "testId": "T-SEC-005",
+    "layer": "L8",
+    "name": "API Content-Type & Transport Hygiene",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L8_security_results.json",
+    "details": "Response sets proper Content-Type: application/json"
+  },
+  {
+    "testId": "T-PRIV-001",
+    "layer": "L9",
+    "name": "7-Day Transcript / Event Auto-Purge",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L9_data_privacy_results.json",
+    "details": "Old events (>7 days) automatically purged; recent events (<7 days) preserved intact"
+  },
+  {
+    "testId": "T-PRIV-002",
+    "layer": "L9",
+    "name": "Zero Raw Audio Storage Enforcement",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L9_data_privacy_results.json",
+    "details": "Verified: 0 raw user audio files stored on disk or server directories"
+  },
+  {
+    "testId": "T-PRIV-003",
+    "layer": "L9",
+    "name": "DSR Data Export Functionality",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L9_data_privacy_results.json",
+    "details": "Export job generated: exp_a93b1af91ea731dd (68 rows, format: csv)"
+  },
+  {
+    "testId": "T-PRIV-004",
+    "layer": "L9",
+    "name": "DPDP Voice Consent Recording & Erasure",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L9_data_privacy_results.json",
+    "details": "Consent record explicitly tracked; soft-delete timestamp revokes embedding model"
+  },
+  {
+    "testId": "T-CLM-001",
+    "layer": "L10",
+    "name": "Public Evidence & Macro Stat Traceability (CLAIMS.md)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L10_content_claims_results.json",
+    "details": "National Cybercrime Helpline 1930 protocol referenced in guidance copy"
+  },
+  {
+    "testId": "T-CLM-002",
+    "layer": "L10",
+    "name": "Zero Placeholder Text (Lorem / TODO / FIXME)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L10_content_claims_results.json",
+    "details": "No lorem ipsum or developer TODOs found across any rendered views"
+  },
+  {
+    "testId": "T-CLM-003",
+    "layer": "L10",
+    "name": "Dynamic Brand Name & Domain Parameterization",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L10_content_claims_results.json",
+    "details": "Settings properly parameterized: brand_name='Kavach', brand_domain='kavach.ai'"
+  },
+  {
+    "testId": "T-EML-001",
+    "layer": "L11",
+    "name": "Multi-Language Email Template Rendering (en/hi/gu)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L11_i18n_email_results.json",
+    "details": "Successfully rendered 27 template-locale permutations without missing key errors"
+  },
+  {
+    "testId": "T-EML-002",
+    "layer": "L11",
+    "name": "RFC 8058 One-Click List-Unsubscribe Header",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L11_i18n_email_results.json",
+    "details": "Marketing emails attach List-Unsubscribe and List-Unsubscribe-Post: List-Unsubscribe=One-Click"
+  },
+  {
+    "testId": "T-EML-003",
+    "layer": "L11",
+    "name": "SMTP Header Injection CRLF Neutralization",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L11_i18n_email_results.json",
+    "details": "Injected \\r\\n carriage returns in header values strictly trapped with ValueError"
+  },
+  {
+    "testId": "T-EML-004",
+    "layer": "L11",
+    "name": "Email Suppression List Gatekeeper",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L11_i18n_email_results.json",
+    "details": "Suppressed email addresses blocked from delivery; active contacts permitted"
+  },
+  {
+    "testId": "T-THM-001",
+    "layer": "L12-L13",
+    "name": "Body Background Token #e3e8dc (CoinCompass Law)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L12_l13_theme_seo_results.json",
+    "details": "Computed body background: rgb(227, 232, 220) (Expected: rgb(227, 232, 220))"
+  },
+  {
+    "testId": "T-THM-002",
+    "layer": "L12-L13",
+    "name": "Container 28px Rounded Geometry",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L12_l13_theme_seo_results.json",
+    "details": "Computed container border-radius: 28px"
+  },
+  {
+    "testId": "T-THM-003",
+    "layer": "L12-L13",
+    "name": "Accent Lime #c8f542 Component Theming",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L12_l13_theme_seo_results.json",
+    "details": "Primary CTAs / accents incorporate #c8f542 (rgb(200, 245, 66))"
+  },
+  {
+    "testId": "T-SEO-001",
+    "layer": "L12-L13",
+    "name": "Core SEO Metadata (Title & Meta Description)",
+    "status": "PASS",
+    "passRate": "1/1",
+    "evidence": "docs/testing/artifacts/L12_l13_theme_seo_results.json",
+    "details": "Title: \"Kavach · Real-Time Scam-Call Guardian for Indian Elders\", Description length: 163 chars"
+  },
+  {
+    "testId": "T-SEO-002",
+    "layer": "L12-L13",
+    "name": "OpenGraph Social Sharing Tags",
+    "status": "FAIL",
+    "passRate": "0/1",
+    "evidence": "docs/testing/artifacts/L12_l13_theme_seo_results.json",
+    "details": "OpenGraph meta tags configured"
+  }
+]

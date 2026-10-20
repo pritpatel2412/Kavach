@@ -1,0 +1,42 @@
+[
+  {
+    "source": "http://localhost:3000/",
+    "anchor": "#",
+    "reason": "Target element not found in DOM"
+  },
+  {
+    "source": "http://localhost:3000/",
+    "anchor": "#how-it-works",
+    "reason": "Target element not found in DOM"
+  },
+  {
+    "source": "http://localhost:3000/",
+    "anchor": "#how-it-works",
+    "reason": "Target element not found in DOM"
+  },
+  {
+    "source": "http://localhost:3000/",
+    "anchor": "#how-it-works",
+    "reason": "Target element not found in DOM"
+  },
+  {
+    "source": "http://localhost:3000",
+    "anchor": "#",
+    "reason": "Target element not found in DOM"
+  },
+  {
+    "source": "http://localhost:3000",
+    "anchor": "#how-it-works",
+    "reason": "Target element not found in DOM"
+  },
+  {
+    "source": "http://localhost:3000",
+    "anchor": "#how-it-works",
+    "reason": "Target element not found in DOM"
+  },
+  {
+    "source": "http://localhost:3000",
+    "anchor": "#how-it-works",
+    "reason": "Target element not found in DOM"
+  }
+]

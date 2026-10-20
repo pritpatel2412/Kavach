@@ -1,0 +1,32 @@
+[
+  {
+    "testId": "T-INP-001",
+    "name": "XSS Injection Payload Neutralization",
+    "status": "PASS",
+    "details": "Stored verbatim in JSON string; no script execution or unescaped HTML injection"
+  },
+  {
+    "testId": "T-INP-002",
+    "name": "SQL Injection Immunity (Parameterized SQL)",
+    "status": "PASS",
+    "details": "Injection string 'admin' OR '1'='1' --' safely evaluated without syntax error or auth bypass"
+  },
+  {
+    "testId": "T-INP-003",
+    "name": "Multilingual Indic Unicode Integrity",
+    "status": "PASS",
+    "details": "Devanagari and Gujarati Unicode glyphs, ZWJ sequences, and emojis round-tripped with zero mojibake"
+  },
+  {
+    "testId": "T-INP-004",
+    "name": "Field Boundary Enforcement (Max Length)",
+    "status": "PASS",
+    "details": "Oversized input (5,000 chars) strictly rejected with HTTP 422 (Unprocessable Entity)"
+  },
+  {
+    "testId": "T-INP-005",
+    "name": "Rapid Concurrent Double-Submit Stability",
+    "status": "PASS",
+    "details": "Concurrent submissions handled idempotently and safely without race lock or 500 crashes"
+  }
+]

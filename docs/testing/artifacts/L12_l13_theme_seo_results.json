@@ -1,0 +1,32 @@
+[
+  {
+    "testId": "T-THM-001",
+    "name": "Body Background Token #e3e8dc (CoinCompass Law)",
+    "status": "PASS",
+    "details": "Computed body background: rgb(227, 232, 220) (Expected: rgb(227, 232, 220))"
+  },
+  {
+    "testId": "T-THM-002",
+    "name": "Container 28px Rounded Geometry",
+    "status": "PASS",
+    "details": "Computed container border-radius: 28px"
+  },
+  {
+    "testId": "T-THM-003",
+    "name": "Accent Lime #c8f542 Component Theming",
+    "status": "PASS",
+    "details": "Primary CTAs / accents incorporate #c8f542 (rgb(200, 245, 66))"
+  },
+  {
+    "testId": "T-SEO-001",
+    "name": "Core SEO Metadata (Title & Meta Description)",
+    "status": "PASS",
+    "details": "Title: \"Kavach · Real-Time Scam-Call Guardian for Indian Elders\", Description length: 163 chars"
+  },
+  {
+    "testId": "T-SEO-002",
+    "name": "OpenGraph Social Sharing Tags",
+    "status": "FAIL",
+    "details": "OpenGraph meta tags configured"
+  }
+]

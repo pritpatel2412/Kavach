@@ -1,0 +1,39 @@
+{
+  "crawledInternalPagesCount": 35,
+  "externalLinksCheckedCount": 5,
+  "telMailtoLinksCount": 10,
+  "brokenLinksCount": 1,
+  "hashAnchorIssuesCount": 8,
+  "mobileMenuResult": {
+    "openable": true,
+    "closeOnEsc": true,
+    "focusTrapped": false
+  },
+  "deepRefreshResults": [
+    {
+      "route": "http://localhost:3000/learn/digital-arrest",
+      "title": "Kavach · Real-Time Scam-Call Guardian for Indian Elders",
+      "ok": true
+    },
+    {
+      "route": "http://localhost:3000/learn/courier-parcel",
+      "title": "Kavach · Real-Time Scam-Call Guardian for Indian Elders",
+      "ok": true
+    },
+    {
+      "route": "http://localhost:3000/status",
+      "title": "Kavach · Real-Time Scam-Call Guardian for Indian Elders",
+      "ok": true
+    },
+    {
+      "route": "http://localhost:3001/auth",
+      "title": "Kavach · Guardian Portal & Household Security",
+      "ok": true
+    },
+    {
+      "route": "http://localhost:3002/auth",
+      "title": "Kavach · Administration & Operations Console [MOCK]",
+      "ok": true
+    }
+  ]
+}

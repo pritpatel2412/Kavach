@@ -237,7 +237,7 @@ export default function PricingPage() {
             <div className="flex gap-2">
               <Input
                 aria-label="Coupon Code"
-                placeholder="Try KAVACH50"
+                placeholder="Enter coupon code"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
                 className="text-caption uppercase font-mono"

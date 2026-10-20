@@ -52,17 +52,25 @@ def calculate_pricing(
     household_id: str | None = None,
     is_new_customer: bool = True,
 ) -> dict:
-    """Compute exact price, coupon discount, 18% GST, and total in integer paise."""
+    """Compute exact price, coupon discount, 18% GST, and total in integer paise.
+    Advertised prices are GST-INCLUSIVE:
+    - Advertised price is the checkout total with no coupon (e.g. 14900 paise = base 12627 + GST 2273).
+    - Base is pre-GST value: round(advertised_paise / (1 + GST_RATE)).
+    - Discount applies to pre-GST base value.
+    - GST is 18% on the discounted value.
+    - Final total = discounted_base + GST.
+    """
     plan = PLANS.get(plan_id)
     if not plan:
         raise ValueError(f"Unknown plan: {plan_id}")
 
-    base_paise = plan["yearly_paise"] if billing_cycle == "yearly" else plan["monthly_paise"]
+    advertised_paise = plan["yearly_paise"] if billing_cycle == "yearly" else plan["monthly_paise"]
 
-    if base_paise == 0:
+    if advertised_paise == 0:
         return {
             "plan_id": plan_id,
             "billing_cycle": billing_cycle,
+            "advertised_paise": 0,
             "base_paise": 0,
             "discount_paise": 0,
             "taxable_paise": 0,
@@ -70,6 +78,9 @@ def calculate_pricing(
             "total_paise": 0,
             "coupon": None,
         }
+
+    # Pre-GST base value from advertised GST-inclusive price
+    base_paise = round(advertised_paise / (1 + GST_RATE))
 
     coupon_result = None
     discount_paise = 0
@@ -92,6 +103,7 @@ def calculate_pricing(
     return {
         "plan_id": plan_id,
         "billing_cycle": billing_cycle,
+        "advertised_paise": advertised_paise,
         "base_paise": base_paise,
         "discount_paise": discount_paise,
         "taxable_paise": taxable_paise,

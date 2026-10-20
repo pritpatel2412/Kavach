@@ -1,0 +1,26 @@
+[
+  {
+    "testId": "T-PRIV-001",
+    "name": "7-Day Transcript / Event Auto-Purge",
+    "status": "PASS",
+    "details": "Old events (>7 days) automatically purged; recent events (<7 days) preserved intact"
+  },
+  {
+    "testId": "T-PRIV-002",
+    "name": "Zero Raw Audio Storage Enforcement",
+    "status": "PASS",
+    "details": "Verified: 0 raw user audio files stored on disk or server directories"
+  },
+  {
+    "testId": "T-PRIV-003",
+    "name": "DSR Data Export Functionality",
+    "status": "PASS",
+    "details": "Export job generated: exp_a93b1af91ea731dd (68 rows, format: csv)"
+  },
+  {
+    "testId": "T-PRIV-004",
+    "name": "DPDP Voice Consent Recording & Erasure",
+    "status": "PASS",
+    "details": "Consent record explicitly tracked; soft-delete timestamp revokes embedding model"
+  }
+]

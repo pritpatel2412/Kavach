@@ -1,0 +1,38 @@
+[
+  {
+    "testId": "T-A11Y-001",
+    "name": "Page Semantic Landmarks & Single H1",
+    "status": "PASS",
+    "details": "H1 count: 1 (\"Hang\nup.\nIt's\na\nscam....\"), <main>: true, <nav>: true"
+  },
+  {
+    "testId": "T-A11Y-002",
+    "name": "Form Control Label Association (WCAG 1.3.1 / 4.1.2)",
+    "status": "FAIL",
+    "details": "Unlabeled controls found: Try KAVACH50, kavach_bot_check"
+  },
+  {
+    "testId": "T-A11Y-003",
+    "name": "Image Non-Text Content Alternatives (WCAG 1.1.1)",
+    "status": "PASS",
+    "details": "All images have alt attributes (meaningful or decorative)"
+  },
+  {
+    "testId": "T-A11Y-004",
+    "name": "Sequential Keyboard Focus Traversal (WCAG 2.1.1)",
+    "status": "PASS",
+    "details": "Tab cycle traversed interactive DOM elements: A (Kavach) -> A (How it works) -> A (Features) -> A (Pricing) -> A (Story)"
+  },
+  {
+    "testId": "T-A11Y-005",
+    "name": "200% Zoom Responsive Reflow (WCAG 1.4.10)",
+    "status": "PASS",
+    "details": "Reflow passed: scrollWidth (640px) <= clientWidth (640px)"
+  },
+  {
+    "testId": "T-A11Y-006",
+    "name": "Elder Interface Visual Prominence & Large Typography",
+    "status": "PASS",
+    "details": "Elder screen rendered primary typography at 48px"
+  }
+]

@@ -12,17 +12,23 @@ import {
 const MOCK_WAITLIST: WaitlistSubmission[] = [];
 
 const MOCK_COUPONS: Record<string, Coupon> = {
-  KAVACH50: {
-    code: 'KAVACH50',
+  DEMO50: {
+    code: 'DEMO50',
     discountPercent: 50,
     valid: true,
     message: '50% inaugural community discount applied!',
   },
-  BETAFAMILY: {
-    code: 'BETAFAMILY',
-    discountPercent: 100,
+  DEMO25: {
+    code: 'DEMO25',
+    discountPercent: 25,
     valid: true,
-    message: '100% full sponsorship beta pass applied!',
+    message: '25% demo discount applied!',
+  },
+  DEMOHDFC: {
+    code: 'DEMOHDFC',
+    discountPercent: 34,
+    valid: true,
+    message: '₹50 flat banking discount applied!',
   },
 };
 
