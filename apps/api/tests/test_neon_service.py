@@ -49,3 +49,13 @@ def test_api_neon_health_route_exposes_no_secrets(monkeypatch):
     assert data["services"]["ai_gateway"]["consent_gated"] is True
     assert data["services"]["ai_gateway"]["transcripts_allowed"] is False
 
+
+def test_neon_postgres_migrations_offline(monkeypatch):
+    """Verifies run_postgres_migrations gracefully skips when DATABASE_URL is missing."""
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    monkeypatch.delenv("DATABASE_URL_UNPOOLED", raising=False)
+    from app import migrations
+    applied = migrations.run_postgres_migrations()
+    assert applied == []
+
+

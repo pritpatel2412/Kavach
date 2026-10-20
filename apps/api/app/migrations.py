@@ -90,3 +90,55 @@ def get_migration_status(db_path: Path | str | None = None) -> list[dict]:
                 "applied_at": applied_map.get(v),
             })
     return results
+
+
+def run_postgres_migrations(db_url: str | None = None) -> list[str]:
+    """Execute all pending numbered SQL migrations against PostgreSQL / Neon."""
+    import os
+    url = db_url or os.getenv("DATABASE_URL_UNPOOLED") or os.getenv("DATABASE_URL")
+    if not url or not (url.startswith("postgres://") or url.startswith("postgresql://")):
+        log.info("No PostgreSQL DATABASE_URL configured; skipping Postgres migrations.")
+        return []
+
+    try:
+        import psycopg
+    except ImportError:
+        log.warning("psycopg is not installed; cannot execute Postgres migrations.")
+        return []
+
+    applied_versions: list[str] = []
+    with psycopg.connect(url) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS schema_migrations (
+                    version TEXT PRIMARY KEY,
+                    applied_at TEXT NOT NULL
+                );
+            """)
+            conn.commit()
+
+            cur.execute("SELECT version FROM schema_migrations ORDER BY version ASC;")
+            existing = {row[0] for row in cur.fetchall()}
+
+            if not MIGRATIONS_DIR.is_dir():
+                return applied_versions
+
+            for sql_file in sorted(MIGRATIONS_DIR.glob("*.sql"), key=lambda p: p.name):
+                version = sql_file.name
+                if version in existing:
+                    continue
+
+                log.info("Applying Postgres migration %s...", version)
+                sql_content = sql_file.read_text(encoding="utf-8")
+                cur.execute(sql_content)
+                now_iso = datetime.now(timezone.utc).isoformat()
+                cur.execute(
+                    "INSERT INTO schema_migrations (version, applied_at) VALUES (%s, %s);",
+                    (version, now_iso),
+                )
+                conn.commit()
+                applied_versions.append(version)
+                log.info("Applied Postgres migration %s successfully", version)
+
+    return applied_versions
+

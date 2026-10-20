@@ -281,7 +281,7 @@
   - Zero paid Gnani credits consumed.
 
 ## Latest Numbers
-- **Test Suite (`make test` / `run.ps1 test` / `pytest`):** **163 passing**, 0 failing (100% offline, zero credits consumed)
+- **Test Suite (`make test` / `run.ps1 test` / `pytest`):** **164 passing**, 0 failing (100% offline, zero credits consumed)
 - **Evaluation Harness (`eval/run_eval.py` - Synthetic Text Tests):**
   - **Clean (WER 0%):** Scam Recall: **36/36 (100.0%)** [90.4%, 100.0%] · Benign False Alarms: **0/32 (0.0%)** [0.0%, 10.7%]
   - **WER 10%:** Scam Recall: **36/37 (97.3%)** [86.2%, 99.5%] · Benign False Alarms: **1/33 (3.0%)** [0.5%, 15.3%]

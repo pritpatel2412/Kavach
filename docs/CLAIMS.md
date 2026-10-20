@@ -113,5 +113,5 @@ $$\text{Alerts/Hour} = \frac{\text{Alerts}}{1,000\text{ segments}} \times \frac{
 | **Cryptographic Hash-Chained Audit Log** | Every administrative mutation stores the SHA-256 hash of the previous row (`apps/api/app/audit.py`), creating an immutable verifiable ledger. Tested in `apps/api/tests/test_audit_hash_chain.py`. | **[VERIFIED]** |
 | **Anti-Formula Injection in Exports** | All CSV and Excel export cells starting with `=`, `+`, `-`, `@`, `\t`, or `\r` are prefixed with `'` to neutralize DDE/formula execution. Tested in `apps/api/tests/test_export_safety.py`. | **[VERIFIED]** |
 | **Atomic Coupon Concurrency Protection** | Coupon reservation holds (15 minutes) prevent double-spending or over-redemption under parallel requests. Tested in `apps/api/tests/test_coupons_concurrency.py`. | **[VERIFIED]** |
-| **100% Offline Test Coverage (163 tests green)** | Entire test suite executes offline without consuming paid Gnani credits. Verified in `apps/api/tests/` and `packages/detector/tests/`. | **[VERIFIED]** |
+| **100% Offline Test Coverage (164 tests green)** | Entire test suite executes offline without consuming paid Gnani credits. Verified in `apps/api/tests/` and `packages/detector/tests/`. | **[VERIFIED]** |
 
