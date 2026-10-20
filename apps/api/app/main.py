@@ -89,6 +89,12 @@ app.include_router(neon_router)
 
 
 
+@app.get("/api/neon-health")
+def api_neon_health():
+    from .neon_service import _build_neon_status_response
+    return _build_neon_status_response()
+
+
 @app.get("/health")
 def health():
     s = get_settings()
