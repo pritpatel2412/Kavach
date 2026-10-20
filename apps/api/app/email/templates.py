@@ -29,7 +29,7 @@ HTML_LAYOUT = """<!DOCTYPE html>
 <body>
   <div class="wrapper">
     <div class="header">
-      <a href="{public_url}" class="brand">{brand_name} <span>Guardian</span></a>
+      <a href="{public_site_url}" class="brand">{brand_name} <span>Guardian</span></a>
     </div>
     <div class="content">
       {body_html}
@@ -221,6 +221,8 @@ def render_template(
     vars_clean.setdefault("brand_name", s.brand_name)
     vars_clean.setdefault("brand_domain", s.brand_domain)
     vars_clean.setdefault("public_url", s.public_url)
+    vars_clean.setdefault("public_site_url", s.public_site_url)
+    vars_clean.setdefault("pricing_url", f"{s.public_site_url}/pricing")
 
     if vars_clean.get("is_scam_emergency"):
         vars_clean["emergency_notice"] = """
@@ -252,11 +254,11 @@ def render_template(
     footer_extra = ""
     if is_marketing and recipient:
         unsub_token = create_action_token(recipient, purpose="email_unsubscribe", ttl_s=86400 * 365)
-        unsub_url = f"{s.public_url}/unsubscribe?token={unsub_token}"
+        unsub_url = f"{s.public_site_url}/unsubscribe?token={unsub_token}"
         footer_extra = f"""
           <p style="margin: 8px 0 0; font-size: 11px;">
             You received this broadcast because you registered for {s.brand_name} updates.<br>
-            <a href="{unsub_url}">Unsubscribe with 1-click</a> · <a href="{s.public_url}/privacy">Privacy Policy</a>
+            <a href="{unsub_url}">Unsubscribe with 1-click</a> · <a href="{s.public_site_url}/privacy">Privacy Policy</a>
           </p>
         """
         raw_text += f"\n\nTo unsubscribe from updates: {unsub_url}"
@@ -266,6 +268,7 @@ def render_template(
         subject=raw_subject,
         brand_name=s.brand_name,
         public_url=s.public_url,
+        public_site_url=s.public_site_url,
         body_html=raw_html,
         footer_extra=footer_extra,
     )

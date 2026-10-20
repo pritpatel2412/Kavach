@@ -64,7 +64,8 @@ export function SiteFooter() {
             <div><a href="/status" className="hover:text-primary transition-colors">System Status</a></div>
             <div><a href="/security" className="hover:text-primary transition-colors">Security Architecture</a></div>
             <div><a href="/subprocessors" className="hover:text-primary transition-colors">Subprocessors & Vendors</a></div>
-            <div><a href="/contact" className="hover:text-primary transition-colors">Contact Support</a></div>
+            <div><a href="/support" className="hover:text-primary transition-colors font-semibold text-primary">Customer Support</a></div>
+            <div><a href="/contact" className="hover:text-primary transition-colors">Contact Us</a></div>
           </div>
 
           {/* Col 5: Legal & DPDP Compliance */}

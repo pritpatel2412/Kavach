@@ -248,3 +248,72 @@ def test_ticket_merge():
         cursor = conn.execute("SELECT COUNT(*) FROM ticket_messages WHERE ticket_id = ?;", (id_a,))
         count = cursor.fetchone()[0]
         assert count >= 3  # Msg A + Msg B + System merge note
+
+
+def test_email_ticket_received_link_and_reply_roundtrip(monkeypatch):
+    """X2 / D-007 verification: email portal_url uses public_site_url and customer reply roundtrips."""
+    import re
+    from app.config import get_settings
+
+    s = get_settings()
+    site_url = s.public_site_url
+
+    # 1. Submit support ticket
+    res = client.post(
+        "/api/support",
+        json={
+            "name": "Priya Patel",
+            "email": "priya.patel@example.com",
+            "category": "device_listening",
+            "subject": "Microphone Sensitivity Question",
+            "message": "Is 16kHz PCM16 required for both elder tablet and mobile speaker?",
+        },
+    )
+    assert res.status_code == 200
+    ticket_num = res.json()["ticket_number"]
+    portal_url_res = res.json()["portal_url"]
+    assert portal_url_res.startswith(f"{site_url}/support/t/")
+
+    # 2. Inspect ticket_received email in outbox
+    with db.db() as conn:
+        cursor = conn.execute(
+            "SELECT html_body, text_body FROM email_outbox WHERE recipient = 'priya.patel@example.com' ORDER BY id DESC LIMIT 1;"
+        )
+        row = cursor.fetchone()
+        assert row is not None, "Email should be dispatched to outbox"
+        html_body, text_body = row
+
+    # Verify link in email points to site_url, NOT raw API or public_url:8000
+    match = re.search(r'href="([^"]+/support/t/([^"]+))"', html_body)
+    assert match is not None, "Email HTML must contain a link to /support/t/[token]"
+    full_email_link = match.group(1)
+    extracted_token = match.group(2)
+
+    assert full_email_link.startswith(f"{site_url}/support/t/")
+    assert "/api/support/t/" not in full_email_link
+
+    # 3. Customer accesses customer portal via extracted token
+    res_portal = client.get(f"/api/support/t/{extracted_token}")
+    assert res_portal.status_code == 200
+    portal_data = res_portal.json()
+    assert portal_data["ticket_number"] == ticket_num
+    assert portal_data["subject"] == "Microphone Sensitivity Question"
+    assert len(portal_data["messages"]) == 1
+    assert "16kHz PCM16" in portal_data["messages"][0]["body"]
+
+    # 4. Customer submits reply
+    res_reply = client.post(
+        f"/api/support/t/{extracted_token}/reply",
+        json={"message": "I tested on an iPad and confirmed 16kHz works."},
+    )
+    assert res_reply.status_code == 200
+    assert res_reply.json()["ok"] is True
+
+    # 5. Verify thread updated on portal
+    res_portal_2 = client.get(f"/api/support/t/{extracted_token}")
+    assert res_portal_2.status_code == 200
+    messages_2 = res_portal_2.json()["messages"]
+    assert len(messages_2) == 2
+    assert messages_2[1]["sender_type"] == "customer"
+    assert "iPad and confirmed" in messages_2[1]["body"]
+

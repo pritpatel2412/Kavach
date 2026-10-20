@@ -2,6 +2,17 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@kavach/ui', '@kavach/api-contract'],
+  async rewrites() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.KAVACH_PUBLIC_URL || 'http://localhost:8000';
+    return {
+      fallback: [
+        {
+          source: '/api/:path*',
+          destination: `${apiUrl}/api/:path*`,
+        },
+      ],
+    };
+  },
   webpack: (config, { isServer }) => {
     // Check mock safety during production build
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_MOCK === '1' && !process.env.ALLOW_PROD_MOCK) {

@@ -31,6 +31,7 @@ class Settings:
     fixtures_dir: Path
     db_path: Path
     public_url: str
+    public_site_url: str
     liveness_threshold: float
     llm_provider: str
     llm_api_key: str
@@ -56,6 +57,14 @@ class Settings:
     reply_to: str
     email_rate_per_min: int
     email_daily_cap: int
+    # Neon Cloud Services
+    database_url: str | None
+    database_url_unpooled: str | None
+    neon_branch: str
+    neon_auth_base_url: str | None
+    neon_auth_jwks_url: str | None
+    neon_ai_gateway_base_url: str | None
+    neon_ai_gateway_token: str | None
 
 
 def get_settings() -> Settings:
@@ -84,6 +93,7 @@ def get_settings() -> Settings:
         fixtures_dir=ROOT / "fixtures",
         db_path=Path(os.getenv("KAVACH_DB", str(ROOT / "data" / "kavach.db"))),
         public_url=os.getenv("KAVACH_PUBLIC_URL", "http://localhost:8000").rstrip("/"),
+        public_site_url=os.getenv("PUBLIC_SITE_URL", os.getenv("KAVACH_PUBLIC_SITE_URL", "http://localhost:3000")).rstrip("/"),
         liveness_threshold=float(os.getenv("LIVENESS_THRESHOLD", "75")),
         llm_provider=os.getenv("LLM_PROVIDER", "").strip(),
         llm_api_key=os.getenv("LLM_API_KEY", ""),
@@ -106,5 +116,12 @@ def get_settings() -> Settings:
         reply_to=os.getenv("REPLY_TO", f"support@{brand_domain}"),
         email_rate_per_min=int(os.getenv("EMAIL_RATE_PER_MIN", "60")),
         email_daily_cap=int(os.getenv("EMAIL_DAILY_CAP", "1000")),
+        database_url=os.getenv("DATABASE_URL"),
+        database_url_unpooled=os.getenv("DATABASE_URL_UNPOOLED"),
+        neon_branch=os.getenv("NEON_BRANCH", "production"),
+        neon_auth_base_url=os.getenv("NEON_AUTH_BASE_URL"),
+        neon_auth_jwks_url=os.getenv("NEON_AUTH_JWKS_URL"),
+        neon_ai_gateway_base_url=os.getenv("NEON_AI_GATEWAY_BASE_URL"),
+        neon_ai_gateway_token=os.getenv("NEON_AI_GATEWAY_TOKEN"),
     )
 

@@ -205,7 +205,7 @@ def post_create_ticket(body: SupportTicketCreateIn, request: Request):
             (message_id, ticket_id, clean_email, body.message.strip(), now_iso),
         )
 
-    portal_url = f"{s.public_url}/support/t/{portal_token}"
+    portal_url = f"{s.public_site_url}/support/t/{portal_token}"
     sla_hours = SLA_HOURS[priority]["first_response"]
 
     # Dispatch confirmation / emergency guidance email
@@ -306,7 +306,7 @@ def post_customer_reply(token: str, body: CustomerReplyIn):
             raise HTTPException(status_code=404, detail="Ticket not found.")
 
         email, current_status = row[0], row[1]
-        new_status = "open" if current_status in ("solved", "on_hold") else current_status
+        new_status = "open" if current_status in ("solved", "on_hold", "closed") else current_status
 
         conn.execute(
             """
@@ -536,7 +536,7 @@ def post_admin_ticket_reply(
     # If public reply, enqueue email notification
     if not body.is_internal and req_email:
         portal_token = create_action_token(ticket_id, purpose="support_portal", ttl_s=86400 * 30)
-        portal_url = f"{s.public_url}/support/t/{portal_token}"
+        portal_url = f"{s.public_site_url}/support/t/{portal_token}"
         enqueue_email(
             recipient=req_email,
             template="ticket_reply",
@@ -609,7 +609,7 @@ def patch_admin_ticket(
     # If ticket solved, dispatch CSAT survey email
     if body.status == "solved" and old_status != "solved" and req_email:
         portal_token = create_action_token(ticket_id, purpose="support_portal", ttl_s=86400 * 30)
-        portal_url = f"{s.public_url}/support/t/{portal_token}"
+        portal_url = f"{s.public_site_url}/support/t/{portal_token}"
         enqueue_email(
             recipient=req_email,
             template="ticket_solved_csat",
