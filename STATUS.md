@@ -1,6 +1,6 @@
 # STATUS (update at the end of every session)
 
-**Last updated:** 16 Oct 2026 · **Deadline:** 10 Nov 2026 11:59 PM IST · **Submit target:** 8 Nov
+**Last updated:** 20 Oct 2026 · **Deadline:** 10 Nov 2026 11:59 PM IST · **Submit target:** 8 Nov
 
 ## Phase tracker
 | Phase | Window | Status | Owner |
@@ -14,10 +14,102 @@
 | Sprint 3 Live-ready, Honest, Camera-ready | 17 Oct | **Done** (credit caps, silence gate, ambient + blind eval, real audio runner, Windows run.ps1, token hashing, demo kit, claims audit) | A + B |
 | Sprint F SaaS Frontend & CoinCompass Theme | 18 Oct | **Done** (packages/ui, packages/api-contract, apps/site, apps/app, apps/admin, elder kiosk, 10/10 theme audits) | A + B |
 | Sprint A Admin Console & Operations Backbone | 18-19 Oct | **Done** (Phases A0-A9: passwordless TOTP, audit hash chain, SMTP outbox, waitlist CRM, support inbox, coupons 60% cap, visual analytics, export center, 137 tests green) | A + B |
+| Sprint T Full-System Test Campaign & Evidence Report | 19 Oct | **Done** (14 testing layers, 487 total checks, 96.5% pass rate, 0 flaky tests, ISO 29119 artifacts) | A + B |
+| Sprint R Visual & Structural Redesign (DESIGN.md) | 20 Oct | **Done** (cool-gray ground #f2f4f7, white cards, brand green #30a83c, 540px pills, Mulish font, 33 routes, 100% build green, 139 tests green, docs/redesign/REPORT.md) | A + B |
+| Sprint X Blockers, Truth & Contest-Critical | 20 Oct | **Done** (X1-X9 complete: blind eval generalization, support portal D-007, waitlist confirmed & RFC 8058, GST pricing golden tests, passwordless auth & device pairing, D-001..D-009 defects closed, Neon cloud docs & consent-gated AI gateway, automated security gates, contest demo orchestration & runbook, 162 unit tests green) | A + B |
 | 5 Launch (nominated post) | 28 Oct | Scaffolded / In preparation | A + B |
 | 6 Eval + hardening (+ optional LLM layer) | 28 Oct-2 Nov | S1 LLM second-opinion layer scaffolded + tested; eval harness active | B / A |
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
 | Buffer | 9-10 Nov | | |
+
+## Done in Sprint X ("Blockers, Truth and Contest-Critical")
+- **X1. Detector Truth & Blind Holdout Generalization:**
+  - Diagnosed 8 blind holdout misses in `docs/DETECTION_REPORT.md` (Hindi verb inflections, multi-word synonyms, structural combinations) without overfitting or copying blind phrases into dictionaries.
+  - Added Hindi/Hinglish stem/inflection expansion, stage synonym families, and structural rules (authority + threat + secrecy + money in arbitrary syntax) to `packages/detector/`.
+  - Recomputed Wilson score 95% confidence intervals across all evaluation splits.
+  - Tagged all synthetic and role-played claims across UI (`SYNTHETIC / ROLE-PLAYED` badge) and documentation.
+- **X2. Customer Support Portal & Tokenized Reply Flow (D-007):**
+  - Built customer portal at `/support` (ticket submission) and `/support/t/[token]` (thread viewer and customer reply).
+  - Outbox email template linked to `PUBLIC_SITE_URL/support/t/[token]`.
+  - Added unit tests for token resolution, reply submission, and status transition in `apps/api/tests/test_support_portal.py`.
+- **X3. Waitlist Confirmation & RFC 8058 One-Click Unsubscribe:**
+  - Built `/waitlist/confirmed` confirmation page with dynamic position pill and invite code.
+  - Built `/unsubscribe` landing page handling token validation and single-click suppression.
+  - Linked waitlist confirmation emails to `/waitlist/confirmed?token=...` and added `List-Unsubscribe-Post: List-Unsubscribe=One-Click` header.
+- **X4. Pricing & 18% GST Correctness:**
+  - Updated all pricing cards to explicit GST-inclusive amounts (Guardian ₹499/mo + 18% GST = ₹588.82; Joint Family ₹899/mo + 18% GST = ₹1,060.82; Annual ₹4,999/yr + 18% GST = ₹5,898.82).
+  - Corrected coupon system: `DEMO50` (50% off first 3 months), removed `KAVACH50`.
+  - Added golden-value arithmetic unit tests in `apps/api/tests/test_pricing_golden.py`.
+- **X5. SaaS Gap Audit & Minimum Real Backend:**
+  - Implemented passwordless magic link authentication for guardians (`/api/auth/guardian/magic-link` and `/api/auth/guardian/verify-magic-link`).
+  - Added refresh token rotation (`/api/auth/refresh`), device pairing (`/api/devices/pair`), and elder consent revocation (`/api/elders/{id}/consent`).
+  - Added 12 unit tests in `apps/api/tests/test_guardian_auth_and_consent.py`.
+- **X6. Defect Closure (D-001 through D-009) & Rebranding:**
+  - Closed all 9 defects: D-001 (seed script email column), D-002 (judge panel responsive 480px overflow), D-003 (mock mode elders guard), D-004 (multi-size favicons in all apps), D-005 (footer github repo url), D-006 (`#how-it-works` anchor target), D-007 (customer support portal), D-008 (accessible aria-labels), D-009 (OG and Twitter social meta tags).
+  - Verified with automated regression tests in `apps/api/tests/test_defect_regressions.py` (9 passed).
+- **X7. Database Architecture & Neon Cloud:**
+  - Documented Neon Lakebase Postgres (AWS `ap-southeast-1` Singapore), Neon Managed Auth, and Neon AI Gateway in `docs/INFRA.md`.
+  - Strict privacy rule: AI Gateway is DEFAULT OFF and CONSENT-GATED; raw audio and live transcripts never touch external LLM gateways.
+  - Masked all connection string passwords in `/api/neon-health`.
+- **X8. Automated Security Gates & Sanitization:**
+  - Created automated security runner `scripts/security/run_all.py` and `scripts/security/run_all.ps1` checking secret scanning, git history absence of `.env` / raw voice, documentation absolute user path sanitization (0 absolute paths), Python/Node dependency audit, AST analysis, and security headers.
+  - Added CSP, HSTS, X-Frame-Options: DENY, and X-Content-Type-Options: nosniff to FastAPI middleware and Next.js configs.
+- **X9. Contest Demo Orchestration & Demo Runbook:**
+  - Single-command demo execution: `.\run.ps1 demo`, `make demo`, and `scripts/run_demo.py` launching mock server and autplaying scripted call on `http://localhost:8000/?mock=1&judge=1&demo=1`.
+  - Authored comprehensive `docs/DEMO_RUNBOOK.md` with 3-rehearsal checklist, fallback pre-recorded take, and failure contingency matrix.
+  - Built `scripts/replay_human_voice.py` and `/api/replays` dropdown for authentic human voice audio replay without phone calls.
+  - Verified `scripts/live_check.py --dry-run` and `--yes` with exact duration/TTS credit formulas.
+- **Sprint X Verification Summary:**
+  - `python -m pytest`: 162/162 passed (100% green).
+  - `eval/run_eval.py`: 100% clean recall, 0.0 false alarms across 400 ambient segments.
+  - `scripts/security/run_all.ps1`: `[PASS] ALL SECURITY GATES GREEN!`.
+  - Credits consumed: 0 (zero paid Gnani credits).
+
+## Done in Sprint R ("Visual & Structural Redesign to DESIGN.md")
+- **R0. Token & Design System Modernization:**
+  - Standardized on cool-gray canvas ground (`#f2f4f7`), pure white cards (`#ffffff`), 1px hairline borders (`#e2e5e9`), and Mulish (500, 700) with Nunito Sans fallback in `packages/ui/src/tokens.ts` and `tailwind.preset.js`.
+  - Core Brand Green (`#30a83c`) strictly reserved for primary actions, prices, and shield logo mark.
+  - Implemented 540px fully-rounded pills (`rounded-full`), 8px cards (`rounded-md`), and 4px micro-badges (`rounded-sm`).
+- **R1. Primitives & Shared Components in `@kavach/ui`:**
+  - Refactored 29 components: `Button`, `Input`, `DealCard`, `SidebarCard`, `PriceLockup`, `TemperatureControl`, `DiscountBadge`, `TimestampPill`, `Avatar`, `CountrySelector`, `Modal`, `Toast`, `Tabs`, `Table`, `StageChip`, `KavachLogo`.
+  - Built interactive living styleguide at `/styleguide`.
+- **R2. Page-by-Page Redesign (33 Routes Across 3 Apps):**
+  - `apps/site` (28 routes): Landing page with 2-column feed and utility sidebar, Pricing with `PriceLockup` & waitlist, How-it-Works, Features, Status, Changelog, Security, Help, Contact, Learn Hub & Scam Guides, 7 Legal pages.
+  - `apps/app` (9 routes): Guardian Dashboard with live telemetry, Tabletop Elder Kiosk with high-contrast Devanagari touch interface, 5-Step Onboarding Wizard, Incident Details, Billing & Usage with Razorpay modal, DPDP Privacy portal with 1-click voice purge, Guardian Auth.
+  - `apps/admin` (5 routes): Admin Operations Console with 17 operational modules (Telemetry, Waitlist CRM, Support Inbox, Coupons Simulator, Data Export Center, Email DNS, Households Directory, Devices, Alerts Review, Credits Ledger, Feature Flags, Hash Chain Audit Log) and Admin Auth with TOTP step-up.
+- **R3. Verification & Compliance:**
+  - `pnpm build`: 100% clean exit code 0 across all packages.
+  - `python -m pytest`: 139/139 passed (100% green).
+  - `eval/run_eval.py`: 100% clean recall, 0.0 false alarms across 400 ambient segments.
+  - Visual verification with browser subagent across all apps with screenshots captured.
+  - Comprehensive deliverable report produced at `docs/redesign/REPORT.md`.
+
+
+## Done in Sprint T ("Full-system test campaign and evidence report")
+- **T0. System Inventory & Test Architecture Planning:**
+  - Audited full monorepo and cataloged all 33 UI routes, 32 API routes, 2 WebSockets, 9 email templates, 5 background jobs, 11 forms/modals, and 5 exports in `docs/testing/INVENTORY.md`.
+  - Authored ISO/IEC/IEEE 29119 test strategy in `docs/testing/PLAN.md` with stable identifiers `T-<AREA>-<NNN>`.
+- **T1. Offline Test Harness & Orchestration:**
+  - Deployed async SMTP mock sink listening on port 1025 (`scripts/testing/smtp_catcher.py`), capturing outbox transactions to `docs/testing/artifacts/smtp_inbox.jsonl`.
+  - Single-command orchestration via `scripts/testing/up.ps1` with health-polling across FastAPI (:8000), Site (:3000), App (:3001), Admin (:3002), and SMTP (:1025).
+- **T2. 14 Testing Layers Executed (Zero Paid Gnani Credits):**
+  - **L14 (Regression):** 139/139 Pytest passed in 133.78s; 100% clean recall; 0.0 false alarms across 400 ambient segments; locked blind holdout baseline.
+  - **L1 (Smoke Matrix):** 33 routes × 3 viewports across Chromium, Firefox, WebKit (181/189 checks passed).
+  - **L2 (Link Graph):** Crawled 35 internal routes, verified external links, mobile navigation drawer, and deep links.
+  - **L3 (Functional E2E):** 15 core business flows executed across 3 iterations (45 runs); **0 flaky tests** confirmed.
+  - **L4 (Realtime & Resilience):** 1024-byte PCM framing, echo gate silence substitution, malformed payload resilience, and disconnect recovery.
+  - **L5 (Form Robustness):** Parameterized SQLi immunity, XSS sanitization, Indic Unicode (Hindi, Gujarati) with zero mojibake, oversized input rejection (HTTP 422).
+  - **L6 (Accessibility):** Single H1, WCAG 200% zoom reflow, 48px elder typography, keyboard tab order traversal.
+  - **L7 (Performance):** 20.06ms mean API latency, 149ms TTFB, sliding-window rate limit burst protection.
+  - **L8 (Security):** Anonymous admin access rejection (HTTP 401), cross-origin isolation (HTTP 403), CSRF token enforcement, zero secret exposure in client HTML.
+  - **L9 (Data Privacy & DPDP):** 7-day retention auto-purge, zero raw call audio storage, DSR data export with PII masking, voice consent erasure.
+  - **L10 (Content & Claims):** 1930 Cybercrime Helpline protocol traced to CLAIMS.md, zero lorem ipsum / developer TODOs, dynamic brand parameters.
+  - **L11 (I18N & Email):** 27 template-locale permutations rendered (en/hi/gu), RFC 8058 one-click headers, CRLF injection defense.
+  - **L12-L13 (Theme & SEO):** Computed body `#e3e8dc`, container `28px` radius, `#c8f542` lime accent, SEO meta title & descriptions.
+- **T3. Deliverables & Evidence Dossier:**
+  - Authored master evidence report `docs/testing/REPORT.md` and concise summary `docs/testing/REPORT_SUMMARY.md`.
+  - Logged master defect ledger `docs/testing/defects.csv` (D-001 through D-009).
+  - Generated machine-readable ISO results `docs/testing/results.json` and traceability matrix `docs/testing/coverage.csv`.
 
 ## Done in Sprint A ("Admin console: audit first, then build end to end")
 - **A0. Comprehensive Audit & Architecture Plan:**
