@@ -114,10 +114,14 @@ class SessionRunner:
 
     def _make_stt(self):
         if self.s.mock_stt:
-            name = (self.replay or "demo_scam_hinglish.wav").rsplit(".", 1)[0]
-            fixture = self.s.fixtures_dir / "transcripts" / f"{name}.json"
+            stem = Path(self.replay or "demo_scam_hinglish.wav").stem
+            fixture = self.s.fixtures_dir / "transcripts" / f"{stem}.json"
             if not fixture.is_file():
-                fixture = self.s.fixtures_dir / "transcripts" / "demo_scam_hinglish.json"
+                real_meta = self.s.fixtures_dir / "audio" / "real" / f"{stem}.json"
+                if real_meta.is_file():
+                    fixture = real_meta
+                else:
+                    fixture = self.s.fixtures_dir / "transcripts" / "demo_scam_hinglish.json"
             return MockStt(fixture, self.s.mock_interval_s)
         if not self.s.gnani_api_key:
             raise RuntimeError("GNANI_API_KEY missing (or set KAVACH_MOCK_STT=1 for offline mode)")
@@ -165,8 +169,12 @@ class SessionRunner:
     async def _replay_wav(self) -> None:
         path = self.s.fixtures_dir / "audio" / self.replay
         if not path.is_file():
-            log.warning("replay file missing: %s", path)
-            return
+            real_path = self.s.fixtures_dir / "audio" / "real" / Path(self.replay).name
+            if real_path.is_file():
+                path = real_path
+            else:
+                log.warning("replay file missing: %s", path)
+                return
         try:
             pcm = load_pcm16_mono(path, 16000)
         except Exception as e:

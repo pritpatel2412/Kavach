@@ -428,13 +428,15 @@ $("toggle").onclick = () => (listening ? stop() : start().catch((e) => {
   stop(false);
 }));
 $("replayBtn").onclick = () => {
+  const sel = $("replaySelect");
+  const chosen = (sel && sel.value) ? sel.value : "demo_scam_hinglish.wav";
   const url = new URL(location.href);
   url.searchParams.set("judge", "1");
   url.searchParams.set("mock", "1");
-  url.searchParams.set("replay", "demo_scam_hinglish.wav");
+  url.searchParams.set("replay", chosen);
   if (listening) stop();
   history.replaceState({}, "", url);
-  start("demo_scam_hinglish.wav").catch((e) => log("replay failed: " + e));
+  start(chosen).catch((e) => log("replay failed: " + e));
 };
 
 const hfToggle = $("handsFreeToggle");
@@ -469,5 +471,37 @@ fetch("/api/usage").then(r => r.json()).then(u => {
   }
 }).catch(() => {});
 
+async function loadReplays() {
+  try {
+    const r = await fetch("/api/replays");
+    if (!r.ok) return;
+    const data = await r.json();
+    const sel = $("replaySelect");
+    if (sel && data.replays && data.replays.length > 1) {
+      sel.style.display = "inline-block";
+      sel.innerHTML = data.replays.map(rp => `<option value="${rp.name}">${rp.label}</option>`).join("");
+      if (q.get("replay")) sel.value = q.get("replay");
+    }
+  } catch {}
+}
+
 loadElders();
+loadReplays();
 renderStats();
+
+if (q.get("demo") === "1" || q.get("autoplay") === "1") {
+  const startAutoplay = () => {
+    setTimeout(() => {
+      const btn = $("replayBtn");
+      if (btn && !listening) {
+        log("Auto-starting contest demo replay...");
+        btn.click();
+      }
+    }, 600);
+  };
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", startAutoplay);
+  } else {
+    startAutoplay();
+  }
+}

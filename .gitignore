@@ -22,6 +22,7 @@ fixtures/audio/real/
 eval/out/
 eval/transcripts/
 eval/real_runs/run_*
+eval/live_runs/
 .DS_Store
 *.egg-info/
 .next/

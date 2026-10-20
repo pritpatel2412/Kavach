@@ -565,8 +565,11 @@
     <div id="judgeReason" style="font-size:14px; margin-top:4px; color:#fef08a; line-height:1.4;">—</div>
   </div>
 
-  <div class="judge-controls">
-    <button class="ghost" id="replayBtn" type="button">▶ Replay Hinglish Scam Demo</button>
+  <div class="judge-controls" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <button class="ghost" id="replayBtn" type="button" aria-label="Play Scripted Scam Call">▶ Play Scripted Scam Call</button>
+    <select id="replaySelect" aria-label="Select Recording Replay" style="display:none; font-size:13px; padding:8px 12px; background:var(--surface); color:#fff; border:1px solid var(--line); border-radius:8px;">
+      <option value="demo_scam_hinglish.wav">Hinglish Digital Arrest Demo (Synthetic)</option>
+    </select>
   </div>
   <div id="log"></div>
 </section>

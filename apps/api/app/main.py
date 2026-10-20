@@ -123,6 +123,20 @@ async def ws_session(ws: WebSocket, lang: str = "", rate: int = 16000, profile: 
     await runner.run()
 
 
+@app.get("/api/replays")
+def list_replays():
+    s = get_settings()
+    replays = []
+    demo_wav = s.fixtures_dir / "audio" / "demo_scam_hinglish.wav"
+    if demo_wav.is_file():
+        replays.append({"name": "demo_scam_hinglish.wav", "label": "Hinglish Digital Arrest Demo (Synthetic)", "type": "synthetic"})
+    real_dir = s.fixtures_dir / "audio" / "real"
+    if real_dir.is_dir():
+        for p in sorted(real_dir.glob("*.wav")):
+            replays.append({"name": f"real/{p.name}", "label": f"Human Voice: {p.stem}", "type": "human"})
+    return {"replays": replays}
+
+
 @app.get("/clips/{profile}/{filename}")
 def serve_clip(profile: str, filename: str):
     if "/" in profile or ".." in profile or "/" in filename or ".." in filename:

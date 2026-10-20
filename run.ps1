@@ -17,7 +17,7 @@
 
 param(
     [Parameter(Position=0)]
-    [ValidateSet("setup", "test", "dev", "dev-mock", "eval", "blind-eval", "ambient-eval", "real-eval", "live-check", "help")]
+    [ValidateSet("setup", "test", "dev", "dev-mock", "demo", "eval", "blind-eval", "ambient-eval", "real-eval", "live-check", "help")]
     [string]$Command = "help",
 
     [Parameter(ValueFromRemainingArguments=$true)]
@@ -66,6 +66,21 @@ switch ($Command) {
         & $Uvicorn app.main:app --app-dir "$ScriptDir\apps\api" --reload --port 8000 @ExtraArgs
     }
 
+    "demo" {
+        Write-Host "Starting Kavach automated contest demo (zero credits)..." -ForegroundColor Cyan
+        Write-Host "Launching local mock server and opening browser..." -ForegroundColor Yellow
+        $env:KAVACH_MOCK_STT = "1"
+        $DemoUrl = "http://localhost:8000/?mock=1&judge=1&demo=1"
+        
+        Start-Job -ScriptBlock {
+            param($url)
+            Start-Sleep -Seconds 2
+            Start-Process $url
+        } -ArgumentList $DemoUrl | Out-Null
+        
+        & $Uvicorn app.main:app --app-dir "$ScriptDir\apps\api" --reload --port 8000 @ExtraArgs
+    }
+
     "dev" {
         Write-Host "Starting Kavach with LIVE Gnani APIs (uses credits)..." -ForegroundColor Magenta
         Write-Host "Open: http://localhost:8000/?judge=1" -ForegroundColor Yellow
@@ -109,6 +124,7 @@ Available Commands:
   setup         Create virtualenv and install dependencies
   test          Run offline pytest suite (zero credits consumed)
   dev-mock      Start development server in offline mock mode (http://localhost:8000/?mock=1&judge=1)
+  demo          Start server, open browser, and autoplay scripted contest demo with TTW
   dev           Start development server with live Gnani Prisma STT (http://localhost:8000/?judge=1)
   eval          Run multi-condition ASR noise benchmark (0/10/20/30% WER + ambient)
   blind-eval    Run independent blind evaluation on unseen scripts with exact Wilson 95% CIs
