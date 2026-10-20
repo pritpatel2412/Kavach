@@ -13,6 +13,19 @@ const nextConfig = {
       ],
     };
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'none';" },
+        ],
+      },
+    ];
+  },
   webpack: (config, { isServer }) => {
     // Check mock safety during production build
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_MOCK === '1' && !process.env.ALLOW_PROD_MOCK) {

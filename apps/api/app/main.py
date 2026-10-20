@@ -37,6 +37,17 @@ class SanitizedAccessLogMiddleware(BaseHTTPMiddleware):
         return response
 
 
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Enforce HSTS, X-Content-Type-Options: nosniff, and Content-Security-Policy."""
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'none';"
+        return response
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     db.init_db()
@@ -67,6 +78,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(SanitizedAccessLogMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 
 app.include_router(core_router)
 app.include_router(voice_router)
