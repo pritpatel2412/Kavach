@@ -23,29 +23,29 @@ export function Table<T>({
   emptyText = 'No data available',
 }: TableProps<T>) {
   return (
-    <div className={`w-full overflow-x-auto rounded-2xl border border-white/12 bg-white/5 backdrop-blur-md ${className}`}>
-      <table className="w-full text-left text-xs font-body text-white/90">
-        <thead className="border-b border-white/12 bg-white/5 text-[11px] font-heading uppercase tracking-wider text-white/60">
+    <div className={`w-full overflow-x-auto rounded-md border border-hairline bg-surface ${className}`}>
+      <table className="w-full text-left text-body font-sans">
+        <thead className="border-b border-hairline bg-canvas text-micro uppercase tracking-wider text-body font-bold">
           <tr>
             {columns.map((col, idx) => (
-              <th key={idx} scope="col" className={`px-4 py-3 font-semibold ${col.className || ''}`}>
+              <th key={idx} scope="col" className={`px-4 py-3 font-bold ${col.className || ''}`}>
                 {col.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-white/8">
+        <tbody className="divide-y divide-hairline">
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-8 text-center text-white/40">
+              <td colSpan={columns.length} className="px-4 py-8 text-center text-muted font-medium">
                 {emptyText}
               </td>
             </tr>
           ) : (
             data.map((item) => (
-              <tr key={keyExtractor(item)} className="hover:bg-white/5 transition-colors">
+              <tr key={keyExtractor(item)} className="hover:bg-canvas transition-colors">
                 {columns.map((col, cIdx) => (
-                  <td key={cIdx} className={`px-4 py-3 ${col.className || ''}`}>
+                  <td key={cIdx} className={`px-4 py-3 text-caption text-ink font-medium ${col.className || ''}`}>
                     {col.cell ? col.cell(item) : col.accessorKey ? String(item[col.accessorKey] ?? '') : null}
                   </td>
                 ))}
@@ -57,3 +57,4 @@ export function Table<T>({
     </div>
   );
 }
+

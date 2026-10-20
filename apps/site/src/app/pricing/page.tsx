@@ -2,17 +2,14 @@
 
 import React, { useState } from 'react';
 import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
   Button,
-  MagneticButton,
   Input,
   Select,
   Checkbox,
   Accordion,
-  Icon,
-  KavachLogo,
+  PriceLockup,
+  DiscountBadge,
+  Badge,
 } from '@kavach/ui';
 import {
   PLANS,
@@ -21,6 +18,8 @@ import {
   Coupon,
   mockApi,
 } from '@kavach/api-contract';
+import { SiteHeader } from '../../components/SiteHeader';
+import { SiteFooter } from '../../components/SiteFooter';
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
@@ -95,59 +94,35 @@ export default function PricingPage() {
   };
 
   return (
-    <Frame withHatch={false} className="pb-16">
-      <HatchOverlay />
+    <div className="min-h-screen bg-canvas text-ink font-sans">
+      <SiteHeader currentPath="/pricing" />
 
-      {/* Header */}
-      <header className="relative z-10 px-6 py-5 sm:px-10 flex items-center justify-between border-b border-white/10 backdrop-blur-md bg-white/[0.02]">
-        <a href="/" className="flex items-center gap-2.5 focus:outline-none">
-          <KavachLogo size={32} showWordmark={true} />
-        </a>
-
-        <div className="flex items-center gap-4">
-          <a
-            href="/"
-            className="text-xs font-heading font-medium tracking-tight text-white/70 hover:text-white transition-colors flex items-center gap-1.5"
-          >
-            <Icon name="arrow-left-linear" size={14} />
-            <span>Back to Home</span>
-          </a>
-
-          <MagneticButton strength={0.25}>
-            <Button variant="lime" size="sm" href="#waitlist">
-              Join Waitlist
-            </Button>
-          </MagneticButton>
-        </div>
-      </header>
-
-      <div className="relative z-10 px-6 sm:px-10 lg:px-12 pt-10 space-y-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
         {/* Title & Proposed Pricing Notice */}
-        <div className="max-w-2xl mx-auto text-center space-y-3">
+        <div className="max-w-3xl mx-auto text-center space-y-3">
           {!PRICING_CONFIRMED && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-400/40 bg-amber-500/10 text-amber-300 text-xs font-mono mb-2">
-              <Icon name="info-circle-bold" size={14} />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm border border-warning-surface bg-warning-surface text-warning-text text-caption font-bold">
               <span>Pricing preview — proposed plans during private beta</span>
             </div>
           )}
 
-          <h1 className="text-3xl sm:text-5xl font-heading font-bold tracking-tight text-white/95">
+          <h1 className="text-display font-bold text-ink tracking-tight">
             Simple, Transparent Elder Care Protection
           </h1>
-          <p className="text-sm sm:text-base text-white/60 font-body">
+          <p className="text-lead text-body font-medium">
             Every plan includes zero-interception acoustic monitoring, deterministic 5-stage scam detection, and instant family Telegram alerts.
           </p>
 
-          {/* Monthly / Yearly Toggle */}
+          {/* Monthly / Yearly Toggle (Full-round pills per DESIGN.md) */}
           <div className="pt-4 flex items-center justify-center">
-            <div className="inline-flex items-center p-1 rounded-full border border-white/14 bg-white/5 backdrop-blur-md">
+            <div className="inline-flex items-center p-1 rounded-full border border-hairline bg-surface shadow-sm">
               <button
                 type="button"
                 onClick={() => setBillingCycle('monthly')}
-                className={`px-4 py-1.5 rounded-full text-xs font-heading font-medium tracking-tight transition-all ${
+                className={`px-4 py-1.5 rounded-full text-ui font-bold transition-colors ${
                   billingCycle === 'monthly'
-                    ? 'bg-[#c8f542] text-[#0a2a12] font-semibold'
-                    : 'text-white/70 hover:text-white'
+                    ? 'bg-ink text-surface'
+                    : 'text-body hover:text-ink'
                 }`}
               >
                 Monthly
@@ -155,82 +130,77 @@ export default function PricingPage() {
               <button
                 type="button"
                 onClick={() => setBillingCycle('yearly')}
-                className={`px-4 py-1.5 rounded-full text-xs font-heading font-medium tracking-tight flex items-center gap-1.5 transition-all ${
+                className={`px-4 py-1.5 rounded-full text-ui font-bold flex items-center gap-1.5 transition-colors ${
                   billingCycle === 'yearly'
-                    ? 'bg-[#c8f542] text-[#0a2a12] font-semibold'
-                    : 'text-white/70 hover:text-white'
+                    ? 'bg-ink text-surface'
+                    : 'text-body hover:text-ink'
                 }`}
               >
                 <span>Yearly</span>
-                <span className="text-[10px] bg-emerald-800 text-emerald-200 px-1.5 py-0.2 rounded-full font-mono">
-                  Save 27%
-                </span>
+                <DiscountBadge>Save 27%</DiscountBadge>
               </button>
             </div>
           </div>
         </div>
 
-        {/* 3 Pricing Cards */}
+        {/* 3 Pricing Cards (ex-pricing-tier per DESIGN.md) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
           {PLANS.map((plan) => {
             const rawPrice = billingCycle === 'yearly' ? plan.priceYearly : plan.priceMonthly;
             const discount = appliedCoupon ? (rawPrice * appliedCoupon.discountPercent) / 100 : 0;
             const finalPrice = Math.max(0, rawPrice - discount);
 
+            const isFeatured = plan.isPopular;
+
             return (
-              <GlassCard
+              <div
                 key={plan.id}
-                isHighlighted={plan.isPopular}
-                withHoverShift={true}
-                className="flex flex-col justify-between"
+                className={`bg-surface border rounded-md p-6 text-ink flex flex-col justify-between transition-shadow hover:shadow-level-2 ${
+                  isFeatured ? 'border-primary ring-2 ring-primary/20' : 'border-hairline'
+                }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-heading font-semibold text-lg text-white/95">{plan.name}</h3>
-                    {plan.isPopular && (
-                      <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-[#c8f542] text-[#0a2a12]">
-                        Most Popular
-                      </span>
+                    <h3 className="text-heading font-bold text-ink">{plan.name}</h3>
+                    {isFeatured && (
+                      <Badge variant="primary">Most Popular</Badge>
                     )}
                   </div>
 
-                  <p className="text-xs text-white/60 mb-6 min-h-[32px]">{plan.tagline}</p>
+                  <p className="text-caption text-body mb-4 min-h-[32px]">{plan.tagline}</p>
 
-                  {/* Price */}
-                  <div className="flex items-baseline gap-1 mb-6">
-                    <span className="text-3xl sm:text-4xl font-mono font-bold text-white/95">
-                      {plan.currency}{finalPrice}
-                    </span>
-                    <span className="text-xs text-white/50 font-mono">
-                      {plan.priceMonthly === 0 ? '' : billingCycle === 'yearly' ? '/year' : '/month'}
-                    </span>
-                    {appliedCoupon && discount > 0 && (
-                      <span className="ml-2 text-xs text-[#c8f542] line-through font-mono">
-                        {plan.currency}{rawPrice}
-                      </span>
-                    )}
+                  {/* Price Lockup per DESIGN.md */}
+                  <div className="my-4">
+                    <PriceLockup
+                      price={finalPrice}
+                      currency={plan.currency}
+                      period={plan.priceMonthly === 0 ? '' : billingCycle === 'yearly' ? '/year' : '/month'}
+                      originalPrice={appliedCoupon && discount > 0 ? `${plan.currency}${rawPrice}` : undefined}
+                      discount={appliedCoupon && discount > 0 ? `${appliedCoupon.discountPercent}% OFF` : undefined}
+                    />
                   </div>
 
                   {/* Quota Highlights */}
-                  <div className="p-3 rounded-xl bg-white/5 border border-white/8 mb-6 space-y-1.5 text-xs font-mono">
-                    <div className="flex justify-between text-white/80">
+                  <div className="p-3 rounded-md bg-canvas border border-hairline mb-6 space-y-1.5 text-caption font-mono">
+                    <div className="flex justify-between text-body">
                       <span>Listening Quota:</span>
-                      <span className="text-[#c8f542] font-semibold">{plan.minutesPerMonth} min/mo</span>
+                      <span className="text-primary font-bold">{plan.minutesPerMonth} min/mo</span>
                     </div>
-                    <div className="flex justify-between text-white/80">
+                    <div className="flex justify-between text-body">
                       <span>Emergency Reserve:</span>
-                      <span className="text-amber-300 font-semibold">{plan.emergencyReserveMinutes} min</span>
+                      <span className="text-ink font-bold">{plan.emergencyReserveMinutes} min</span>
                     </div>
                   </div>
 
                   {/* Feature checklist */}
-                  <div className="space-y-2.5 text-xs font-body mb-8">
+                  <div className="space-y-2.5 text-caption font-sans mb-8">
                     {plan.features.map((f, i) => (
                       <div key={i} className="flex items-start gap-2">
-                        <span className={`shrink-0 mt-0.5 ${f.included ? 'text-[#c8f542]' : 'text-white/20'}`}>
-                          <Icon name={f.included ? 'check-circle-bold' : 'close-circle-linear'} size={14} />
+                        <span className={`shrink-0 mt-0.5 ${f.included ? 'text-primary' : 'text-muted'}`}>
+                          {/* @ts-expect-error solar icon */}
+                          <iconify-icon icon={f.included ? 'solar:check-circle-bold' : 'solar:close-circle-linear'} width="16" height="16" />
                         </span>
-                        <span className={f.included ? 'text-white/80' : 'text-white/30 line-through'}>
+                        <span className={f.included ? 'text-ink font-medium' : 'text-muted line-through'}>
                           {f.text}
                         </span>
                       </div>
@@ -239,40 +209,42 @@ export default function PricingPage() {
                 </div>
 
                 <Button
-                  variant={plan.isPopular ? 'lime' : 'ghost'}
+                  variant={isFeatured ? 'primary' : 'outline-neutral'}
                   size="md"
                   href="#waitlist"
                   className="w-full"
                 >
                   {plan.ctaLabel}
                 </Button>
-              </GlassCard>
+              </div>
             );
           })}
         </div>
 
-        {/* GST-inclusive Note & Coupon Section */}
-        <div className="max-w-2xl mx-auto text-center space-y-6 pt-2">
-          <div className="text-xs text-white/50 font-mono">
+        {/* GST Notice & Coupon Section */}
+        <div className="max-w-2xl mx-auto text-center space-y-4">
+          <div className="text-caption text-body font-mono">
             * All displayed subscription prices are inclusive of 18% GST. Tax invoices provided for all payments.
           </div>
 
-          {/* Coupon Field */}
-          <GlassCard className="p-6 max-w-md mx-auto text-left">
-            <div className="text-xs font-heading font-semibold text-white/90 mb-2 flex items-center gap-1.5">
-              <Icon name="ticket-sale-bold" size={16} />
+          {/* Coupon Field Card */}
+          <div className="bg-surface border border-hairline rounded-md p-6 max-w-md mx-auto text-left shadow-sm">
+            <div className="text-ui font-bold text-ink mb-2 flex items-center gap-1.5">
+              {/* @ts-expect-error solar icon */}
+              <iconify-icon icon="solar:ticket-sale-bold" width="18" height="18" class="text-primary" />
               <span>Have a referral or promo code?</span>
             </div>
             <div className="flex gap-2">
               <Input
+                aria-label="Coupon Code"
                 placeholder="Try KAVACH50"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
-                className="text-xs uppercase font-mono"
+                className="text-caption uppercase font-mono"
               />
               <Button
-                variant="ghost"
-                size="sm"
+                variant="outline-green"
+                size="md"
                 onClick={handleApplyCoupon}
                 disabled={validatingCoupon}
               >
@@ -281,76 +253,78 @@ export default function PricingPage() {
             </div>
 
             {appliedCoupon && (
-              <p className="mt-2 text-xs text-[#c8f542] flex items-center gap-1 font-mono">
-                <Icon name="check-circle-bold" size={14} />
-                <span>{appliedCoupon.message} ({appliedCoupon.discountPercent}% off)</span>
+              <p className="mt-2 text-caption text-primary font-bold flex items-center gap-1 font-mono">
+                {/* @ts-expect-error solar icon */}
+                <iconify-icon icon="solar:check-circle-bold" width="16" height="16" />
+                <span>{appliedCoupon.message} ({appliedCoupon.discountPercent}% off applied)</span>
               </p>
             )}
 
             {couponError && (
-              <p className="mt-2 text-xs text-[#ff5a4d] flex items-center gap-1 font-mono">
-                <Icon name="danger-circle-bold" size={14} />
+              <p className="mt-2 text-caption text-hot font-bold flex items-center gap-1 font-mono">
+                {/* @ts-expect-error solar icon */}
+                <iconify-icon icon="solar:danger-circle-bold" width="16" height="16" />
                 <span>{couponError}</span>
               </p>
             )}
-          </GlassCard>
+          </div>
         </div>
 
-        {/* Listening Minute Explainer & Emergency Reserve */}
+        {/* Quota Explainer Card */}
         <div className="max-w-4xl mx-auto">
-          <GlassCard className="p-8 space-y-4">
-            <h3 className="font-heading font-semibold text-xl text-white/95 flex items-center gap-2">
-              <Icon name="shield-check-bold" size={22} color="#c8f542" />
+          <div className="bg-surface border border-hairline rounded-md p-8 space-y-4">
+            <h3 className="text-heading font-bold text-ink flex items-center gap-2">
+              {/* @ts-expect-error solar icon */}
+              <iconify-icon icon="solar:shield-check-bold" width="22" height="22" class="text-primary" />
               <span>How Listening Quotas & the Emergency Reserve Work</span>
             </h3>
-            <p className="text-xs sm:text-sm text-white/70 font-body leading-relaxed">
+            <p className="text-body font-medium text-body leading-relaxed">
               Kavach never streams quiet room audio. Our local browser worklet only uploads speech frames
               when continuous conversation is detected over speakerphone. A typical household taking 2–3 unfamiliar
               courier or delivery calls a week uses fewer than 40 minutes per month.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <div className="font-mono text-xs font-bold text-[#c8f542] mb-1">Silence Gating (Zero Burn)</div>
-                <div className="text-xs text-white/60">
+              <div className="p-4 rounded-md bg-canvas border border-hairline">
+                <div className="text-ui font-bold text-primary mb-1">Silence Gating (Zero Burn)</div>
+                <div className="text-caption text-body">
                   Room silence and everyday background household TV/noise do not deplete your monthly minutes.
                 </div>
               </div>
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <div className="font-mono text-xs font-bold text-amber-300 mb-1">Emergency Reserve Guarantee</div>
-                <div className="text-xs text-white/60">
+              <div className="p-4 rounded-md bg-canvas border border-hairline">
+                <div className="text-ui font-bold text-warm mb-1">Emergency Reserve Guarantee</div>
+                <div className="text-caption text-body">
                   If an active scam call is detected and monthly quota is exhausted, Kavach seamlessly draws from the reserve so protection never drops mid-incident.
                 </div>
               </div>
             </div>
-          </GlassCard>
+          </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* WAITLIST FORM SECTION */}
-        {/* ========================================================================= */}
-        <section id="waitlist" className="max-w-xl mx-auto pt-6 space-y-6">
+        {/* Waitlist Form Section */}
+        <section id="waitlist" className="max-w-xl mx-auto pt-4 space-y-6">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-heading font-bold text-white/95">
+            <h2 className="text-heading-lg font-bold text-ink">
               Join the Private Beta Waitlist
             </h2>
-            <p className="text-xs text-white/60 font-body">
+            <p className="text-caption text-body">
               Early caregivers receive 1 year of free Plus protection and direct access to linguistic engineering updates.
             </p>
           </div>
 
-          <GlassCard isHighlighted={true} className="p-6 sm:p-8">
+          <div className="bg-surface border border-hairline rounded-md p-6 sm:p-8 shadow-sm">
             {submitSuccess ? (
               <div className="text-center py-6 space-y-3">
-                <div className="w-12 h-12 rounded-full bg-[#c8f542]/20 border border-[#c8f542] text-[#c8f542] flex items-center justify-center mx-auto">
-                  <Icon name="check-circle-bold" size={24} />
+                <div className="w-12 h-12 rounded-full bg-discount-surface text-green-strong flex items-center justify-center mx-auto">
+                  {/* @ts-expect-error solar icon */}
+                  <iconify-icon icon="solar:check-circle-bold" width="28" height="28" />
                 </div>
-                <h3 className="font-heading font-semibold text-lg text-white/95">
+                <h3 className="text-heading font-bold text-ink">
                   You are on the list!
                 </h3>
-                <p className="text-xs text-white/70 font-body max-w-sm mx-auto">
+                <p className="text-body font-medium text-body max-w-sm mx-auto">
                   {submitSuccess.message}
                 </p>
-                <div className="inline-block px-3 py-1 rounded-full border border-white/14 bg-white/5 text-xs font-mono text-[#c8f542]">
+                <div className="inline-block px-3 py-1 rounded-full bg-canvas border border-hairline text-caption font-bold text-primary">
                   Waitlist Position: #{submitSuccess.position}
                 </div>
               </div>
@@ -387,6 +361,7 @@ export default function PricingPage() {
                 <input
                   type="text"
                   name="kavach_bot_check"
+                  aria-label="Bot Check"
                   tabIndex={-1}
                   autoComplete="off"
                   value={formHoneypot}
@@ -402,15 +377,16 @@ export default function PricingPage() {
                 />
 
                 {submitError && (
-                  <p className="text-xs text-[#ff5a4d] flex items-center gap-1 font-mono">
-                    <Icon name="danger-circle-bold" size={14} />
+                  <p className="text-caption text-hot flex items-center gap-1 font-medium">
+                    {/* @ts-expect-error solar icon */}
+                    <iconify-icon icon="solar:danger-circle-bold" width="16" height="16" />
                     <span>{submitError}</span>
                   </p>
                 )}
 
                 <Button
-                  variant="lime"
-                  size="md"
+                  variant="primary"
+                  size="lg"
                   type="submit"
                   disabled={submitting}
                   className="w-full mt-4"
@@ -419,21 +395,23 @@ export default function PricingPage() {
                 </Button>
               </form>
             )}
-          </GlassCard>
+          </div>
         </section>
 
         {/* FAQ Accordion */}
-        <section className="max-w-3xl mx-auto space-y-6 pt-8">
+        <section className="max-w-3xl mx-auto space-y-6 pt-4">
           <div className="text-center">
-            <h2 className="text-2xl font-heading font-bold text-white/95">
+            <h2 className="text-heading-lg font-bold text-ink">
               Frequently Asked Questions
             </h2>
-            <p className="text-xs text-white/60 mt-1">Everything you need to know about Kavach protection and pricing.</p>
+            <p className="text-caption text-body mt-1">Everything you need to know about Kavach protection and pricing.</p>
           </div>
 
           <Accordion items={PRICING_FAQS} />
         </section>
-      </div>
-    </Frame>
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }

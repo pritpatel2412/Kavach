@@ -2,135 +2,128 @@
 
 import React from 'react';
 import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
   Button,
-  Icon,
 } from '@kavach/ui';
 import { SiteHeader } from '../../../components/SiteHeader';
 import { SiteFooter } from '../../../components/SiteFooter';
 
 export default function KycOtpArticle() {
   return (
-    <Frame withHatch={false} className="pb-16">
-      <HatchOverlay />
+    <div className="min-h-screen bg-canvas text-ink font-sans">
       <SiteHeader currentPath="/learn" />
 
-      <article className="relative z-10 px-6 sm:px-10 lg:px-12 pt-12 max-w-4xl mx-auto space-y-12">
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
         {/* Header */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 text-xs font-mono text-white/50">
-            <a href="/learn" className="hover:text-[#c8f542] flex items-center gap-1">
-              <Icon name="arrow-left-linear" size={14} />
-              <span>Learn Hub</span>
-            </a>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-caption font-bold text-muted">
+            <a href="/learn" className="hover:text-primary transition-colors">Learn Hub</a>
             <span>/</span>
-            <span className="text-[#c8f542]">KYC &amp; Urgency Traps</span>
+            <span className="text-primary">KYC &amp; Urgency Traps</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold tracking-tight text-white/95 leading-tight">
+          <h1 className="text-display sm:text-[40px] font-bold text-ink leading-tight tracking-tight">
             Bank KYC Expiry, Electricity Cutoff &amp; SIM Deactivation Threats
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 pt-2 text-xs font-mono text-white/50 border-b border-white/10 pb-6">
+          <div className="flex flex-wrap items-center gap-4 text-caption text-body border-b border-hairline pb-4">
             <span>Published: October 2026</span>
             <span>·</span>
-            <span>RBI &amp; TRAI Consumer Advisory</span>
+            <span className="text-primary font-bold">RBI &amp; TRAI Consumer Advisory</span>
             <span>·</span>
             <span>Estimated Reading Time: 4 mins</span>
           </div>
         </div>
 
         {/* Threat Summary */}
-        <GlassCard className="p-6 sm:p-8 space-y-3 border-emerald-400/30 bg-emerald-400/5">
-          <div className="text-xs font-mono uppercase tracking-wider text-emerald-300 font-bold flex items-center gap-2">
-            <Icon name="phone-calling-rounded-bold" size={16} color="#c8f542" />
+        <div className="bg-warning-surface border border-warning-surface rounded-md p-6 space-y-2 text-warning-text">
+          <div className="text-caption font-bold uppercase tracking-wider flex items-center gap-2">
+            {/* @ts-expect-error solar icon */}
+            <iconify-icon icon="solar:phone-calling-rounded-bold" width="18" height="18" />
             <span>The Daily Attack</span>
           </div>
-          <p className="text-xs sm:text-sm text-white/80 font-body leading-relaxed">
+          <p className="text-caption font-medium leading-relaxed">
             Unlike grand digital arrest operations, &ldquo;Utility Urgency&rdquo; scams hit millions of Indian mobile subscribers daily. Attackers send spoofed SMS messages warning of power cutoff at 9:30 PM, bank account suspension within 24 hours, or SIM card disconnection due to non-updated Aadhaar biometric records.
           </p>
-        </GlassCard>
+        </div>
 
         {/* Content Body */}
-        <div className="space-y-8 text-sm sm:text-base text-white/80 font-body leading-relaxed">
-          <section className="space-y-3">
-            <h2 className="text-2xl font-heading font-bold text-white/95">
+        <div className="space-y-8 text-body font-medium text-body leading-relaxed">
+          <section className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-4">
+            <h2 className="text-heading font-bold text-ink">
               The Three Common Variants
             </h2>
 
             <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-2">
-                <h3 className="font-heading font-bold text-white text-base">
-                  1. The Electricity / Power Disconnection Threat
-                </h3>
-                <p className="text-xs text-white/70">
-                  <em>&ldquo;Dear consumer, your electricity will be disconnected tonight at 9:30 PM from the power office because your previous month&apos;s bill was not updated. Please immediately contact our electricity officer at 98xxxxxx.&rdquo;</em>
-                </p>
-                <p className="text-xs text-white/50">
-                  When the elder calls, they are told to pay a token ₹10 fee via a malicious link or install an app like AnyDesk or RustDesk so the &ldquo;officer&rdquo; can fix the error. The app then captures their bank MPIN and drains accounts.
+              <div className="p-4 rounded-md bg-canvas border border-hairline space-y-1.5">
+                <h3 className="font-bold text-ink text-ui">1. Electricity Bill &ldquo;Power Cut at 9:30 PM&rdquo;</h3>
+                <p className="text-caption text-body">
+                  SMS warns: <em>&ldquo;Dear consumer, your electricity will be disconnected tonight at 9:30 PM because previous month bill was not updated. Please immediately contact power officer at 98xxxxxx.&rdquo;</em> When called, the scammer instructs the victim to download AnyDesk or TeamViewer QuickSupport.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-2">
-                <h3 className="font-heading font-bold text-white text-base">
-                  2. Bank Account KYC Suspension
-                </h3>
-                <p className="text-xs text-white/70">
-                  <em>&ldquo;SBI/HDFC Alert: Your NetBanking account will be blocked today due to pending re-KYC. Click here to verify your PAN card and Aadhaar details.&rdquo;</em>
-                </p>
-                <p className="text-xs text-white/50">
-                  The link loads a near-identical phishing portal mimicking State Bank of India or HDFC. The elder enters their user ID, password, and OTP, granting instant access to attackers.
+              <div className="p-4 rounded-md bg-canvas border border-hairline space-y-1.5">
+                <h3 className="font-bold text-ink text-ui">2. Bank Pan/Aadhaar KYC Re-Verification</h3>
+                <p className="text-caption text-body">
+                  Caller claims to be from SBI, HDFC, or ICICI customer care: <em>&ldquo;Your net banking and debit card have been frozen because your KYC re-verification is pending under RBI mandate.&rdquo;</em> They send an APK file via WhatsApp disguised as &ldquo;SBI Yono Verification Tool&rdquo; which intercepts incoming SMS OTPs.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-2">
-                <h3 className="font-heading font-bold text-white text-base">
-                  3. TRAI Mobile Number Disconnection
-                </h3>
-                <p className="text-xs text-white/70">
-                  An automated voice claims: <em>&ldquo;This call is from the Telecom Regulatory Authority of India (TRAI). Your mobile number will be terminated within 2 hours due to illegal advertising and harassment complaints.&rdquo;</em>
-                </p>
-                <p className="text-xs text-white/50">
-                  TRAI has officially clarified that it NEVER calls individual telecom subscribers to disconnect phone numbers.
+              <div className="p-4 rounded-md bg-canvas border border-hairline space-y-1.5">
+                <h3 className="font-bold text-ink text-ui">3. Telecom Department (DoT / TRAI) SIM Deactivation</h3>
+                <p className="text-caption text-body">
+                  Automated IVR call stating: <em>&ldquo;Your mobile number will be terminated within 2 hours by order of Department of Telecommunications due to 23 complaints of obscene messages.&rdquo;</em> Directs the user to press 9 to connect with an executive who demands Aadhaar biometric verification fees.
                 </p>
               </div>
             </div>
           </section>
 
-          <section className="space-y-3">
-            <h2 className="text-2xl font-heading font-bold text-white/95">
-              RBI Golden Rules for Elders
+          <section className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-3">
+            <h2 className="text-heading font-bold text-ink">
+              RBI Golden Guidelines for Consumers
             </h2>
-            <ul className="list-disc pl-5 space-y-2 text-sm text-white/70">
-              <li><strong>Never download screen-sharing APKs:</strong> No legitimate bank or utility electricity board will ever ask you to install AnyDesk, TeamViewer, or QuickSupport on your mobile phone.</li>
-              <li><strong>OTP is strictly private:</strong> Bank staff and electricity officers never require OTP or debit card CVV numbers to verify accounts.</li>
-              <li><strong>Always pay bills through official utility apps:</strong> Use official state electricity portals (e.g. BESCOM, MSEDCL, TPDDL) or established UPI apps rather than numbers sent in SMS.</li>
-            </ul>
+            <div className="p-4 rounded-md bg-canvas border border-hairline text-caption text-body space-y-2">
+              <p>Reserve Bank of India (RBI) circular on electronic banking safety:</p>
+              <ul className="list-disc pl-5 space-y-1.5 font-medium text-ink">
+                <li>Banks NEVER request OTP, PIN, UPI MPIN, or passwords over the phone.</li>
+                <li>Banks NEVER send executive visits or WhatsApp links to update KYC.</li>
+                <li>Utility electricity providers NEVER disconnect supply at night without written physical postal notice.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-3">
+            <h2 className="text-heading font-bold text-ink">
+              How Kavach Protects During These Calls
+            </h2>
+            <p>
+              When an elder is on speakerphone reading an SMS or answering an aggressive utility caller, Kavach&apos;s real-time parser flags dangerous trigger words: <em>&ldquo;AnyDesk&rdquo;</em>, <em>&ldquo;QuickSupport&rdquo;</em>, <em>&ldquo;OTP batao&rdquo;</em>, <em>&ldquo;bijli cut jayegi&rdquo;</em>, and <em>&ldquo;SIM block&rdquo;</em>.
+            </p>
+            <p>
+              The tabletop device instantly speaks: <strong>&ldquo;Warning: Bank and electricity boards never ask for OTP or remote app downloads. Please disconnect.&rdquo;</strong>
+            </p>
           </section>
         </div>
 
-        {/* MANDATORY NATIONAL HELPLINE FOOTNOTE */}
-        <div className="p-6 rounded-2xl border-2 border-amber-400 bg-amber-400/10 text-center space-y-3">
-          <div className="text-xs font-mono font-bold uppercase tracking-wider text-amber-300">
+        {/* National Helpline Action Box */}
+        <div className="bg-surface border-2 border-hot rounded-md p-6 sm:p-8 text-center space-y-3 shadow-sm">
+          <div className="text-caption font-mono font-bold uppercase text-hot">
             Emergency Action Advisory
           </div>
-          <div className="text-lg sm:text-xl font-heading font-bold text-white">
-            Hang up immediately and call 1930 or visit cybercrime.gov.in
+          <div className="text-heading-lg font-bold text-ink">
+            Report Suspicious Numbers to Chakshu (DoT) or 1930
           </div>
-          <p className="text-xs text-white/70 max-w-md mx-auto">
-            If you shared an OTP or downloaded a screen-sharing tool, switch on Airplane Mode immediately and call 1930 to freeze unauthorized debit transfers.
+          <p className="text-caption text-body max-w-md mx-auto">
+            You can report fraudulent SMS and SIM deactivation callers to the Department of Telecommunications Chakshu portal at sancharsaathi.gov.in.
           </p>
           <div className="pt-2">
-            <Button variant="lime" size="sm" href="tel:1930" icon="phone-bold">
-              Call 1930 Now
+            <Button variant="danger" size="md" href="tel:1930">
+              Call 1930 Helpline
             </Button>
           </div>
         </div>
-
-        <SiteFooter />
       </article>
-    </Frame>
+
+      <SiteFooter />
+    </div>
   );
 }

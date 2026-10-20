@@ -20,26 +20,27 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <div
-      className={`flex flex-col items-center justify-center p-8 sm:p-12 text-center rounded-[20px] border border-white/10 bg-white/5 backdrop-blur-md text-white/80 ${className}`}
+      className={`flex flex-col items-center justify-center p-8 sm:p-12 text-center rounded-md border border-hairline bg-surface text-ink ${className}`}
     >
-      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 border border-white/10 text-[#c8f542] mb-3.5">
+      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-canvas border border-hairline text-primary mb-3.5">
         {/* @ts-expect-error solar icon */}
         <iconify-icon icon={`solar:${icon.replace(/^solar:/, '')}`} width="24" height="24" />
       </div>
 
-      <h4 className="font-heading font-semibold text-base tracking-tight text-white/90">
+      <h4 className="font-heading font-bold text-heading text-ink">
         {title}
       </h4>
 
       {description && (
-        <p className="text-xs text-white/60 max-w-sm mt-1 leading-relaxed">{description}</p>
+        <p className="text-body font-medium text-body max-w-sm mt-1.5 leading-relaxed">{description}</p>
       )}
 
       {actionLabel && onAction && (
-        <Button variant="lime" size="sm" onClick={onAction} className="mt-4">
+        <Button variant="primary" size="md" onClick={onAction} className="mt-4">
           {actionLabel}
         </Button>
       )}
     </div>
   );
 };
+

@@ -3,16 +3,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Frame,
-  HatchOverlay,
-  AuroraCanvas,
-  GlassCard,
   Button,
   StageChip,
-  RiskMeter,
   StatusDot,
   Icon,
   KavachLogo,
+  Badge,
 } from '@kavach/ui';
 
 export default function GuardianDashboardPage() {
@@ -91,137 +87,133 @@ export default function GuardianDashboardPage() {
   };
 
   return (
-    <Frame withHatch={false} className="pb-16 min-h-screen">
-      <AuroraCanvas />
-      <HatchOverlay />
-
+    <div className="min-h-screen bg-canvas text-ink font-body">
       {/* App Header */}
-      <header className="relative z-20 px-6 py-4 sm:px-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 backdrop-blur-md bg-white/[0.02]">
-        <div className="flex items-center gap-4">
-          <a href="/" className="focus:outline-none">
-            <KavachLogo size={32} showWordmark={true} />
-          </a>
-          <span className="hidden sm:inline-block text-white/20">|</span>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-heading font-bold text-white/95">{household.name}</span>
-            <span className="text-[10px] font-mono text-white/50 px-2 py-0.5 rounded-full bg-white/5 border border-white/10">
-              {household.city}
-            </span>
+      <header className="bg-surface border-b border-hairline px-4 sm:px-6 lg:px-8 py-3.5 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <a href="/" className="focus:outline-none">
+              <KavachLogo size={28} showWordmark={true} />
+            </a>
+            <span className="hidden sm:inline-block text-muted">|</span>
+            <div className="flex items-center gap-2">
+              <span className="text-ui font-heading font-bold text-ink">{household.name}</span>
+              <span className="text-micro font-mono text-muted px-2 py-0.5 rounded-sm bg-canvas border border-hairline">
+                {household.city}
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" href="/elder" icon="devices-outline">
-            Open Tabletop Kiosk
-          </Button>
-          <Button variant="ghost" size="sm" href="/billing" icon="card-bold">
-            Billing &amp; Usage
-          </Button>
-          <Button variant="ghost" size="sm" href="/privacy" icon="shield-check-bold">
-            Privacy Rights
-          </Button>
-          <button
-            onClick={handleSignOut}
-            className="text-xs font-mono text-white/50 hover:text-white transition-colors px-2 py-1"
-          >
-            Sign Out
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline-neutral" size="sm" href="/elder" icon="devices-outline">
+              Tabletop Kiosk
+            </Button>
+            <Button variant="outline-neutral" size="sm" href="/billing" icon="card-bold">
+              Billing &amp; Usage
+            </Button>
+            <Button variant="outline-neutral" size="sm" href="/privacy" icon="shield-check-bold">
+              Privacy Rights
+            </Button>
+            <Button variant="muted" size="sm" onClick={handleSignOut}>
+              Sign Out
+            </Button>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-6 sm:px-10 lg:px-12 pt-8 max-w-6xl mx-auto space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Top Status & Caps Overview Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Status */}
-          <GlassCard className="p-5 space-y-2">
-            <div className="text-[11px] font-mono text-white/50 uppercase">Living Room Status</div>
+          <div className="bg-surface border border-hairline rounded-md p-5 space-y-2">
+            <div className="text-micro font-mono text-muted uppercase font-bold">Living Room Status</div>
             <div className="flex items-center gap-2">
               <StatusDot status="armed" label="Armed &amp; Listening" />
             </div>
-            <div className="text-[11px] text-white/50 font-body">Tabletop Tablet #1 active</div>
-          </GlassCard>
+            <div className="text-caption text-muted">Tabletop Tablet #1 active</div>
+          </div>
 
           {/* Daily Credit Guard */}
-          <GlassCard className="p-5 space-y-2">
-            <div className="text-[11px] font-mono text-white/50 uppercase">Daily Listening Guard</div>
+          <div className="bg-surface border border-hairline rounded-md p-5 space-y-2">
+            <div className="text-micro font-mono text-muted uppercase font-bold">Daily Listening Guard</div>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-heading font-bold text-white">{household.todayMinutesUsed}m</span>
-              <span className="text-xs font-mono text-white/50">/ {household.todayMinutesCap}m daily cap</span>
+              <span className="text-heading font-heading font-bold text-ink">{household.todayMinutesUsed}m</span>
+              <span className="text-caption font-mono text-muted">/ {household.todayMinutesCap}m daily cap</span>
             </div>
-            <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-canvas border border-hairline h-2 rounded-full overflow-hidden">
               <div
-                className="bg-[#c8f542] h-full rounded-full"
+                className="bg-primary h-full rounded-full transition-all"
                 style={{ width: `${(household.todayMinutesUsed / household.todayMinutesCap) * 100}%` }}
               />
             </div>
-          </GlassCard>
+          </div>
 
           {/* Monthly Plan Quota */}
-          <GlassCard className="p-5 space-y-2">
-            <div className="text-[11px] font-mono text-white/50 uppercase">Monthly Cycle Quota</div>
+          <div className="bg-surface border border-hairline rounded-md p-5 space-y-2">
+            <div className="text-micro font-mono text-muted uppercase font-bold">Monthly Cycle Quota</div>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-heading font-bold text-white">{household.monthMinutesUsed}m</span>
-              <span className="text-xs font-mono text-white/50">/ {household.monthMinutesCap}m Plus tier</span>
+              <span className="text-heading font-heading font-bold text-ink">{household.monthMinutesUsed}m</span>
+              <span className="text-caption font-mono text-muted">/ {household.monthMinutesCap}m Plus tier</span>
             </div>
-            <div className="text-[11px] text-[#c8f542] font-mono">+30m emergency reserve safe</div>
-          </GlassCard>
+            <div className="text-caption text-green-strong font-mono font-bold">+30m emergency reserve safe</div>
+          </div>
 
           {/* Familial Voice Shield */}
-          <GlassCard className="p-5 space-y-2 border-[#c8f542]/30">
-            <div className="text-[11px] font-mono text-white/50 uppercase">Voice Intervention</div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#c8f542] font-bold">
+          <div className="bg-surface border border-hairline rounded-md p-5 space-y-2">
+            <div className="text-micro font-mono text-muted uppercase font-bold">Voice Intervention</div>
+            <div className="flex items-center gap-2 text-ui font-mono text-green-strong font-bold">
               <Icon name="soundwave-square-bold" size={16} />
               <span>Consented Voice Armed</span>
             </div>
-            <div className="text-[11px] text-white/60">Daughter&apos;s Voice (Pooja)</div>
-          </GlassCard>
+            <div className="text-caption text-muted">Daughter&apos;s Voice (Pooja)</div>
+          </div>
         </div>
 
         {/* Test Simulation Alert Banner */}
         {simulatedAlertActive && (
-          <div className="p-4 rounded-2xl border-2 border-[#ff5a4d] bg-[#ff5a4d]/20 text-white flex items-center justify-between gap-4 animate-pulse">
+          <div className="p-4 rounded-md border border-hairline bg-warning-surface text-warning-text flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-pulse">
             <div className="flex items-center gap-3">
-              <Icon name="shield-warning-bold" size={24} color="#ff5a4d" />
+              <Icon name="shield-warning-bold" size={24} className="text-warning-text shrink-0" />
               <div>
-                <div className="font-heading font-bold text-sm">Simulated Level 3 Alert Dispatched!</div>
-                <div className="text-xs text-white/80">Tabletop tablet is speaking pre-rendered emergency warning audio.</div>
+                <div className="font-heading font-bold text-ui text-ink">Simulated Level 3 Alert Dispatched!</div>
+                <div className="text-caption text-warning-text">Tabletop tablet is speaking pre-rendered emergency warning audio.</div>
               </div>
             </div>
-            <Button variant="lime" size="sm" href="/alerts/alt-9821">
+            <Button variant="primary" size="sm" href="/alerts/alt-9821">
               Open Live Intercom
             </Button>
           </div>
         )}
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+        {/* Navigation Tabs (Full-round pills per DESIGN.md) */}
+        <div className="flex items-center gap-2 border-b border-hairline pb-3">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2 rounded-xl text-xs font-heading font-semibold transition-all ${
+            className={`px-4 py-1.5 rounded-full text-ui font-bold transition-all ${
               activeTab === 'overview'
-                ? 'bg-[#c8f542] text-stone-950 font-bold'
-                : 'text-white/60 hover:text-white'
+                ? 'bg-primary text-on-primary'
+                : 'bg-surface text-body border border-hairline hover:bg-canvas'
             }`}
           >
             Overview &amp; Household
           </button>
           <button
             onClick={() => setActiveTab('alerts')}
-            className={`px-4 py-2 rounded-xl text-xs font-heading font-semibold transition-all ${
+            className={`px-4 py-1.5 rounded-full text-ui font-bold transition-all ${
               activeTab === 'alerts'
-                ? 'bg-[#c8f542] text-stone-950 font-bold'
-                : 'text-white/60 hover:text-white'
+                ? 'bg-primary text-on-primary'
+                : 'bg-surface text-body border border-hairline hover:bg-canvas'
             }`}
           >
             Alert Feed ({recentAlerts.length})
           </button>
           <button
             onClick={() => setActiveTab('devices')}
-            className={`px-4 py-2 rounded-xl text-xs font-heading font-semibold transition-all ${
+            className={`px-4 py-1.5 rounded-full text-ui font-bold transition-all ${
               activeTab === 'devices'
-                ? 'bg-[#c8f542] text-stone-950 font-bold'
-                : 'text-white/60 hover:text-white'
+                ? 'bg-primary text-on-primary'
+                : 'bg-surface text-body border border-hairline hover:bg-canvas'
             }`}
           >
             Paired Tablet Kiosks (1)
@@ -230,14 +222,14 @@ export default function GuardianDashboardPage() {
 
         {/* TAB 1: OVERVIEW */}
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             {/* Left 2 Cols: Recent Alert Stream */}
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-heading font-bold text-white">Recent Scam Incident Stream</h2>
+                <h2 className="text-heading font-heading font-bold text-ink">Recent Scam Incident Stream</h2>
                 <button
                   onClick={triggerTestSimulation}
-                  className="text-xs font-mono text-[#c8f542] hover:underline flex items-center gap-1"
+                  className="text-caption font-mono text-primary hover:underline flex items-center gap-1 font-bold"
                 >
                   <Icon name="play-bold" size={12} />
                   <span>Simulate Test Call</span>
@@ -246,54 +238,52 @@ export default function GuardianDashboardPage() {
 
               <div className="space-y-4">
                 {recentAlerts.map((alert) => (
-                  <GlassCard
+                  <div
                     key={alert.id}
-                    className={`p-6 space-y-4 ${
-                      alert.level === 3 ? 'border-[#ff5a4d]/40' : alert.level === 2 ? 'border-amber-400/40' : 'border-white/10'
-                    }`}
+                    className="bg-surface border border-hairline rounded-md p-6 space-y-4 hover:shadow-level-2 transition-shadow"
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-hairline pb-3">
                       <div className="flex items-center gap-2.5">
                         <span
                           className={`w-2.5 h-2.5 rounded-full ${
                             alert.level === 3
-                              ? 'bg-[#ff5a4d] shadow-sm shadow-[#ff5a4d]'
+                              ? 'bg-hot'
                               : alert.level === 2
-                              ? 'bg-amber-400'
-                              : 'bg-white/30'
+                              ? 'bg-warm'
+                              : 'bg-cold'
                           }`}
                         />
-                        <h3 className="font-heading font-bold text-white text-sm sm:text-base">
+                        <h3 className="font-heading font-bold text-ink text-ui sm:text-lead">
                           {alert.type}
                         </h3>
                       </div>
-                      <span className="text-xs font-mono text-white/40">{alert.timestamp}</span>
+                      <span className="text-caption font-mono text-muted">{alert.timestamp}</span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-white/50">Stages Detected:</span>
+                      <span className="text-caption font-mono text-muted">Stages Detected:</span>
                       <div className="flex flex-wrap gap-1.5">
                         {alert.stages.length > 0 ? (
                           alert.stages.map((st) => <StageChip key={st} stage={st} />)
                         ) : (
-                          <span className="text-xs font-mono text-white/40">None (Safe)</span>
+                          <span className="text-caption font-mono text-muted">None (Safe)</span>
                         )}
                       </div>
                     </div>
 
-                    <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white/80 font-body italic leading-relaxed">
+                    <div className="p-3.5 rounded-md bg-canvas border border-hairline text-ui text-body italic leading-relaxed">
                       {alert.excerpt}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 text-xs">
-                      <div className="flex items-center gap-2 text-white/60 font-mono text-[11px]">
-                        <Icon name="volume-loud-bold" size={14} color="#c8f542" />
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 text-ui">
+                      <div className="flex items-center gap-2 text-muted font-mono text-caption">
+                        <Icon name="volume-loud-bold" size={14} className="text-primary" />
                         <span>{alert.warningPlayed}</span>
                       </div>
 
                       <div className="flex items-center gap-2">
                         <Button
-                          variant={alert.level === 3 ? 'lime' : 'ghost'}
+                          variant={alert.level === 3 ? 'primary' : 'outline-neutral'}
                           size="sm"
                           href={`/alerts/${alert.id}`}
                           icon="arrow-right-linear"
@@ -302,77 +292,77 @@ export default function GuardianDashboardPage() {
                         </Button>
                       </div>
                     </div>
-                  </GlassCard>
+                  </div>
                 ))}
               </div>
             </div>
 
             {/* Right Col: Household & Device Card */}
             <div className="space-y-6">
-              <GlassCard className="p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <h3 className="font-heading font-bold text-white text-sm">Protected Elder</h3>
-                  <span className="text-[11px] font-mono text-[#c8f542]">Active</span>
+              <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-hairline pb-3">
+                  <h3 className="font-heading font-bold text-ink text-ui">Protected Elder</h3>
+                  <Badge variant="primary">Active</Badge>
                 </div>
 
-                <div className="space-y-3 text-xs font-body">
+                <div className="space-y-3 text-ui">
                   <div>
-                    <div className="text-white/40 uppercase font-mono text-[10px]">Name</div>
-                    <div className="font-heading font-semibold text-white text-sm">{household.elder}</div>
+                    <div className="text-muted uppercase font-mono text-micro font-bold">Name</div>
+                    <div className="font-heading font-bold text-ink text-ui mt-0.5">{household.elder}</div>
                   </div>
                   <div>
-                    <div className="text-white/40 uppercase font-mono text-[10px]">Mobile Number</div>
-                    <div className="text-white/80 font-mono">{household.elderPhone}</div>
+                    <div className="text-muted uppercase font-mono text-micro font-bold">Mobile Number</div>
+                    <div className="text-body font-mono mt-0.5">{household.elderPhone}</div>
                   </div>
                   <div>
-                    <div className="text-white/40 uppercase font-mono text-[10px]">Speech Recognition Model</div>
-                    <div className="text-white/80">{household.primaryLang}</div>
+                    <div className="text-muted uppercase font-mono text-micro font-bold">Speech Recognition Model</div>
+                    <div className="text-body mt-0.5">{household.primaryLang}</div>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/10 flex justify-between">
+                <div className="pt-2 border-t border-hairline flex justify-between">
                   <a
                     href="http://localhost:3000/consent-notice"
                     target="_blank"
-                    className="text-[11px] font-mono text-[#c8f542] hover:underline flex items-center gap-1"
+                    className="text-caption font-mono text-primary hover:underline flex items-center gap-1 font-bold"
                   >
                     <span>Elder Notice Card</span>
                     <Icon name="arrow-right-up-linear" size={12} />
                   </a>
                 </div>
-              </GlassCard>
+              </div>
 
-              <GlassCard className="p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <h3 className="font-heading font-bold text-white text-sm">Tabletop Device</h3>
+              <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-hairline pb-3">
+                  <h3 className="font-heading font-bold text-ink text-ui">Tabletop Device</h3>
                   <StatusDot status="armed" label="" />
                 </div>
 
-                <div className="space-y-2.5 text-xs font-mono text-white/70">
+                <div className="space-y-2.5 text-caption font-mono text-body">
                   <div className="flex justify-between">
-                    <span className="text-white/40">Location:</span>
-                    <span className="text-white/90">Living Room Table</span>
+                    <span className="text-muted">Location:</span>
+                    <span className="text-ink font-bold">Living Room Table</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/40">Heartbeat:</span>
-                    <span className="text-emerald-300">{household.lastHeartbeat}</span>
+                    <span className="text-muted">Heartbeat:</span>
+                    <span className="text-green-strong font-bold">{household.lastHeartbeat}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/40">Power / Battery:</span>
-                    <span className="text-white/90">{household.deviceBattery}</span>
+                    <span className="text-muted">Power / Battery:</span>
+                    <span className="text-ink">{household.deviceBattery}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/40">Wi-Fi Connection:</span>
-                    <span className="text-white/90">{household.wifiStrength}</span>
+                    <span className="text-muted">Wi-Fi Connection:</span>
+                    <span className="text-ink">{household.wifiStrength}</span>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/10">
-                  <Button variant="ghost" size="sm" href="/elder" className="w-full justify-center text-xs">
+                <div className="pt-2 border-t border-hairline">
+                  <Button variant="outline-neutral" size="sm" href="/elder" className="w-full justify-center">
                     Open Tabletop View on this device
                   </Button>
                 </div>
-              </GlassCard>
+              </div>
             </div>
           </div>
         )}
@@ -380,24 +370,24 @@ export default function GuardianDashboardPage() {
         {/* TAB 2: ALERTS FEED */}
         {activeTab === 'alerts' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-heading font-bold text-white">Full Incident History</h2>
+            <h2 className="text-heading font-heading font-bold text-ink">Full Incident History</h2>
             <div className="space-y-4">
               {recentAlerts.map((alert) => (
-                <GlassCard key={alert.id} className="p-6 space-y-3">
+                <div key={alert.id} className="bg-surface border border-hairline rounded-md p-6 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-3">
                       <StageChip stage={alert.stages[alert.stages.length - 1] || 'S1'} />
-                      <h3 className="font-heading font-bold text-white text-base">{alert.type}</h3>
+                      <h3 className="font-heading font-bold text-ink text-lead">{alert.type}</h3>
                     </div>
-                    <span className="text-xs font-mono text-white/40">{alert.timestamp}</span>
+                    <span className="text-caption font-mono text-muted">{alert.timestamp}</span>
                   </div>
-                  <p className="text-xs text-white/80 font-body italic">{alert.excerpt}</p>
+                  <p className="text-ui text-body italic bg-canvas border border-hairline rounded-md p-3">{alert.excerpt}</p>
                   <div className="pt-2 flex justify-end">
-                    <Button variant="ghost" size="sm" href={`/alerts/${alert.id}`}>
+                    <Button variant="outline-neutral" size="sm" href={`/alerts/${alert.id}`}>
                       Inspect Full Utterance Timeline
                     </Button>
                   </div>
-                </GlassCard>
+                </div>
               ))}
             </div>
           </div>
@@ -407,48 +397,49 @@ export default function GuardianDashboardPage() {
         {activeTab === 'devices' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-heading font-bold text-white">Paired Tabletop Kiosks</h2>
-              <Button variant="lime" size="sm" href="/onboarding">
+              <h2 className="text-heading font-heading font-bold text-ink">Paired Tabletop Kiosks</h2>
+              <Button variant="primary" size="sm" href="/onboarding">
                 Pair Additional Tablet
               </Button>
             </div>
 
-            <GlassCard className="p-6 space-y-4">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-hairline pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#c8f542]">
+                  <div className="w-10 h-10 rounded-md bg-canvas border border-hairline flex items-center justify-center text-primary">
                     <Icon name="devices-outline" size={20} />
                   </div>
                   <div>
-                    <div className="font-heading font-bold text-white text-sm">{household.device}</div>
-                    <div className="text-xs text-white/50">Paired code: KAV-7892</div>
+                    <div className="font-heading font-bold text-ink text-ui">{household.device}</div>
+                    <div className="text-caption text-muted font-mono">Paired code: KAV-7892</div>
                   </div>
                 </div>
                 <StatusDot status="armed" label="Online" />
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-caption font-mono">
                 <div>
-                  <div className="text-white/40">Status</div>
-                  <div className="text-white/90">Armed (Speakerphone)</div>
+                  <div className="text-muted">Status</div>
+                  <div className="text-ink font-bold">Armed (Speakerphone)</div>
                 </div>
                 <div>
-                  <div className="text-white/40">Silence Gating</div>
-                  <div className="text-[#c8f542]">Active (0 credit silence)</div>
+                  <div className="text-muted">Silence Gating</div>
+                  <div className="text-green-strong font-bold">Active (0 credit silence)</div>
                 </div>
                 <div>
-                  <div className="text-white/40">Heartbeat</div>
-                  <div className="text-emerald-300">Live &lt; 5s</div>
+                  <div className="text-muted">Heartbeat</div>
+                  <div className="text-green-strong font-bold">Live &lt; 5s</div>
                 </div>
                 <div>
-                  <div className="text-white/40">Audio Worklet</div>
-                  <div className="text-white/90">16 kHz PCM PCM16</div>
+                  <div className="text-muted">Audio Worklet</div>
+                  <div className="text-ink">16 kHz PCM PCM16</div>
                 </div>
               </div>
-            </GlassCard>
+            </div>
           </div>
         )}
       </main>
-    </Frame>
+    </div>
   );
 }
+

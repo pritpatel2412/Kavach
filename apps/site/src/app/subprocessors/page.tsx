@@ -2,10 +2,8 @@
 
 import React from 'react';
 import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
   Icon,
+  Badge,
 } from '@kavach/ui';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SiteFooter } from '../../components/SiteFooter';
@@ -44,58 +42,60 @@ export default function SubprocessorsPage() {
   ];
 
   return (
-    <Frame withHatch={false} className="pb-16">
-      <HatchOverlay />
+    <div className="min-h-screen bg-canvas text-ink font-body">
       <SiteHeader />
 
-      <main className="relative z-10 px-6 sm:px-10 lg:px-12 pt-12 max-w-4xl mx-auto space-y-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <LegalBanner category="Subprocessor Registry" />
 
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/18 bg-white/5 text-xs font-mono text-white/80">
-            <Icon name="server-square-bold" size={14} color="#c8f542" />
-            <span>DPDP Act 2023 Vendor Disclosures</span>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2">
+            <Badge variant="neutral-subtle" className="font-mono text-xs">
+              <Icon name="server-square-bold" size={14} className="text-primary mr-1" />
+              DPDP Act 2023 Vendor Disclosures
+            </Badge>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-white/95">
+          <h1 className="text-display font-heading font-bold text-ink">
             Authorized Subprocessors
           </h1>
 
-          <p className="text-xs sm:text-sm text-white/60 font-body">
+          <p className="text-ui text-body">
             Kavach maintains a transparent, public registry of all third-party vendors and infrastructure partners that process data on our behalf.
           </p>
         </div>
 
         <div className="space-y-4">
           {subprocessors.map((sub, idx) => (
-            <GlassCard key={idx} className="p-6 space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
-                <h3 className="font-heading font-bold text-white text-base">{sub.name}</h3>
-                <span className="text-[11px] font-mono text-[#c8f542] px-2.5 py-0.5 rounded bg-[#c8f542]/10 border border-[#c8f542]/20 shrink-0">
+            <div key={idx} className="bg-surface border border-hairline rounded-md p-6 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-hairline pb-3">
+                <h3 className="font-heading font-bold text-ink text-heading">{sub.name}</h3>
+                <Badge variant="primary" className="shrink-0 font-mono text-xs">
                   {sub.location}
-                </span>
+                </Badge>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-ui">
                 <div>
-                  <div className="text-white/40 uppercase font-mono text-[10px]">Service Function</div>
-                  <div className="text-white/80 font-medium">{sub.role}</div>
+                  <div className="text-muted uppercase font-mono text-micro font-bold">Service Function</div>
+                  <div className="text-ink font-medium mt-0.5">{sub.role}</div>
                 </div>
                 <div>
-                  <div className="text-white/40 uppercase font-mono text-[10px]">Data Scope</div>
-                  <div className="text-white/70">{sub.dataScope}</div>
+                  <div className="text-muted uppercase font-mono text-micro font-bold">Data Scope</div>
+                  <div className="text-body mt-0.5">{sub.dataScope}</div>
                 </div>
                 <div>
-                  <div className="text-white/40 uppercase font-mono text-[10px]">Data Residency</div>
-                  <div className="text-white/70">{sub.transfer}</div>
+                  <div className="text-muted uppercase font-mono text-micro font-bold">Data Residency</div>
+                  <div className="text-body mt-0.5">{sub.transfer}</div>
                 </div>
               </div>
-            </GlassCard>
+            </div>
           ))}
         </div>
 
         <SiteFooter />
       </main>
-    </Frame>
+    </div>
   );
 }
+

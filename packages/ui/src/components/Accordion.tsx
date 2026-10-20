@@ -32,25 +32,25 @@ export const Accordion: React.FC<AccordionProps> = ({
   };
 
   return (
-    <div className={`space-y-3 font-body ${className}`}>
+    <div className={`space-y-3 font-sans ${className}`}>
       {items.map((item) => {
         const isOpen = openIds.includes(item.id);
 
         return (
           <div
             key={item.id}
-            className="rounded-2xl border border-white/12 bg-white/5 backdrop-blur-md overflow-hidden transition-colors"
+            className="rounded-md border border-hairline bg-surface overflow-hidden transition-shadow hover:shadow-level-2"
           >
             <button
               type="button"
               onClick={() => toggle(item.id)}
               aria-expanded={isOpen}
-              className="w-full flex items-center justify-between p-4 sm:p-5 text-left text-sm font-heading font-medium tracking-tight text-white/90 hover:text-white transition-colors cursor-pointer"
+              className="w-full flex items-center justify-between p-4 text-left text-ui font-bold text-ink hover:text-primary transition-colors cursor-pointer"
             >
               <span>{item.question}</span>
               <span
-                className={`ml-3 shrink-0 text-white/50 transition-transform duration-200 ${
-                  isOpen ? 'rotate-180 text-[#c8f542]' : ''
+                className={`ml-3 shrink-0 text-muted transition-transform duration-200 ${
+                  isOpen ? 'rotate-180 text-primary' : ''
                 }`}
               >
                 {/* @ts-expect-error solar icon */}
@@ -59,7 +59,7 @@ export const Accordion: React.FC<AccordionProps> = ({
             </button>
 
             {isOpen && (
-              <div className="px-4 pb-4 sm:px-5 sm:pb-5 text-xs text-white/70 leading-relaxed border-t border-white/8 pt-3">
+              <div className="px-4 pb-4 text-caption font-medium text-body leading-relaxed border-t border-hairline pt-3">
                 {item.answer}
               </div>
             )}
@@ -69,3 +69,4 @@ export const Accordion: React.FC<AccordionProps> = ({
     </div>
   );
 };
+

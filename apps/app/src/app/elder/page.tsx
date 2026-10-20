@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Icon } from '@kavach/ui';
+import { Icon, KavachLogo, Badge, Button } from '@kavach/ui';
 
 export default function ElderTabletopKioskPage() {
   const [isArmed, setIsArmed] = useState(true);
@@ -78,51 +78,51 @@ export default function ElderTabletopKioskPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 text-white flex flex-col justify-between p-6 sm:p-10 select-none">
+    <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between p-4 sm:p-8 select-none font-body">
       {/* Top Header: High-Contrast Info Bar */}
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-white/20 pb-6">
+      <header className="bg-surface border border-hairline rounded-md p-4 sm:p-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-[#c8f542] text-stone-950 flex items-center justify-center font-bold">
+          <div className="w-12 h-12 rounded-md bg-discount-surface text-green-strong flex items-center justify-center font-bold">
             <Icon name="shield-check-bold" size={32} />
           </div>
           <div>
-            <div className="text-2xl font-bold tracking-tight text-white font-heading">
+            <div className="text-display font-bold text-ink font-heading leading-tight">
               KAVACH · કવચ · कवच
             </div>
-            <div className="text-base text-white/70 font-mono">
+            <div className="text-ui text-muted font-mono">
               Living Room Tablet · Mrs. Kamala Iyer
             </div>
           </div>
         </div>
 
-        {/* Language Selection Buttons (High Contrast & Min 56px touch target) */}
-        <div className="flex items-center gap-3">
+        {/* Language Selection Buttons (High Contrast Full-Round Pills) */}
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setLang('hi')}
-            className={`min-h-[56px] px-6 rounded-2xl font-bold text-lg border-2 transition-all ${
+            className={`min-h-[48px] px-5 rounded-full font-bold text-ui border transition-all ${
               lang === 'hi'
-                ? 'bg-[#c8f542] text-stone-950 border-[#c8f542]'
-                : 'bg-stone-900 text-white border-white/30 hover:border-white'
+                ? 'bg-primary text-on-primary border-primary'
+                : 'bg-surface text-body border-hairline hover:bg-canvas'
             }`}
           >
             हिन्दी
           </button>
           <button
             onClick={() => setLang('en')}
-            className={`min-h-[56px] px-6 rounded-2xl font-bold text-lg border-2 transition-all ${
+            className={`min-h-[48px] px-5 rounded-full font-bold text-ui border transition-all ${
               lang === 'en'
-                ? 'bg-[#c8f542] text-stone-950 border-[#c8f542]'
-                : 'bg-stone-900 text-white border-white/30 hover:border-white'
+                ? 'bg-primary text-on-primary border-primary'
+                : 'bg-surface text-body border-hairline hover:bg-canvas'
             }`}
           >
             English
           </button>
           <button
             onClick={() => setLang('gu')}
-            className={`min-h-[56px] px-6 rounded-2xl font-bold text-lg border-2 transition-all ${
+            className={`min-h-[48px] px-5 rounded-full font-bold text-ui border transition-all ${
               lang === 'gu'
-                ? 'bg-[#c8f542] text-stone-950 border-[#c8f542]'
-                : 'bg-stone-900 text-white border-white/30 hover:border-white'
+                ? 'bg-primary text-on-primary border-primary'
+                : 'bg-surface text-body border-hairline hover:bg-canvas'
             }`}
           >
             ગુજરાતી
@@ -131,17 +131,17 @@ export default function ElderTabletopKioskPage() {
       </header>
 
       {/* Main Status Display Area */}
-      <main className="flex-1 flex flex-col justify-center items-center text-center py-8 max-w-4xl mx-auto w-full space-y-8">
+      <main className="flex-1 flex flex-col justify-center items-center text-center py-6 sm:py-10 max-w-4xl mx-auto w-full space-y-6">
         {/* INTERCOM OVERRIDE BANNER */}
         {intercomActive && (
-          <div className="w-full p-8 rounded-3xl bg-blue-600 text-white border-4 border-blue-300 shadow-2xl animate-pulse space-y-4">
-            <div className="flex items-center justify-center gap-3">
+          <div className="w-full p-8 rounded-md bg-surface border-2 border-cold shadow-level-3 animate-pulse space-y-4">
+            <div className="flex items-center justify-center gap-3 text-cold">
               <Icon name="volume-loud-bold" size={48} />
-              <div className="text-4xl sm:text-5xl font-bold tracking-tight">
+              <div className="text-display font-heading font-bold tracking-tight text-ink">
                 {content.intercomTitle}
               </div>
             </div>
-            <div className="text-2xl text-blue-100 font-medium">
+            <div className="text-lead text-body font-medium">
               {content.intercomBody}
             </div>
           </div>
@@ -149,20 +149,20 @@ export default function ElderTabletopKioskPage() {
 
         {/* ACTIVE SCAM ESCALATION ALARM (Level 3 Red Banner) */}
         {scamAlertActive && (
-          <div className="w-full p-8 sm:p-12 rounded-3xl bg-red-700 text-white border-4 border-red-400 shadow-2xl animate-bounce space-y-6">
-            <div className="flex items-center justify-center gap-4">
+          <div className="w-full p-8 sm:p-12 rounded-md bg-surface border-2 border-hot shadow-level-3 animate-bounce space-y-6">
+            <div className="flex items-center justify-center gap-4 text-hot">
               <Icon name="shield-warning-bold" size={56} />
-              <div className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+              <div className="text-display font-heading font-bold tracking-tight text-ink">
                 {content.dangerAlertTitle}
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-semibold leading-relaxed max-w-2xl mx-auto">
+            <div className="text-lead font-medium text-body leading-relaxed max-w-2xl mx-auto">
               {content.dangerAlertBody}
             </div>
             <div className="pt-4 flex justify-center">
               <button
                 onClick={dismissAlerts}
-                className="min-h-[64px] px-10 rounded-2xl bg-white text-stone-950 font-bold text-2xl hover:bg-stone-200 border-2 border-stone-400"
+                className="min-h-[56px] px-8 rounded-full bg-hot text-on-primary font-bold text-lead hover:opacity-90 transition-opacity"
               >
                 I have hung up the call (Dismiss)
               </button>
@@ -172,34 +172,34 @@ export default function ElderTabletopKioskPage() {
 
         {/* Normal Armed / Standby Display */}
         {!scamAlertActive && !intercomActive && (
-          <div className="space-y-8 w-full">
+          <div className="bg-surface border border-hairline rounded-md p-8 sm:p-12 space-y-8 w-full shadow-level-1">
             {/* Always-visible listening status pill */}
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border-2 border-emerald-400/50 bg-emerald-950/40 text-emerald-300 text-lg sm:text-xl font-bold">
-              <span className="w-4 h-4 rounded-full bg-emerald-400 shadow-md shadow-emerald-400 animate-ping" />
+            <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full border border-primary/20 bg-discount-surface text-green-strong text-lead font-bold">
+              <span className="w-3.5 h-3.5 rounded-full bg-primary animate-ping" />
               <span>{content.listeningBadge}</span>
             </div>
 
-            {/* Status Title (Minimum 48px font size for elderly eyes) */}
-            <div className="space-y-4">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            {/* Status Title */}
+            <div className="space-y-3">
+              <h1 className="text-display sm:text-[44px] font-heading font-bold text-ink leading-tight">
                 {isArmed ? content.statusArmed : content.statusStandby}
               </h1>
-              <p className="text-xl sm:text-2xl text-white/80 max-w-2xl mx-auto font-medium leading-relaxed">
+              <p className="text-lead text-body max-w-2xl mx-auto font-medium leading-relaxed">
                 {isArmed ? content.subArmed : content.subStandby}
               </p>
             </div>
 
-            {/* Giant Central Button (Exceeds 56px touch target; 160px height for arthritis / tremor friendly tapping) */}
-            <div className="pt-4 flex justify-center">
+            {/* Giant Central Button (Exceeds 56px touch target; 120px height for arthritis / tremor friendly tapping) */}
+            <div className="pt-2 flex justify-center">
               <button
                 onClick={() => setIsArmed(!isArmed)}
-                className={`w-full max-w-md min-h-[140px] rounded-3xl font-extrabold text-2xl sm:text-3xl tracking-wide flex items-center justify-center gap-4 transition-all border-4 shadow-2xl active:scale-95 ${
+                className={`w-full max-w-md min-h-[110px] rounded-full font-bold text-display tracking-wide flex items-center justify-center gap-4 transition-all border active:scale-95 ${
                   isArmed
-                    ? 'bg-stone-900 border-stone-600 text-white/90 hover:border-red-400 hover:text-red-400'
-                    : 'bg-[#c8f542] border-[#c8f542] text-stone-950 hover:bg-[#b5e032]'
+                    ? 'bg-surface border-hairline text-body hover:border-hot hover:text-hot hover:bg-canvas'
+                    : 'bg-primary border-primary text-on-primary hover:bg-green-strong'
                 }`}
               >
-                <Icon name={isArmed ? 'pause-bold' : 'shield-check-bold'} size={40} />
+                <Icon name={isArmed ? 'pause-bold' : 'shield-check-bold'} size={36} />
                 <span>{isArmed ? content.btnStop : content.btnStart}</span>
               </button>
             </div>
@@ -208,33 +208,33 @@ export default function ElderTabletopKioskPage() {
       </main>
 
       {/* Bottom Kiosk Status & Test Simulations */}
-      <footer className="border-t-2 border-white/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-base text-white/60 font-mono">
-        <div className="flex items-center gap-4">
+      <footer className="bg-surface border border-hairline rounded-md p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-ui text-muted font-mono">
+        <div className="flex items-center gap-3">
           <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-emerald-400" />
-            <span>Wi-Fi: Connected</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+            <span className="text-ink font-bold">Wi-Fi: Connected</span>
           </span>
           <span>·</span>
           <span>Battery: 100% (Plugged in)</span>
         </div>
 
         {/* Demo / Simulation buttons for judge evaluation */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={triggerDemoScamSimulation}
-            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20"
+            className="px-3 py-1.5 rounded-full bg-canvas hover:bg-surface text-ink text-caption font-bold border border-hairline transition-colors"
           >
             [Demo] Simulate Scam Call Alarm
           </button>
           <button
             onClick={triggerIntercomSimulation}
-            className="px-4 py-2 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 text-xs font-bold border border-blue-400/40"
+            className="px-3 py-1.5 rounded-full bg-cold/10 hover:bg-cold/20 text-cold text-caption font-bold border border-cold/20 transition-colors"
           >
             [Demo] Test Daughter Intercom
           </button>
           <a
             href="/"
-            className="px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-white/80 text-xs font-bold border border-white/10"
+            className="px-3 py-1.5 rounded-full bg-surface hover:bg-canvas text-body text-caption font-bold border border-hairline transition-colors"
           >
             Exit Kiosk
           </a>
@@ -243,3 +243,4 @@ export default function ElderTabletopKioskPage() {
     </div>
   );
 }
+

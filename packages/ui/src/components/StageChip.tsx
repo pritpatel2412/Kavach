@@ -17,31 +17,31 @@ const STAGE_META: Record<
     name: 'S1 Authority',
     icon: 'shield-warning-bold',
     desc: 'CBI, Police, Customs, ED, TRAI',
-    defaultColor: 'border-blue-400/30 text-blue-300 bg-blue-500/10',
+    defaultColor: 'border-cold/30 text-cold bg-cold/10 font-bold',
   },
   S2: {
     name: 'S2 Accusation',
     icon: 'danger-triangle-bold',
     desc: 'Narcotics parcel, money laundering, power cut',
-    defaultColor: 'border-amber-400/30 text-amber-300 bg-amber-500/10',
+    defaultColor: 'border-warning-text/30 text-warning-text bg-warning-surface font-bold',
   },
   S3: {
     name: 'S3 Isolation',
     icon: 'eye-closed-bold',
     desc: 'Keep confidential, stay on video, do not tell family',
-    defaultColor: 'border-orange-400/30 text-orange-300 bg-orange-500/10',
+    defaultColor: 'border-warm/30 text-warm bg-warm/10 font-bold',
   },
   S4: {
     name: 'S4 Urgency',
     icon: 'alarm-bold',
     desc: 'Within 10 minutes, immediate warrant, right now',
-    defaultColor: 'border-rose-400/30 text-rose-300 bg-rose-500/10',
+    defaultColor: 'border-hot/30 text-hot bg-hot/10 font-bold',
   },
   S5: {
     name: 'S5 Payment',
     icon: 'card-transfer-bold',
     desc: 'Safe account, verification bond, bail deposit',
-    defaultColor: 'border-[#ff5a4d]/40 text-[#ff5a4d] bg-[#ff5a4d]/15 font-semibold',
+    defaultColor: 'border-transparent text-white bg-hot font-bold shadow-sm',
   },
 };
 
@@ -56,8 +56,8 @@ export const StageChip: React.FC<StageChipProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium border backdrop-blur-md transition-all select-none ${
-        active ? meta.defaultColor : 'border-white/10 text-white/40 bg-white/5 opacity-50'
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-caption font-mono border transition-all select-none ${
+        active ? meta.defaultColor : 'border-hairline text-muted bg-canvas opacity-60'
       } ${className}`}
       title={meta.desc}
     >
@@ -68,3 +68,4 @@ export const StageChip: React.FC<StageChipProps> = ({
     </span>
   );
 };
+

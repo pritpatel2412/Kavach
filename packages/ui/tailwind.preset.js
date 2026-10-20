@@ -1,52 +1,94 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   theme: {
+    screens: {
+      sm: '640px',
+      md: '768px', // Desktop boundary per DESIGN.md
+      lg: '1024px',
+      xl: '1280px',
+    },
     extend: {
       colors: {
+        // Brand & Action
+        primary: '#30a83c',
+        'on-primary': '#ffffff',
+        'green-strong': '#1e7e29',
+
+        // Status Colors (Strictly Functional)
+        hot: '#e02828',
+        cold: '#1877f2',
+        warm: '#f57c00',
+        premium: '#7c3aed',
+        'discount-surface': '#e6f7ec',
+        'warning-surface': '#fef9c3',
+        'warning-text': '#854d0e',
+
+        // Surfaces & Hairlines
+        canvas: '#f2f4f7',
+        surface: '#ffffff',
+        hairline: '#e2e5e9',
+
+        // Ink & Text
+        ink: '#111111',
+        body: '#595f69',
+        muted: '#8c939d',
+
+        // Aliases for compatibility
         kavach: {
-          bg: '#e3e8dc',
-          'dark-0': '#0a2a12',
-          'dark-1': '#0d3617',
-          lime: '#c8f542',
-          'lime-hover': '#b5e332',
-          caution: '#f5b942',
-          danger: '#ff5a4d',
-          'white-90': 'rgba(255, 255, 255, 0.90)',
-          'white-60': 'rgba(255, 255, 255, 0.60)',
-          'white-28': 'rgba(255, 255, 255, 0.28)',
-          'white-18': 'rgba(255, 255, 255, 0.18)',
-          'white-10': 'rgba(255, 255, 255, 0.10)',
-          'white-5': 'rgba(255, 255, 255, 0.05)',
+          bg: '#f2f4f7',
+          primary: '#30a83c',
+          card: '#ffffff',
+          hairline: '#e2e5e9',
+          ink: '#111111',
+          body: '#595f69',
         },
       },
       borderRadius: {
-        '28': '28px',
-        '[28px]': '28px',
-      },
-      scale: {
-        '104': '1.04',
+        xs: '2px',
+        sm: '4px',
+        md: '8px',
+        full: '540px',
+        circle: '9999px',
+        '28': '8px', // Normalize legacy 28px tokens to 8px card radius
+        '[28px]': '8px',
       },
       fontFamily: {
-        heading: ['var(--font-geist)', 'Geist', 'Noto Sans Devanagari', 'Noto Sans Gujarati', 'sans-serif'],
-        body: ['var(--font-inter)', 'Inter', 'Noto Sans Devanagari', 'Noto Sans Gujarati', 'sans-serif'],
+        sans: ["'Mulish'", "'Nunito Sans'", '-apple-system', 'BlinkMacSystemFont', "'Segoe UI'", 'Roboto', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+        heading: ["'Mulish'", "'Nunito Sans'", 'sans-serif'],
+        body: ["'Mulish'", "'Nunito Sans'", 'sans-serif'],
       },
-      backgroundImage: {
-        'frame-gradient': 'linear-gradient(160deg, #0a2a12 0%, #0d3617 45%, #0a2a12 100%)',
-        'cta-gradient': 'radial-gradient(circle at center, rgba(200, 245, 66, 0.15) 0%, rgba(13, 54, 23, 0.4) 50%, rgba(10, 42, 18, 0.8) 100%)',
+      fontWeight: {
+        medium: '500',
+        bold: '700',
+      },
+      fontSize: {
+        display: ['48px', { lineHeight: '1.1', letterSpacing: '0', fontWeight: '700' }],
+        'heading-lg': ['24px', { lineHeight: '1.2', letterSpacing: '0', fontWeight: '700' }],
+        heading: ['20px', { lineHeight: '1.25', letterSpacing: '0', fontWeight: '700' }],
+        lead: ['18px', { lineHeight: '1.4', letterSpacing: '0', fontWeight: '500' }],
+        body: ['16px', { lineHeight: '1.5', letterSpacing: '0', fontWeight: '500' }],
+        ui: ['14px', { lineHeight: '1.3', letterSpacing: '0', fontWeight: '700' }],
+        caption: ['12px', { lineHeight: '1.3', letterSpacing: '0', fontWeight: '500' }],
+        micro: ['10px', { lineHeight: '1.2', letterSpacing: '0', fontWeight: '700' }],
+        mono: ['16px', { lineHeight: '1.4', letterSpacing: '0', fontWeight: '500' }],
       },
       boxShadow: {
-        'lime-glow': '0 0 25px rgba(200, 245, 66, 0.25)',
-        'glass-card': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+        'level-0': 'none',
+        'level-1': 'none',
+        'level-2': '0 4px 12px rgba(11, 22, 44, 0.09)',
+        'level-3': '-1px 11px 15px -11px rgba(0, 0, 0, 0.38)',
+        card: 'none',
+        'glass-card': '0 4px 12px rgba(11, 22, 44, 0.09)',
       },
-      animation: {
-        'float-slow': 'float 4s ease-in-out infinite',
-        'float-delayed': 'float 5s ease-in-out 1.5s infinite',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
-        },
+      spacing: {
+        xxs: '2px',
+        xs: '4px',
+        sm: '8px',
+        md: '12px',
+        lg: '16px',
+        xl: '24px',
+        xxl: '40px',
       },
     },
   },

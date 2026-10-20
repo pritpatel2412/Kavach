@@ -15,18 +15,14 @@ export const Frame: React.FC<FrameProps> = ({
   ...rest
 }) => {
   return (
-    // Outer page wrapper with exact padding p-3 sm:p-6 lg:p-10 on body bg #e3e8dc
+    // Outer page wrapper with cool-gray canvas ground per DESIGN.md
     <div
       data-testid="page-wrapper"
-      className={`min-h-screen bg-[#e3e8dc] p-3 sm:p-6 lg:p-10 font-body transition-colors ${wrapperClassName}`}
+      className={`min-h-screen bg-canvas text-ink font-sans transition-colors ${wrapperClassName}`}
     >
-      {/* Main frame: relative, overflow-hidden, rounded-[28px], background gradient */}
       <main
         data-testid="main-frame"
-        className={`relative overflow-hidden rounded-[28px] min-h-[calc(100vh-1.5rem)] sm:min-h-[calc(100vh-3rem)] lg:min-h-[calc(100vh-5rem)] border border-white/10 shadow-2xl text-white/90 ${className}`}
-        style={{
-          background: 'linear-gradient(160deg, #0a2a12 0%, #0d3617 45%, #0a2a12 100%)',
-        }}
+        className={`w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 ${className}`}
         {...rest}
       >
         {children}
@@ -34,3 +30,4 @@ export const Frame: React.FC<FrameProps> = ({
     </div>
   );
 };
+

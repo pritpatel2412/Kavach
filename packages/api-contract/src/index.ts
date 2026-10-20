@@ -4,6 +4,7 @@ export * from './plans';
 export * from './scamFamilies';
 export * from './mockAdapter';
 export * from './mockGuard';
+export * from './neon';
 
 import quotes from './quotes.json';
 import team from './team.json';

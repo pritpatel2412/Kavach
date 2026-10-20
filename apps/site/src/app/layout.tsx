@@ -7,6 +7,21 @@ export const metadata: Metadata = {
   title: "Kavach · Real-Time Scam-Call Guardian for Indian Elders",
   description:
     "The second-device tabletop guardian that listens on speakerphone, detects coercive digital arrest scams, and speaks in a trusted family voice before money is lost.",
+  openGraph: {
+    title: "Kavach · Real-Time Scam-Call Guardian for Indian Elders",
+    description:
+      "The second-device tabletop guardian that listens on speakerphone, detects coercive digital arrest scams, and speaks in a trusted family voice before money is lost.",
+    url: "https://kavach.ai",
+    siteName: "Kavach",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kavach · Real-Time Scam-Call Guardian for Indian Elders",
+    description:
+      "The second-device tabletop guardian that listens on speakerphone, detects coercive digital arrest scams, and speaks in a trusted family voice before money is lost.",
+  },
 };
 
 export default function RootLayout({
@@ -20,7 +35,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Mulish:wght@500;700&family=Nunito+Sans:wght@500;700&display=swap"
           rel="stylesheet"
         />
         {/* Load Iconify web component */}
@@ -29,11 +44,12 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
       </head>
-      <body className="bg-[#e3e8dc] text-white/90 antialiased selection:bg-[#c8f542] selection:text-[#0a2a12]">
+      <body className="bg-canvas text-ink antialiased selection:bg-discount-surface selection:text-green-strong">
         <SmoothScroll>
           {children}
         </SmoothScroll>
       </body>
     </html>
+
   );
 }

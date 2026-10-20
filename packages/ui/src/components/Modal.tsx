@@ -56,34 +56,31 @@ export const Modal: React.FC<ModalProps> = ({
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-ink/60 transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Modal Dialog */}
+      {/* Modal Dialog Surface */}
       <div
-        className={`relative w-full ${sizeClasses} bg-[#0d3617] border border-white/18 rounded-[24px] p-6 shadow-2xl text-white/90 z-10 overflow-hidden transform transition-all ${className}`}
-        style={{
-          background: 'linear-gradient(160deg, #0d3617 0%, #0a2a12 100%)',
-        }}
+        className={`relative w-full ${sizeClasses} bg-surface border border-hairline rounded-md p-6 shadow-level-3 text-ink z-10 overflow-hidden transform transition-all ${className}`}
       >
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             {title && (
-              <h3 className="font-heading font-semibold text-lg tracking-tight text-white/90">
+              <h3 className="font-heading font-bold text-heading tracking-tight text-ink">
                 {title}
               </h3>
             )}
             {description && (
-              <p className="text-xs text-white/60 mt-0.5">{description}</p>
+              <p className="text-caption text-body mt-0.5">{description}</p>
             )}
           </div>
 
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="p-1.5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-[#c8f542]"
+            className="p-1 rounded-full text-muted hover:text-ink hover:bg-canvas transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             {/* @ts-expect-error solar icon */}
             <iconify-icon icon="solar:close-circle-bold" width="20" height="20" />
@@ -95,3 +92,4 @@ export const Modal: React.FC<ModalProps> = ({
     </div>
   );
 };
+

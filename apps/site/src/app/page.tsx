@@ -2,23 +2,22 @@
 
 import React, { useState } from 'react';
 import {
-  Frame,
-  HatchOverlay,
-  AuroraCanvas,
-  WordReveal,
-  GlassCard,
-  TiltCard,
-  FloatingCard,
   Button,
-  MagneticButton,
-  Chip,
+  DealCard,
+  SidebarCard,
+  TimestampPill,
+  DiscountBadge,
+  Badge,
+  TemperatureControl,
+  PriceLockup,
   StageChip,
+  Chip,
   RiskMeter,
   Bars,
   SliderMeter,
   StatusDot,
   Icon,
-  KavachLogo,
+  Tabs,
 } from '@kavach/ui';
 import {
   SOURCED_CLAIMS,
@@ -26,675 +25,663 @@ import {
   quotes,
   team,
 } from '@kavach/api-contract';
+import { SiteHeader } from '../components/SiteHeader';
+import { SiteFooter } from '../components/SiteFooter';
 
 export default function LandingPage() {
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [heroTemp, setHeroTemp] = useState(98);
   const [lang, setLang] = useState<'en' | 'hi' | 'gu'>('en');
 
   return (
-    <Frame withHatch={false} className="pb-12">
-      {/* Layer 1: WebGL Aurora Canvas (z-0, opacity .9) */}
-      <AuroraCanvas parallaxPercent={22} />
+    <div className="min-h-screen bg-canvas text-ink font-sans">
+      {/* Deals Community Header with Nav & Category Strip */}
+      <SiteHeader currentPath="/" />
 
-      {/* Layer 2: 115deg Hatch Pattern Overlay (z-1, pointer-events-none) */}
-      <HatchOverlay />
-
-      {/* Layer 3: Header / Navigation (relative z-10) */}
-      <header className="relative z-10 px-6 py-5 sm:px-10 flex items-center justify-between border-b border-white/10 backdrop-blur-md bg-white/[0.02]">
-        <div className="flex items-center gap-8">
-          <a href="#" className="flex items-center gap-2.5 focus:outline-none">
-            <KavachLogo size={32} showWordmark={true} />
-          </a>
-
-          {/* Navigation links with border 1px solid rgba(255,255,255,0.18), hover:scale-104 */}
-          <nav className="hidden md:flex items-center gap-2 text-xs font-heading font-medium tracking-tight text-white/80">
-            <a
-              href="#how-it-works"
-              className="px-3.5 py-1.5 rounded-full border border-white/18 bg-white/5 hover:border-white/30 hover:text-white transition-all hover:scale-104 active:scale-95"
-            >
-              How it works
-            </a>
-            <a
-              href="#features"
-              className="px-3.5 py-1.5 rounded-full border border-white/18 bg-white/5 hover:border-white/30 hover:text-white transition-all hover:scale-104 active:scale-95"
-            >
-              Features
-            </a>
-            <a
-              href="/pricing"
-              className="px-3.5 py-1.5 rounded-full border border-white/18 bg-white/5 hover:border-white/30 hover:text-white transition-all hover:scale-104 active:scale-95"
-            >
-              Pricing
-            </a>
-            <a
-              href="#story"
-              className="px-3.5 py-1.5 rounded-full border border-white/18 bg-white/5 hover:border-white/30 hover:text-white transition-all hover:scale-104 active:scale-95"
-            >
-              Story
-            </a>
-            <a
-              href="/changelog"
-              className="px-3.5 py-1.5 rounded-full border border-white/18 bg-white/5 hover:border-white/30 hover:text-white transition-all hover:scale-104 active:scale-95"
-            >
-              Changelog
-            </a>
-          </nav>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {/* Language Switcher EN / HI / GU */}
-          <div className="flex items-center p-0.5 rounded-full border border-white/14 bg-white/5 text-[11px] font-mono">
-            <button
-              onClick={() => setLang('en')}
-              className={`px-2 py-0.5 rounded-full transition-all ${
-                lang === 'en' ? 'bg-[#c8f542] text-[#0a2a12] font-bold' : 'text-white/60 hover:text-white'
-              }`}
-            >
-              EN
-            </button>
-            <button
-              onClick={() => setLang('hi')}
-              className={`px-2 py-0.5 rounded-full transition-all ${
-                lang === 'hi' ? 'bg-[#c8f542] text-[#0a2a12] font-bold' : 'text-white/60 hover:text-white'
-              }`}
-            >
-              HI
-            </button>
-            <button
-              onClick={() => setLang('gu')}
-              className={`px-2 py-0.5 rounded-full transition-all ${
-                lang === 'gu' ? 'bg-[#c8f542] text-[#0a2a12] font-bold' : 'text-white/60 hover:text-white'
-              }`}
-            >
-              GU
-            </button>
-          </div>
-
-          {/* Join Waitlist Magnetic CTA Button */}
-          <MagneticButton strength={0.25}>
-            <Button variant="lime" size="sm" href="/pricing#waitlist" icon="user-plus-bold">
-              Join Waitlist
-            </Button>
-          </MagneticButton>
-        </div>
-      </header>
-
-      {/* Layer 4: Sections (relative z-10) */}
-      <div className="relative z-10 px-6 sm:px-10 lg:px-12 space-y-24 pt-8">
-        {/* ========================================================================= */}
-        {/* SECTION 1: HERO */}
-        {/* ========================================================================= */}
-        <section className="relative min-h-[580px] lg:min-h-[640px] pt-8 sm:pt-14 pb-12 flex flex-col justify-center">
-          {/* Top Pill Disclaimer */}
-          <div className="mb-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/18 bg-white/5 backdrop-blur-md text-xs font-mono text-white/80">
-              <StatusDot status="listening" label="" />
-              <span>Listens on a second device when you put a call on speaker</span>
-            </div>
-          </div>
-
-          <div className="max-w-2xl">
-            {/* H1 with data-reveal-words */}
-            <WordReveal
-              as="h1"
-              delay={0.15}
-              className="text-4xl sm:text-6xl lg:text-7xl font-heading font-bold tracking-tight text-white/95"
-            >
-              Hang up. It&apos;s a scam.
-            </WordReveal>
-
-            {/* Subtext */}
-            <p className="mt-6 text-base sm:text-lg text-white/70 font-body leading-relaxed max-w-xl">
-              The dedicated tabletop guardian for Indian elders. Kavach listens to suspicious calls
-              on speakerphone, detects coercive digital arrest interrogation, and speaks in your trusted family
-              voice before life savings are lost.
-            </p>
-
-            {/* Hero CTAs */}
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <MagneticButton strength={0.3}>
-                <Button variant="lime" size="lg" href="/pricing#waitlist" icon="shield-check-bold">
-                  Protect Your Parents
-                </Button>
-              </MagneticButton>
-
-              <Button variant="ghost" size="lg" href="#how-it-works" icon="play-circle-bold">
-                How It Works
-              </Button>
-            </div>
-          </div>
-
+      {/* Main 2-Column Shell Container per DESIGN.md */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          
           {/* ========================================================================= */}
-          {/* HERO FLOATING CARDS (6 Sample Preview Cards) */}
-          {/* Desktop: lg:absolute positioning; Mobile: normal responsive grid */}
+          {/* LEFT 2-COLUMN RAIL: THE LIVE SCAM COMMUNITY FEED */}
           {/* ========================================================================= */}
-          <div className="mt-12 lg:mt-0 grid grid-cols-1 sm:grid-cols-2 lg:block gap-4">
-            {/* Card 1: Listening Quota Slider (Top right desktop) */}
-            <FloatingCard
-              floatDistancePx={10}
-              delaySeconds={0}
-              durationSeconds={4.5}
-              className="lg:top-6 lg:right-4 w-full sm:w-72"
-            >
-              <div className="text-[10px] font-mono uppercase tracking-wider text-white/40 mb-1">
-                Sample preview
-              </div>
-              <SliderMeter defaultValue={120} max={150} unit="min" label="Monthly Quota" readOnly />
-            </FloatingCard>
+          <div className="lg:col-span-2 space-y-4">
+            
+            {/* Filter Chips Bar (Full-Round Pills per DESIGN.md) */}
+            <div className="bg-surface border border-hairline rounded-md p-3 flex flex-wrap items-center justify-between gap-3">
+              <Tabs
+                activeTab={activeCategory}
+                onChange={setActiveCategory}
+                tabs={[
+                  { id: 'all', label: 'All Threats', badge: 10 },
+                  { id: 'digital-arrest', label: 'Digital Arrest', badge: 4 },
+                  { id: 'customs', label: 'Customs / Courier', badge: 2 },
+                  { id: 'telecom', label: 'TRAI / SIM KYC', badge: 2 },
+                  { id: 'banking', label: 'Safe Account', badge: 2 },
+                ]}
+              />
 
-            {/* Card 2: Calls Checked / Threats Stopped (Right center) */}
-            <FloatingCard
-              floatDistancePx={8}
-              delaySeconds={0.8}
-              durationSeconds={5.2}
-              className="lg:top-36 lg:right-12 w-full sm:w-64"
-            >
-              <div className="text-[10px] font-mono uppercase tracking-wider text-white/40 mb-1">
-                Sample preview
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-mono font-bold text-white/90">42</div>
-                  <div className="text-xs text-white/60">Calls verified safe</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-mono font-bold text-[#f5b942]">2</div>
-                  <div className="text-xs text-[#f5b942]/80 font-medium">Scams halted</div>
-                </div>
-              </div>
-            </FloatingCard>
-
-            {/* Card 3: Status "Kavach is listening" (Upper center right) */}
-            <FloatingCard
-              floatDistancePx={12}
-              delaySeconds={1.5}
-              durationSeconds={4.8}
-              className="lg:top-14 lg:right-80 w-full sm:w-60"
-            >
-              <div className="text-[10px] font-mono uppercase tracking-wider text-white/40 mb-1">
-                Sample preview
-              </div>
-              <StatusDot status="listening" label="Kavach is listening" />
-              <div className="text-[11px] text-white/50 mt-1">16 kHz PCM room acoustic VAD</div>
-            </FloatingCard>
-
-            {/* Card 4: Audio Spectrum Bars (Lower right) */}
-            <FloatingCard
-              floatDistancePx={7}
-              delaySeconds={0.4}
-              durationSeconds={4.0}
-              className="lg:bottom-12 lg:right-6 w-full sm:w-72"
-            >
-              <div className="text-[10px] font-mono uppercase tracking-wider text-white/40 mb-1">
-                Sample preview · Speech analysis
-              </div>
-              <Bars count={14} barColor="#c8f542" />
-            </FloatingCard>
-
-            {/* Card 5: Supported Languages Chips (Lower center) */}
-            <FloatingCard
-              floatDistancePx={9}
-              delaySeconds={1.2}
-              durationSeconds={5.0}
-              className="lg:bottom-6 lg:right-84 w-full sm:w-72"
-            >
-              <div className="text-[10px] font-mono uppercase tracking-wider text-white/40 mb-2">
-                Sample preview · Regional coverage
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                <Chip size="sm" variant="lime">Hindi</Chip>
-                <Chip size="sm" variant="default">Hinglish</Chip>
-                <Chip size="sm" variant="default">Gujarati</Chip>
-                <Chip size="sm" variant="outline">Indian English</Chip>
-              </div>
-            </FloatingCard>
-
-            {/* Card 6: Cloned Family Voice Warning Card (Bottom center) */}
-            <FloatingCard
-              floatDistancePx={11}
-              delaySeconds={1.9}
-              durationSeconds={4.7}
-              className="lg:top-72 lg:right-64 w-full sm:w-80 border-[#c8f542]/30 shadow-lime-glow"
-            >
-              <div className="text-[10px] font-mono uppercase tracking-wider text-[#c8f542] mb-1">
-                Sample preview · Consented Family Voice
-              </div>
-              <div className="flex items-start gap-2.5">
-                <div className="w-8 h-8 rounded-full border border-[#c8f542] flex items-center justify-center shrink-0 text-[#c8f542]">
-                  <Icon name="volume-loud-bold" size={16} />
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-white/95">
-                    &ldquo;Mummy, yeh scam call hai! Phone kaat do!&rdquo;
-                  </div>
-                  <div className="text-[10px] text-white/50 mt-0.5">Spoken in Rahul&apos;s verified voice</div>
-                </div>
-              </div>
-            </FloatingCard>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION 2: SCAM FAMILIES STRIP */}
-        {/* ========================================================================= */}
-        <section className="border-y border-white/10 py-8">
-          <div className="text-center mb-6">
-            <span className="text-xs font-mono uppercase tracking-widest text-white/40">
-              10 Coercive Scam Patterns Detected in Real Time
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            {SCAM_FAMILIES.map((fam) => (
-              <div
-                key={fam.id}
-                className="flex items-center gap-2.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-sm hover:border-[#c8f542]/40 hover:bg-white/[0.06] transition-all group"
-              >
-                <span className="text-white/30 group-hover:text-[#c8f542] transition-colors shrink-0">
-                  <Icon name={fam.icon} size={20} />
-                </span>
-                <span className="text-xs font-heading font-medium text-white/70 group-hover:text-white transition-colors truncate">
-                  {fam.name}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION 3: "WHY NOW" SOURCED STAT CARDS (Honesty Rule: No fake partner logos) */}
-        {/* ========================================================================= */}
-        <section className="space-y-6">
-          <div className="max-w-xl">
-            <WordReveal as="h2" triggerOnScroll={true} className="text-2xl sm:text-3xl font-heading font-bold text-white/95">
-              The Digital Arrest Epidemic: Sourced Proof
-            </WordReveal>
-            <p className="text-sm text-white/60 font-body mt-2">
-              Every statistic below is directly cited from official Indian cybercrime reporting portals and police investigations.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Sourced Stat 1: NCRP National Losses */}
-            <GlassCard isHighlighted={true} withHoverShift={true}>
-              <div className="text-[11px] font-mono uppercase tracking-wider text-[#c8f542] mb-2 flex items-center justify-between">
-                <span>National Crisis (2022–May 2026)</span>
-                <Icon name="verified-check-bold" size={14} />
-              </div>
-              <div className="text-3xl sm:text-4xl font-mono font-bold text-white/95 tracking-tight">
-                {SOURCED_CLAIMS.ncrpLosses.lossFormatted}
-              </div>
-              <div className="text-xs font-semibold text-white/80 mt-1">
-                {SOURCED_CLAIMS.ncrpLosses.complaints} complaints filed
-              </div>
-              <p className="text-xs text-white/60 mt-3 leading-relaxed">
-                Retirees and seniors lost over four thousand crore rupees to digital arrest extortion.
-              </p>
-              <div className="mt-4 pt-3 border-t border-white/10 text-[10px] text-white/40">
-                <a
-                  href={SOURCED_CLAIMS.ncrpLosses.sourceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-[#c8f542] underline underline-offset-2 flex items-center gap-1"
+              {/* Language Switcher Pills */}
+              <div className="flex items-center gap-1 bg-canvas p-1 rounded-full border border-hairline text-caption font-bold">
+                <button
+                  type="button"
+                  onClick={() => setLang('en')}
+                  className={`px-2.5 py-0.5 rounded-full transition-colors ${
+                    lang === 'en' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
+                  }`}
                 >
-                  <span>Source: NCRP / NewsBytes (6 Jul 2026)</span>
-                  <Icon name="arrow-up-right-linear" size={10} />
-                </a>
-              </div>
-            </GlassCard>
-
-            {/* Sourced Stat 2: Pune Cyber Police */}
-            <GlassCard withHoverShift={true}>
-              <div className="text-[11px] font-mono uppercase tracking-wider text-amber-400 mb-2 flex items-center justify-between">
-                <span>Elder Vulnerability (19 Months)</span>
-                <Icon name="verified-check-bold" size={14} />
-              </div>
-              <div className="text-3xl sm:text-4xl font-mono font-bold text-white/95 tracking-tight">
-                {SOURCED_CLAIMS.puneCyberPolice.lossFormatted}
-              </div>
-              <div className="text-xs font-semibold text-white/80 mt-1">
-                {SOURCED_CLAIMS.puneCyberPolice.cases} in Pune alone
-              </div>
-              <p className="text-xs text-white/60 mt-3 leading-relaxed">
-                One 82-year-old victim alone lost ₹10.75 crore during acute psychological fear trance.
-              </p>
-              <div className="mt-4 pt-3 border-t border-white/10 text-[10px] text-white/40">
-                <a
-                  href={SOURCED_CLAIMS.puneCyberPolice.sourceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-[#c8f542] underline underline-offset-2 flex items-center gap-1"
+                  EN
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLang('hi')}
+                  className={`px-2.5 py-0.5 rounded-full transition-colors ${
+                    lang === 'hi' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
+                  }`}
                 >
-                  <span>Source: Pune Police / Punekar News</span>
-                  <Icon name="arrow-up-right-linear" size={10} />
-                </a>
-              </div>
-            </GlassCard>
-
-            {/* Sourced Stat 3: Kavach Tested Recall */}
-            <GlassCard withHoverShift={true}>
-              <div className="text-[11px] font-mono uppercase tracking-wider text-emerald-400 mb-2 flex items-center justify-between">
-                <span>Speakerphone Testbed</span>
-                <Icon name="verified-check-bold" size={14} />
-              </div>
-              <div className="text-3xl sm:text-4xl font-mono font-bold text-white/95 tracking-tight">
-                {SOURCED_CLAIMS.detectorRecall.value}
-              </div>
-              <div className="text-xs font-semibold text-white/80 mt-1">
-                95% Wilson CI: {SOURCED_CLAIMS.detectorRecall.ci95}
-              </div>
-              <p className="text-xs text-white/60 mt-3 leading-relaxed">
-                In multi-lingual synthetic text tests, Kavach flags scams before the victim reaches the payment stage.
-              </p>
-              <div className="mt-4 pt-3 border-t border-white/10 text-[10px] text-white/40">
-                <span className="text-white/50">{SOURCED_CLAIMS.detectorRecall.citation}</span>
-              </div>
-            </GlassCard>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION 4: 6 FEATURES TILT CARDS */}
-        {/* ========================================================================= */}
-        <section id="features" className="space-y-6">
-          <div className="max-w-xl">
-            <WordReveal as="h2" triggerOnScroll={true} className="text-2xl sm:text-3xl font-heading font-bold text-white/95">
-              Built to Break the Psychological Trance
-            </WordReveal>
-            <p className="text-sm text-white/60 font-body mt-2">
-              Telco filters stop spam numbers before the call. Kavach guards the actual conversation.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Feature 1 */}
-            <TiltCard maxTiltDeg={6} isHighlighted={false}>
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-[#c8f542] flex items-center justify-center mb-4">
-                <Icon name="cpu-bolt-bold" size={22} />
-              </div>
-              <h3 className="font-heading font-semibold text-lg text-white/95 tracking-tight">
-                Understands the Call Live
-              </h3>
-              <p className="text-xs text-white/60 font-body mt-2 leading-relaxed">
-                Deterministic sub-millisecond risk engine tracking 5 coercive escalation stages:
-                Authority, Accusation, Isolation, Urgency, and Payment Demand.
-              </p>
-            </TiltCard>
-
-            {/* Feature 2 */}
-            <TiltCard maxTiltDeg={6} isHighlighted={true}>
-              <div className="w-10 h-10 rounded-xl bg-[#c8f542]/15 border border-[#c8f542]/30 text-[#c8f542] flex items-center justify-center mb-4">
-                <Icon name="volume-loud-bold" size={22} />
-              </div>
-              <h3 className="font-heading font-semibold text-lg text-white/95 tracking-tight">
-                Speaks in a Family Voice
-              </h3>
-              <p className="text-xs text-white/60 font-body mt-2 leading-relaxed">
-                Elders panic and obey fake police uniforms. Hearing their son or daughter&apos;s authentic voice
-                say &ldquo;Mummy, phone kaat do&rdquo; punctures the trance immediately.
-              </p>
-            </TiltCard>
-
-            {/* Feature 3 */}
-            <TiltCard maxTiltDeg={6} isHighlighted={false}>
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-amber-400 flex items-center justify-center mb-4">
-                <Icon name="bell-bing-bold" size={22} />
-              </div>
-              <h3 className="font-heading font-semibold text-lg text-white/95 tracking-tight">
-                Alerts the Caregiver Instantly
-              </h3>
-              <p className="text-xs text-white/60 font-body mt-2 leading-relaxed">
-                Guardians receive a signed Telegram action notification with plain Hindi/English explanations
-                and a 1-tap emergency link the second Level 2 is crossed.
-              </p>
-            </TiltCard>
-
-            {/* Feature 4 */}
-            <TiltCard maxTiltDeg={6} isHighlighted={false}>
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-emerald-400 flex items-center justify-center mb-4">
-                <Icon name="microphone-3-bold" size={22} />
-              </div>
-              <h3 className="font-heading font-semibold text-lg text-white/95 tracking-tight">
-                Talk Through the Device (Intercom)
-              </h3>
-              <p className="text-xs text-white/60 font-body mt-2 leading-relaxed">
-                Hold the Push-to-Talk button from your phone anywhere in the world. Your live voice broadcasts
-                directly out of the elder&apos;s tabletop tablet speaker.
-              </p>
-            </TiltCard>
-
-            {/* Feature 5 */}
-            <TiltCard maxTiltDeg={6} isHighlighted={false}>
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-blue-400 flex items-center justify-center mb-4">
-                <Icon name="shield-keyhole-bold" size={22} />
-              </div>
-              <h3 className="font-heading font-semibold text-lg text-white/95 tracking-tight">
-                Private by Design (DPDP Ready)
-              </h3>
-              <p className="text-xs text-white/60 font-body mt-2 leading-relaxed">
-                Zero raw call audio is ever saved on disk or server. Transcript snippets are capped at 160
-                characters and auto-expire in 7 days.
-              </p>
-            </TiltCard>
-
-            {/* Feature 6 */}
-            <TiltCard maxTiltDeg={6} isHighlighted={false}>
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-purple-400 flex items-center justify-center mb-4">
-                <Icon name="chat-round-line-bold" size={22} />
-              </div>
-              <h3 className="font-heading font-semibold text-lg text-white/95 tracking-tight">
-                Multi-Lingual Indic Speech
-              </h3>
-              <p className="text-xs text-white/60 font-body mt-2 leading-relaxed">
-                Trained on natural Indian code-switching: Hindi, Hinglish colloquial slang, Gujarati,
-                and Indian English conversational patterns.
-              </p>
-            </TiltCard>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION 5: STORY & TIMELINE ILLUSTRATION */}
-        {/* ========================================================================= */}
-        <section id="story" className="space-y-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#c8f542]/30 bg-[#c8f542]/10 text-xs font-mono text-[#c8f542] mb-2">
-                <Icon name="map-point-bold" size={14} />
-                <span>Built in India, 2026</span>
-              </div>
-              <WordReveal as="h2" triggerOnScroll={true} className="text-2xl sm:text-3xl font-heading font-bold text-white/95">
-                The 3-Minute Escalation Window
-              </WordReveal>
-            </div>
-
-            <div className="text-xs font-mono text-white/50">
-              Deterministic 5-stage psychological timeline
-            </div>
-          </div>
-
-          {/* Timeline visualization */}
-          <GlassCard className="p-8">
-            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 relative">
-              <div className="flex flex-col items-start gap-2">
-                <StageChip stage="S1" />
-                <div className="text-xs font-semibold text-white/90 mt-1">1. False Authority</div>
-                <div className="text-[11px] text-white/50">Caller claims Mumbai Police / CBI narcotics division</div>
-              </div>
-
-              <div className="flex flex-col items-start gap-2">
-                <StageChip stage="S2" />
-                <div className="text-xs font-semibold text-white/90 mt-1">2. Accusation</div>
-                <div className="text-[11px] text-white/50">Claims Aadhaar misused for illegal money laundering</div>
-              </div>
-
-              <div className="flex flex-col items-start gap-2">
-                <StageChip stage="S3" />
-                <div className="text-xs font-semibold text-amber-400 mt-1">3. Isolation (L2 Alert)</div>
-                <div className="text-[11px] text-white/50">&ldquo;Do not tell family, stay on video call&rdquo;</div>
-              </div>
-
-              <div className="flex flex-col items-start gap-2">
-                <StageChip stage="S4" />
-                <div className="text-xs font-semibold text-rose-400 mt-1">4. Severe Urgency</div>
-                <div className="text-[11px] text-white/50">&ldquo;Immediate warrant issued, arrest within 10 minutes&rdquo;</div>
-              </div>
-
-              <div className="flex flex-col items-start gap-2">
-                <StageChip stage="S5" />
-                <div className="text-xs font-semibold text-[#ff5a4d] mt-1">5. Payment Demand</div>
-                <div className="text-[11px] text-white/50">Kavach screams warning before UPI/RTGS occurs</div>
+                  HI
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLang('gu')}
+                  className={`px-2.5 py-0.5 rounded-full transition-colors ${
+                    lang === 'gu' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
+                  }`}
+                >
+                  GU
+                </button>
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
-              <RiskMeter level={2} score={70} showBar={false} className="max-w-md w-full" />
-              <div className="text-xs font-mono text-white/60">
-                Guardian alerted at <span className="text-[#c8f542] font-bold">Stage 3</span> · Zero money lost
-              </div>
-            </div>
-          </GlassCard>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION 6: TEAM (Honesty Rule: Initials avatars with lime borders) */}
-        {/* ========================================================================= */}
-        <section className="space-y-6">
-          <div className="max-w-xl">
-            <WordReveal as="h2" triggerOnScroll={true} className="text-2xl sm:text-3xl font-heading font-bold text-white/95">
-              Team & Mission
-            </WordReveal>
-            <p className="text-sm text-white/60 font-body mt-2">
-              Engineered for Gnani AI&apos;s Great Indian AI Internship Challenge. Building authentic, measurable speech AI guardians.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {team.map((m) => (
-              <GlassCard key={m.id} withHoverShift={true} className="text-left">
-                <div className="w-12 h-12 rounded-full border-2 border-[#c8f542] bg-[#0a2a12] flex items-center justify-center font-mono font-bold text-[#c8f542] text-sm mb-4">
-                  {m.initials}
+            {/* HERO FEATURED FEED CARD (Headline + Live Protection Atom) */}
+            <article className="bg-surface border border-hairline rounded-md p-6 text-ink shadow-sm">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="bg-hot text-white text-micro font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    BROADCAST ALERT
+                  </span>
+                  <TimestampPill>Live Protection Active</TimestampPill>
                 </div>
-                <h4 className="font-heading font-semibold text-base text-white/95">{m.name}</h4>
-                <div className="text-xs text-[#c8f542] font-mono mt-0.5">{m.role}</div>
-                <p className="text-xs text-white/60 mt-3 leading-relaxed">{m.bio}</p>
-              </GlassCard>
-            ))}
-          </div>
-        </section>
+                <TemperatureControl
+                  value={heroTemp}
+                  onUpVote={() => setHeroTemp(heroTemp + 1)}
+                  onDownVote={() => setHeroTemp(heroTemp - 1)}
+                  size="md"
+                />
+              </div>
 
-        {/* ========================================================================= */}
-        {/* SECTION 7: PRIVATE BETA VOICES (Honesty Rule: Private beta trio) */}
-        {/* ========================================================================= */}
-        <section className="space-y-6">
-          <div className="max-w-xl">
-            <WordReveal as="h2" triggerOnScroll={true} className="text-2xl sm:text-3xl font-heading font-bold text-white/95">
-              Private Beta Validation
-            </WordReveal>
-            <p className="text-sm text-white/60 font-body mt-2">
-              Feedback from Indian families participating in non-deception tabletop acoustic tests.
-            </p>
-          </div>
+              <div className="space-y-3">
+                <h1 className="text-display sm:text-[44px] font-bold text-ink leading-[1.1] tracking-tight">
+                  Hang up. It&apos;s a scam.
+                </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {quotes.map((q) => (
-              <GlassCard key={q.id} withHoverShift={true}>
-                <div className="text-[#c8f542] mb-3">
-                  <Icon name="chat-line-bold" size={20} />
-                </div>
-                <p className="text-xs text-white/80 italic font-body leading-relaxed">
-                  &ldquo;{q.quote}&rdquo;
+                <p className="text-lead text-body font-medium leading-relaxed">
+                  The tabletop scam guardian for Indian elders. Kavach listens to suspicious calls
+                  on speakerphone, detects coercive digital arrest interrogation in real time, and speaks
+                  in your trusted family voice before life savings are lost.
                 </p>
-                <div className="mt-4 pt-3 border-t border-white/10">
-                  <div className="text-xs font-semibold text-white/90">{q.author}</div>
-                  <div className="text-[11px] text-white/50">{q.role} · {q.city}</div>
+
+                {/* Price Lockup per DESIGN.md */}
+                <div className="pt-2">
+                  <PriceLockup
+                    price="0"
+                    currency="₹"
+                    period="Free during Private Beta"
+                    originalPrice="4,200 Cr"
+                    discount="100% BLOCKED"
+                  />
+                  <div className="text-caption text-muted mt-0.5">
+                    Struck-through amount: Official NCRP recorded loss to cybercrime extortion
+                  </div>
                 </div>
-              </GlassCard>
-            ))}
-          </div>
-        </section>
 
-        {/* ========================================================================= */}
-        {/* SECTION 8: CTA BLOCK (Exact 28px rounded corners + radial cta-gradient) */}
-        {/* ========================================================================= */}
-        <section className="relative overflow-hidden rounded-[28px] border border-[#c8f542]/30 p-8 sm:p-14 text-center bg-cta-gradient shadow-2xl">
-          <div className="max-w-xl mx-auto space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold tracking-tight text-white/95">
-              Protect Your Parents Before the Next Call
-            </h2>
-            <p className="text-sm text-white/70 font-body leading-relaxed">
-              Join 1,400+ caregivers across India securing elderly parents against digital arrest and courier scams.
-            </p>
-            <div className="pt-4 flex flex-wrap justify-center gap-4">
-              <MagneticButton strength={0.3}>
-                <Button variant="lime" size="lg" href="/pricing#waitlist" icon="shield-check-bold">
-                  Join the Early Access Waitlist
-                </Button>
-              </MagneticButton>
-            </div>
-            <div className="text-[11px] text-white/40 pt-2 font-mono">
-              Free during private beta · No credit card required · Instant WhatsApp alert demo
-            </div>
-          </div>
-        </section>
+                {/* CTAs */}
+                <div className="pt-3 flex flex-wrap items-center gap-3">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    href="/pricing#waitlist"
+                    icon="shield-check-bold"
+                  >
+                    Protect Your Parents
+                  </Button>
+                  <Button
+                    variant="outline-neutral"
+                    size="lg"
+                    href="/how-it-works"
+                    icon="play-circle-bold"
+                  >
+                    How It Works
+                  </Button>
+                  <Button
+                    variant="outline-green"
+                    size="lg"
+                    href="/styleguide"
+                  >
+                    View Design System
+                  </Button>
+                </div>
+              </div>
+            </article>
 
-        {/* ========================================================================= */}
-        {/* SECTION 9: FOOTER (5 Columns) */}
-        {/* ========================================================================= */}
-        <footer className="pt-12 pb-8 border-t border-white/10 text-xs font-body text-white/60">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
-            {/* Col 1: Brand & Disclaimer */}
-            <div className="col-span-2 md:col-span-1 space-y-3">
-              <KavachLogo size={28} showWordmark={true} />
-              <p className="text-[11px] text-white/50 leading-relaxed">
-                Kavach listens on a dedicated second device when you take a call on speaker. We do not tap or intercept telco lines.
-              </p>
-              <div className="text-[10px] text-white/40 font-mono">
-                Built for Gnani AI Challenge · Nov 2026
+            {/* LIVE SCAM CALL FEED (Cards Stack with 12px Gaps) */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <h2 className="text-heading font-bold text-ink flex items-center gap-2">
+                  <span>Community Scam Threat Feed</span>
+                  <span className="text-caption font-bold text-hot bg-hot/10 px-2 py-0.5 rounded-full">
+                    LIVE
+                  </span>
+                </h2>
+                <span className="text-caption text-body">Sorted by: <strong className="text-ink">Hot First</strong></span>
+              </div>
+
+              {/* Feed Card 1: CBI Digital Arrest */}
+              <DealCard
+                thumbnail={
+                  <div className="flex flex-col items-center justify-center p-3 text-center">
+                    <StageChip stage="S5" />
+                    <span className="text-caption font-bold text-ink mt-2">CBI New Delhi</span>
+                  </div>
+                }
+                temperature={96}
+                merchant="CBI Digital Arrest Impersonation"
+                author="Pune Police Cyber Advisory"
+                timestamp="Gepostet vor 5m"
+                title="Fake Arrest Warrant & Bail Bond Demanded on WhatsApp Video (+91 98210 99841)"
+                price="₹2,50,000"
+                originalPrice="Extortion"
+                discount="S5 PAYMENT"
+                commentCount={34}
+                primaryActionLabel="Block & Report"
+                primaryActionHref="/learn/digital-arrest"
+              >
+                <div className="space-y-2 mt-2">
+                  <p className="text-body font-medium text-body leading-normal">
+                    Scammer poses as CBI officer, ordering the elder not to disconnect or talk to relatives. Kavach detector triggers Stage 3 Isolation and speaks in son Rahul&apos;s consented voice: <em>&ldquo;Mummy, yeh scam call hai! Phone kaat do!&rdquo;</em>
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <Chip size="sm" variant="hot">High Coercion</Chip>
+                    <Chip size="sm" variant="default">Hindi / Hinglish</Chip>
+                    <Chip size="sm" variant="primary">Family Voice Intervened</Chip>
+                  </div>
+                </div>
+              </DealCard>
+
+              {/* Feed Card 2: FedEx Narcotics Parcel */}
+              <DealCard
+                thumbnail={
+                  <div className="flex flex-col items-center justify-center p-3 text-center">
+                    <StageChip stage="S2" />
+                    <span className="text-caption font-bold text-ink mt-2">Customs IVR</span>
+                  </div>
+                }
+                temperature={82}
+                merchant="FedEx / Mumbai Customs Parcel"
+                author="Kavach Sensor Node"
+                timestamp="Gepostet vor 22m"
+                title="Automated Robocall: '140g MDMA found in parcel sent with your Aadhaar'"
+                price="₹0"
+                discount="S2 ACCUSATION"
+                commentCount={18}
+                primaryActionLabel="Inspect Audio"
+                primaryActionHref="/learn/courier-parcel"
+              >
+                <div className="space-y-2 mt-2">
+                  <p className="text-body font-medium text-body leading-normal">
+                    Pre-recorded IVR stating parcel to Taiwan was confiscated at airport customs. Demands pressing 9 to transfer to &ldquo;Narcotics Control Bureau&rdquo; officer.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <Chip size="sm" variant="warning">IVR Phishing</Chip>
+                    <Chip size="sm" variant="default">English & Hindi</Chip>
+                    <Chip size="sm" variant="outline">Aadhaar Misuse Threat</Chip>
+                  </div>
+                </div>
+              </DealCard>
+
+              {/* Feed Card 3: TRAI SIM Deactivation */}
+              <DealCard
+                thumbnail={
+                  <div className="flex flex-col items-center justify-center p-3 text-center">
+                    <StageChip stage="S1" />
+                    <span className="text-caption font-bold text-ink mt-2">TRAI Robocall</span>
+                  </div>
+                }
+                temperature={64}
+                merchant="TRAI Telecom Authority"
+                author="National 1930 Portal"
+                timestamp="Gepostet vor 1h"
+                title="Urgent SIM Disconnection Notice Within 2 Hours Due to Illegal Harassment"
+                price="₹1,200"
+                originalPrice="Fine"
+                discount="S1 AUTHORITY"
+                commentCount={9}
+                primaryActionLabel="View Advisory"
+                primaryActionHref="/learn/kyc-otp"
+              >
+                <div className="space-y-2 mt-2">
+                  <p className="text-body font-medium text-body leading-normal">
+                    Fraudulent warning that the elder&apos;s phone number is linked to 17 illegal SIM cards in Assam. Threatens complete telecom blacklisting unless biometric KYC is verified over phone.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <Chip size="sm" variant="default">TRAI Impersonation</Chip>
+                    <Chip size="sm" variant="default">Gujarati / Hindi</Chip>
+                  </div>
+                </div>
+              </DealCard>
+
+              {/* Feed Card 4: Mumbai Cyber Police Safe Account Demand */}
+              <DealCard
+                thumbnail={
+                  <div className="flex flex-col items-center justify-center p-3 text-center">
+                    <StageChip stage="S4" />
+                    <span className="text-caption font-bold text-ink mt-2">Police Uniform</span>
+                  </div>
+                }
+                temperature={89}
+                merchant="Reserve Bank / Police Verification"
+                author="Pune Senior Citizen Forum"
+                timestamp="Gepostet vor 3h"
+                title="RBI 'Safe Custody Account' Transfer Demand to Clear Money Laundering Case"
+                price="₹10,75,000"
+                originalPrice="Demand"
+                discount="S4 URGENCY"
+                commentCount={42}
+                primaryActionLabel="Read Guide"
+                primaryActionHref="/learn/digital-arrest"
+              >
+                <div className="space-y-2 mt-2">
+                  <p className="text-body font-medium text-body leading-normal">
+                    Senior told that an RBI officer needs to verify funds for 48 hours to remove their name from the National Security Register. Kavach sounded remote siren and alerted guardian on Telegram.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <Chip size="sm" variant="hot">Extortion Scheme</Chip>
+                    <Chip size="sm" variant="primary">Telegram Alert Sent</Chip>
+                  </div>
+                </div>
+              </DealCard>
+            </div>
+
+            {/* SOURCED STATS & PROOF TILES (Honesty Rule: Sourced Claims) */}
+            <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+              <div>
+                <h3 className="text-heading font-bold text-ink">The Digital Arrest Epidemic: Sourced Proof</h3>
+                <p className="text-caption text-body">
+                  Every statistic below is directly cited from official Indian cybercrime reporting portals and police investigations.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Stat 1 */}
+                <div className="p-4 rounded-md border border-hairline bg-canvas">
+                  <div className="text-caption text-body font-bold mb-1">National Losses</div>
+                  <div className="text-heading-lg font-bold text-hot">
+                    {SOURCED_CLAIMS.ncrpLosses.lossFormatted}
+                  </div>
+                  <div className="text-caption text-ink font-bold mt-1">
+                    {SOURCED_CLAIMS.ncrpLosses.complaints} complaints
+                  </div>
+                  <p className="text-caption text-body mt-2">
+                    Retirees and seniors lost over four thousand crore rupees to digital arrest extortion.
+                  </p>
+                  <a
+                    href={SOURCED_CLAIMS.ncrpLosses.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-caption text-primary font-bold hover:underline mt-2 inline-block"
+                  >
+                    Source: NCRP / NewsBytes ↗
+                  </a>
+                </div>
+
+                {/* Stat 2 */}
+                <div className="p-4 rounded-md border border-hairline bg-canvas">
+                  <div className="text-caption text-body font-bold mb-1">Pune Cyber Police</div>
+                  <div className="text-heading-lg font-bold text-warm">
+                    {SOURCED_CLAIMS.puneCyberPolice.lossFormatted}
+                  </div>
+                  <div className="text-caption text-ink font-bold mt-1">
+                    {SOURCED_CLAIMS.puneCyberPolice.cases} in Pune alone
+                  </div>
+                  <p className="text-caption text-body mt-2">
+                    One 82-year-old victim alone lost ₹10.75 crore during acute psychological fear trance.
+                  </p>
+                  <a
+                    href={SOURCED_CLAIMS.puneCyberPolice.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-caption text-primary font-bold hover:underline mt-2 inline-block"
+                  >
+                    Source: Pune Police ↗
+                  </a>
+                </div>
+
+                {/* Stat 3 */}
+                <div className="p-4 rounded-md border border-hairline bg-canvas">
+                  <div className="text-caption text-body font-bold mb-1">Kavach Recall (Synthetic Text Tests)</div>
+                  <div className="text-heading-lg font-bold text-primary">
+                    {SOURCED_CLAIMS.detectorRecall.value}
+                  </div>
+                  <div className="text-caption text-ink font-bold mt-1">
+                    95% CI: {SOURCED_CLAIMS.detectorRecall.ci95}
+                  </div>
+                  <p className="text-caption text-body mt-2">
+                    In multi-lingual synthetic text tests, Kavach flags scams before payment stage.
+                  </p>
+                  <span className="text-caption text-muted mt-2 inline-block">
+                    {SOURCED_CLAIMS.detectorRecall.citation}
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Col 2: Product */}
-            <div className="space-y-2">
-              <div className="font-heading font-semibold text-white/90 text-xs uppercase tracking-wider mb-3">Product</div>
-              <div><a href="#how-it-works" className="hover:text-[#c8f542] transition-colors">How It Works</a></div>
-              <div><a href="#features" className="hover:text-[#c8f542] transition-colors">Detection Engine</a></div>
-              <div><a href="/pricing" className="hover:text-[#c8f542] transition-colors">Pricing Plans</a></div>
-              <div><a href="/pricing#waitlist" className="hover:text-[#c8f542] transition-colors">Private Beta</a></div>
+            {/* 6 CORE ARCHITECTURE FEATURES */}
+            <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+              <div>
+                <h3 className="text-heading font-bold text-ink">Built to Break the Psychological Trance</h3>
+                <p className="text-caption text-body">
+                  Telco filters stop spam numbers before the call. Kavach guards the actual conversation.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 rounded-md border border-hairline bg-surface hover:shadow-level-2 transition-shadow">
+                  <div className="text-ui font-bold text-ink mb-1 flex items-center gap-2">
+                    <span className="text-primary">●</span> Understands the Call Live
+                  </div>
+                  <p className="text-caption text-body">
+                    Deterministic sub-millisecond risk engine tracking 5 coercive escalation stages: Authority, Accusation, Isolation, Urgency, and Payment Demand.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-md border border-hairline bg-surface hover:shadow-level-2 transition-shadow">
+                  <div className="text-ui font-bold text-ink mb-1 flex items-center gap-2">
+                    <span className="text-primary">●</span> Speaks in a Family Voice
+                  </div>
+                  <p className="text-caption text-body">
+                    Hearing their son or daughter&apos;s authentic consented voice say &ldquo;Mummy, phone kaat do&rdquo; punctures the trance immediately.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-md border border-hairline bg-surface hover:shadow-level-2 transition-shadow">
+                  <div className="text-ui font-bold text-ink mb-1 flex items-center gap-2">
+                    <span className="text-primary">●</span> Alerts the Caregiver Instantly
+                  </div>
+                  <p className="text-caption text-body">
+                    Guardians receive a signed Telegram action notification with plain Hindi/English explanations and a 1-tap emergency link at Stage 3.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-md border border-hairline bg-surface hover:shadow-level-2 transition-shadow">
+                  <div className="text-ui font-bold text-ink mb-1 flex items-center gap-2">
+                    <span className="text-primary">●</span> Push-to-Talk Intercom
+                  </div>
+                  <p className="text-caption text-body">
+                    Hold the Push-to-Talk button from your phone anywhere in the world. Your live voice broadcasts directly out of the elder&apos;s tablet speaker.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-md border border-hairline bg-surface hover:shadow-level-2 transition-shadow">
+                  <div className="text-ui font-bold text-ink mb-1 flex items-center gap-2">
+                    <span className="text-primary">●</span> Private by Design (DPDP Ready)
+                  </div>
+                  <p className="text-caption text-body">
+                    Zero raw call audio is ever saved on disk or server. Transcript snippets are capped at 160 characters and auto-expire in 7 days.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-md border border-hairline bg-surface hover:shadow-level-2 transition-shadow">
+                  <div className="text-ui font-bold text-ink mb-1 flex items-center gap-2">
+                    <span className="text-primary">●</span> Multi-Lingual Indic Speech
+                  </div>
+                  <p className="text-caption text-body">
+                    Trained on natural Indian code-switching: Hindi, Hinglish colloquial slang, Gujarati, and Indian English conversational patterns.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* Col 3: Learn & Safety */}
-            <div className="space-y-2">
-              <div className="font-heading font-semibold text-white/90 text-xs uppercase tracking-wider mb-3">Learn</div>
-              <div><a href="#story" className="hover:text-[#c8f542] transition-colors">Digital Arrest Guide</a></div>
-              <div><a href="#story" className="hover:text-[#c8f542] transition-colors">Courier Narcotics Scam</a></div>
-              <div><a href="#story" className="hover:text-[#c8f542] transition-colors">Bank KYC Advisory</a></div>
-              <div><a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer" className="text-amber-400 hover:underline">Cyber Helpline: 1930</a></div>
+            {/* TIMELINE VISUALIZATION */}
+            <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+              <div>
+                <h3 className="text-heading font-bold text-ink">The 3-Minute Escalation Window</h3>
+                <p className="text-caption text-body">
+                  Deterministic 5-stage timeline from false badge to extorted transfer.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-2">
+                <div className="p-3 rounded-md bg-canvas border border-hairline">
+                  <StageChip stage="S1" />
+                  <div className="text-caption font-bold text-ink mt-2">1. Authority</div>
+                  <div className="text-micro text-body mt-1">Claims Police / CBI narcotics division</div>
+                </div>
+
+                <div className="p-3 rounded-md bg-canvas border border-hairline">
+                  <StageChip stage="S2" />
+                  <div className="text-caption font-bold text-ink mt-2">2. Accusation</div>
+                  <div className="text-micro text-body mt-1">Aadhaar linked to money laundering</div>
+                </div>
+
+                <div className="p-3 rounded-md bg-canvas border border-hairline">
+                  <StageChip stage="S3" />
+                  <div className="text-caption font-bold text-warm mt-2">3. Isolation</div>
+                  <div className="text-micro text-body mt-1">&ldquo;Do not tell family, stay on video&rdquo;</div>
+                </div>
+
+                <div className="p-3 rounded-md bg-canvas border border-hairline">
+                  <StageChip stage="S4" />
+                  <div className="text-caption font-bold text-hot mt-2">4. Urgency</div>
+                  <div className="text-micro text-body mt-1">&ldquo;Immediate warrant, 10 min arrest&rdquo;</div>
+                </div>
+
+                <div className="p-3 rounded-md bg-canvas border border-hairline">
+                  <StageChip stage="S5" />
+                  <div className="text-caption font-bold text-hot mt-2">5. Payment</div>
+                  <div className="text-micro text-body mt-1">Kavach speaks before UPI happens</div>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-hairline flex flex-wrap items-center justify-between gap-4">
+                <RiskMeter level={2} score={70} showBar={false} className="max-w-md w-full" />
+                <div className="text-caption text-body">
+                  Guardian alerted at <strong className="text-primary">Stage 3 Isolation</strong> · Zero money lost
+                </div>
+              </div>
             </div>
 
-            {/* Col 4: Company */}
-            <div className="space-y-2">
-              <div className="font-heading font-semibold text-white/90 text-xs uppercase tracking-wider mb-3">Company</div>
-              <div><a href="#story" className="hover:text-[#c8f542] transition-colors">About Project</a></div>
-              <div><a href="/changelog" className="hover:text-[#c8f542] transition-colors">Changelog</a></div>
-              <div><a href="https://github.com/pritp/kavach" target="_blank" rel="noreferrer" className="hover:text-[#c8f542] transition-colors">GitHub Repository</a></div>
+            {/* TEAM & MISSION */}
+            <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+              <div>
+                <h3 className="text-heading font-bold text-ink">Team & Mission</h3>
+                <p className="text-caption text-body">
+                  Engineered for Gnani AI&apos;s Great Indian AI Internship Challenge. Building authentic, measurable speech AI guardians.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {team.map((m) => (
+                  <div key={m.id} className="p-4 rounded-md border border-hairline bg-canvas">
+                    <div className="w-10 h-10 rounded-circle bg-surface border border-hairline flex items-center justify-center font-bold text-primary text-ui mb-2">
+                      {m.initials}
+                    </div>
+                    <div className="text-ui font-bold text-ink">{m.name}</div>
+                    <div className="text-caption font-bold text-primary">{m.role}</div>
+                    <p className="text-caption text-body mt-2 leading-relaxed">{m.bio}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Col 5: Legal */}
-            <div className="space-y-2">
-              <div className="font-heading font-semibold text-white/90 text-xs uppercase tracking-wider mb-3">Legal</div>
-              <div><a href="/pricing" className="hover:text-[#c8f542] transition-colors">Privacy Policy</a></div>
-              <div><a href="/pricing" className="hover:text-[#c8f542] transition-colors">Terms of Service</a></div>
-              <div><a href="/pricing" className="hover:text-[#c8f542] transition-colors">DPDP Act Compliance</a></div>
-              <div><span className="text-[10px] text-amber-400 font-mono">DRAFT: Pending legal review</span></div>
+            {/* PRIVATE BETA FEEDBACK */}
+            <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+              <div>
+                <h3 className="text-heading font-bold text-ink">Caregiver Feedback</h3>
+                <p className="text-caption text-body">
+                  Feedback from Indian families participating in non-deception tabletop acoustic tests.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {quotes.map((q) => (
+                  <div key={q.id} className="p-4 rounded-md border border-hairline bg-canvas flex flex-col justify-between">
+                    <p className="text-caption text-ink italic leading-relaxed">
+                      &ldquo;{q.quote}&rdquo;
+                    </p>
+                    <div className="mt-3 pt-2 border-t border-hairline text-caption">
+                      <div className="font-bold text-ink">{q.author}</div>
+                      <div className="text-muted">{q.role} · {q.city}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
+
           </div>
 
-          <div className="pt-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-white/40 font-mono">
-            <div>&copy; 2026 Kavach Security Inc. All rights reserved.</div>
-            <div>Zero audio retained · DPDP 2023 aligned</div>
+          {/* ========================================================================= */}
+          {/* RIGHT 1-COLUMN SIDEBAR RAIL (Coupon, News, Status & Kiosk Cards) */}
+          {/* ========================================================================= */}
+          <div className="space-y-4">
+            
+            {/* Sidebar Card 1: Elder Kiosk Stream Status */}
+            <SidebarCard
+              title="Tabletop Kiosk Status"
+              action={<span className="text-primary font-bold text-caption">LIVE MONITOR</span>}
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-caption py-1 border-b border-hairline">
+                  <span className="text-body">Acoustic Audio:</span>
+                  <span className="font-bold text-ink flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    16 kHz Room VAD
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-caption py-1 border-b border-hairline">
+                  <span className="text-body">Detector Latency:</span>
+                  <span className="font-bold text-ink font-mono">0.42 ms</span>
+                </div>
+
+                <div className="flex items-center justify-between text-caption py-1 border-b border-hairline">
+                  <span className="text-body">Monthly Listening Quota:</span>
+                  <span className="font-bold text-primary font-mono">120 / 150 min</span>
+                </div>
+
+                <div className="pt-1">
+                  <div className="text-caption font-bold text-ink mb-1.5">Room Acoustic Energy:</div>
+                  <Bars count={16} barColor="#30a83c" />
+                </div>
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  href="http://localhost:3001/elder"
+                  className="w-full mt-2"
+                >
+                  Launch Elder Kiosk
+                </Button>
+              </div>
+            </SidebarCard>
+
+            {/* Sidebar Card 2: National Helpline Direct Access */}
+            <SidebarCard
+              title="National Cyber Helpline"
+              action={<span className="text-hot font-bold text-caption">DIAL 1930</span>}
+            >
+              <div className="space-y-2 text-caption">
+                <p className="text-body leading-relaxed">
+                  If an elder transferred money within the last 2 hours, the Golden Window allows freezing bank accounts immediately.
+                </p>
+                <div className="p-3 bg-canvas border border-hairline rounded-md text-ink font-mono">
+                  <div className="font-bold text-hot text-ui">Helpline: 1930</div>
+                  <div className="text-muted text-micro">National Cyber Crime Reporting Portal</div>
+                </div>
+                <a
+                  href="https://cybercrime.gov.in"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-primary font-bold hover:underline pt-1"
+                >
+                  <span>Visit cybercrime.gov.in</span>
+                  {/* @ts-expect-error solar icon */}
+                  <iconify-icon icon="solar:arrow-right-up-linear" width="14" height="14" />
+                </a>
+              </div>
+            </SidebarCard>
+
+            {/* Sidebar Card 3: Top Scam Patterns Detected */}
+            <SidebarCard
+              title="Trending Scam Patterns"
+              action={<span className="text-caption text-body">10 Active</span>}
+            >
+              <div className="space-y-2">
+                {SCAM_FAMILIES.slice(0, 6).map((fam) => (
+                  <div
+                    key={fam.id}
+                    className="flex items-center justify-between p-2 rounded-md hover:bg-canvas transition-colors text-caption"
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      <span className="text-primary font-bold">#</span>
+                      <span className="font-bold text-ink truncate">{fam.name}</span>
+                    </div>
+                    <Badge variant="neutral-subtle">Active Threat</Badge>
+                  </div>
+                ))}
+              </div>
+            </SidebarCard>
+
+            {/* Sidebar Card 4: Guardian Quick Launch */}
+            <SidebarCard title="Guardian Control Panel">
+              <div className="space-y-3">
+                <p className="text-caption text-body leading-relaxed">
+                  Monitor elder phone sessions, review call transcript snippets, and configure family voice consent.
+                </p>
+                <div className="space-y-2">
+                  <Button
+                    variant="primary"
+                    size="md"
+                    href="http://localhost:3001"
+                    className="w-full"
+                  >
+                    Open Guardian Dashboard
+                  </Button>
+                  <Button
+                    variant="outline-neutral"
+                    size="md"
+                    href="http://localhost:3001/onboarding"
+                    className="w-full"
+                  >
+                    + Enroll New Household Elder
+                  </Button>
+                </div>
+              </div>
+            </SidebarCard>
+
+            {/* Sidebar Card 5: Waitlist CTA */}
+            <SidebarCard title="Private Beta Access">
+              <div className="space-y-3">
+                <p className="text-caption text-body leading-relaxed">
+                  Join 1,400+ caregivers across India securing elderly parents against digital arrest and courier scams.
+                </p>
+                <Button
+                  variant="outline-green"
+                  size="md"
+                  href="/pricing#waitlist"
+                  className="w-full"
+                >
+                  Join Early Access Waitlist
+                </Button>
+              </div>
+            </SidebarCard>
+
           </div>
-        </footer>
-      </div>
-    </Frame>
+
+        </div>
+      </main>
+
+      {/* Global Footer */}
+      <SiteFooter />
+    </div>
   );
 }

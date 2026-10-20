@@ -2,32 +2,43 @@
 
 import React from 'react';
 import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
   Button,
-  Icon,
+  Badge,
+  TimestampPill,
 } from '@kavach/ui';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SiteFooter } from '../../components/SiteFooter';
 
 const CHANGELOG_ENTRIES = [
   {
+    version: 'v0.5.0',
+    date: '19 October 2026',
+    title: 'Deals Community Design System Redesign',
+    summary: 'Full front-end redesign strictly obeying DESIGN.md high-density tokens, white cards, and functional hot/cold temperature controls.',
+    changes: [
+      'Migrated entire theme from dark glassmorphism to Deals Community cool-gray canvas (#f2f4f7) and white cards (#ffffff).',
+      'Implemented signature temperature-control pill with cold-blue down vote and hot-red degree reading.',
+      'Adopted price-lockup pattern with bold green current price, struck-through original, and mint discount badge.',
+      'Enforced Mulish 500/700 typography and 540px fully-round pills across buttons, search, and chips.',
+      'Added lightweight dev-only /styleguide cataloging all primitives and states.',
+    ],
+  },
+  {
     version: 'v0.4.0',
     date: '18 October 2026',
-    title: 'SaaS Frontend Architecture & CoinCompass Design System',
+    title: 'SaaS Frontend Architecture & DPDP Compliance',
     summary: 'Complete product rebuild with strict DPDP compliance, trilingual elder notices, and full responsive design.',
     changes: [
-      'Introduced CoinCompass design system in packages/ui with WebGL Aurora canvas and hatch overlay.',
       'Authored trilingual elder consent notices (English, Hindi, Gujarati) with printable tabletop card.',
       'Added RFC 9116 security.txt vulnerability disclosure file and subprocessor registry.',
       'Implemented typed mock adapter in packages/api-contract with strict production mock-guard.',
+      'Configured multi-tenant database integration with Neon serverless Postgres.',
     ],
   },
   {
     version: 'v0.3.0',
     date: '17 October 2026',
-    title: 'Sprint 3: Speakerphone Resilience & Daily Credit Guards',
+    title: 'Speakerphone Resilience & Daily Credit Guards',
     summary: 'Acoustic calibration for noisy living room environments and hard caps on cloud STT costs.',
     changes: [
       'Implemented client-side energy VAD gating in AudioWorklet (zero audio chunks uploaded during silence).',
@@ -39,7 +50,7 @@ const CHANGELOG_ENTRIES = [
   {
     version: 'v0.2.0',
     date: '16 October 2026',
-    title: 'Sprint 2: Multi-Tenant Guardian Auth & Emergency Intercom',
+    title: 'Multi-Tenant Guardian Auth & Emergency Intercom',
     summary: 'Role-based security isolation and remote caregiver Push-to-Talk intercom break.',
     changes: [
       'Secured all endpoints with cryptographically random bearer tokens issued on guardian registration.',
@@ -51,7 +62,7 @@ const CHANGELOG_ENTRIES = [
   {
     version: 'v0.1.0',
     date: '15 October 2026',
-    title: 'Sprint 1: Deterministic 5-Stage Detector & Contest Architecture',
+    title: 'Deterministic 5-Stage Detector & Contest Architecture',
     summary: 'Initial core pipeline connecting Gnani Prisma STT to Kavach finite state machine.',
     changes: [
       'Created deterministic 5-stage extortion state machine (S1 Authority to S5 Transfer Demand).',
@@ -64,87 +75,64 @@ const CHANGELOG_ENTRIES = [
 
 export default function ChangelogPage() {
   return (
-    <Frame withHatch={false} className="pb-16">
-      <HatchOverlay />
+    <div className="min-h-screen bg-canvas text-ink font-sans">
       <SiteHeader currentPath="/changelog" />
 
-      <main className="relative z-10 px-6 sm:px-10 lg:px-12 pt-12 max-w-4xl mx-auto space-y-12">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/18 bg-white/5 text-xs font-mono text-white/80">
-              <Icon name="history-bold" size={14} color="#c8f542" />
-              <span>Project Releases &amp; Milestones</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl font-heading font-bold tracking-tight text-white/95">
-              Changelog
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-display font-bold text-ink tracking-tight">
+              Changelog &amp; Releases
             </h1>
-
-            <p className="text-sm text-white/60 font-body">
-              A transparent, dated record of every architectural release and security update to Kavach.
+            <p className="text-lead text-body font-medium mt-1">
+              Transparent log of model updates, detector improvements, and security releases.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              href="/changelog/rss.xml"
-              icon="rss-bold"
-              className="text-xs"
-            >
+          <div className="flex items-center gap-2">
+            <Button variant="outline-neutral" size="sm" href="/changelog/rss.xml">
               RSS Feed
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              href="/changelog/feed.json"
-              icon="code-square-bold"
-              className="text-xs"
-            >
+            <Button variant="outline-neutral" size="sm" href="/changelog/feed.json">
               JSON Feed
             </Button>
           </div>
         </div>
 
-        {/* Timeline */}
-        <div className="space-y-8 relative before:absolute before:inset-0 before:left-3 sm:before:left-5 before:w-0.5 before:bg-white/10">
+        {/* Entries */}
+        <div className="space-y-4">
           {CHANGELOG_ENTRIES.map((entry) => (
-            <div key={entry.version} className="relative pl-8 sm:pl-12 space-y-3">
-              {/* Dot */}
-              <div className="absolute left-1.5 sm:left-3.5 top-1.5 w-3.5 h-3.5 rounded-full bg-[#c8f542] border-2 border-[#0a2a12] shadow-sm shadow-[#c8f542]/50" />
-
-              <GlassCard className="p-6 sm:p-7 space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-sm text-[#c8f542] px-2.5 py-0.5 rounded-lg bg-[#c8f542]/10 border border-[#c8f542]/30">
-                      {entry.version}
-                    </span>
-                    <h2 className="font-heading font-bold text-white text-base sm:text-lg">
-                      {entry.title}
-                    </h2>
-                  </div>
-                  <span className="text-xs font-mono text-white/40">{entry.date}</span>
+            <article
+              key={entry.version}
+              className="bg-surface border border-hairline rounded-md p-6 space-y-3 hover:shadow-level-2 transition-shadow"
+            >
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <Badge variant="primary">{entry.version}</Badge>
+                  <h2 className="text-heading font-bold text-ink">{entry.title}</h2>
                 </div>
+                <TimestampPill>{entry.date}</TimestampPill>
+              </div>
 
-                <p className="text-xs sm:text-sm text-white/70 font-body">{entry.summary}</p>
+              <p className="text-body font-medium text-body leading-relaxed">
+                {entry.summary}
+              </p>
 
-                <ul className="space-y-1.5 pt-2">
-                  {entry.changes.map((ch, idx) => (
-                    <li key={idx} className="text-xs text-white/60 flex items-start gap-2 font-body">
-                      <span className="text-[#c8f542] mt-0.5">·</span>
-                      <span>{ch}</span>
-                    </li>
-                  ))}
-                </ul>
-              </GlassCard>
-            </div>
+              <ul className="space-y-1.5 pt-2 border-t border-hairline">
+                {entry.changes.map((ch, idx) => (
+                  <li key={idx} className="text-caption text-ink font-medium flex items-start gap-2">
+                    <span className="text-primary font-bold">●</span>
+                    <span>{ch}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
           ))}
         </div>
-
-        <SiteFooter />
       </main>
-    </Frame>
+
+      <SiteFooter />
+    </div>
   );
 }

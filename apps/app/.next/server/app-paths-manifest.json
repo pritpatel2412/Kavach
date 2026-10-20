@@ -1,10 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/alerts/[id]/page": "app/alerts/[id]/page.js",
-  "/billing/page": "app/billing/page.js",
-  "/onboarding/page": "app/onboarding/page.js",
-  "/page": "app/page.js",
-  "/auth/page": "app/auth/page.js",
   "/elder/page": "app/elder/page.js",
-  "/privacy/page": "app/privacy/page.js"
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/page": "app/page.js"
 }

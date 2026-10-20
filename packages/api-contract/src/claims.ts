@@ -39,11 +39,11 @@ export const SOURCED_CLAIMS = {
   },
   detectorRecall: {
     id: 'kavach-scam-recall-speakerphone',
-    metric: 'Scam Call Recall before Payment Demand (Typical Speakerphone WER 20%)',
+    metric: 'Scam Call Recall before Payment Demand (Synthetic Text Tests, WER 20%)',
     value: '97.3%',
     ci95: '[86.2%, 99.5%]',
     sampleSize: '36/37 calls flagged at L2 before payment',
-    citation: 'Kavach offline multi-lingual synthetic text testbed (eval/out/summary.md)',
+    citation: 'Kavach offline multi-lingual synthetic text tests (eval/out/summary.md)',
     sourceUrl: 'eval/out/summary.md',
     retrievalDate: '2026-10-17',
     verified: true,

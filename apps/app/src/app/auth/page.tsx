@@ -3,9 +3,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
   Button,
   Input,
   Icon,
@@ -102,30 +99,28 @@ export default function AuthPage() {
   };
 
   return (
-    <Frame withHatch={false} className="min-h-screen flex flex-col justify-center items-center py-12 px-4 sm:px-6">
-      <HatchOverlay />
-
-      <div className="relative z-10 w-full max-w-md space-y-8">
+    <div className="min-h-screen bg-canvas text-ink font-body flex flex-col justify-center items-center py-12 px-4 sm:px-6">
+      <div className="w-full max-w-md space-y-6">
         {/* Logo and Brand */}
         <div className="text-center space-y-2">
           <div className="flex justify-center">
             <KavachLogo size={42} showWordmark={true} />
           </div>
-          <h1 className="text-2xl font-heading font-bold text-white tracking-tight">
+          <h1 className="text-display font-heading font-bold text-ink tracking-tight">
             Guardian Portal Sign In
           </h1>
-          <p className="text-xs text-white/60 font-body">
+          <p className="text-ui text-body">
             Strictly passwordless security for Indian family caregivers.
           </p>
         </div>
 
-        {/* Auth Method Selector */}
-        <div className="flex rounded-xl bg-white/5 p-1 border border-white/10 text-xs font-heading font-semibold">
+        {/* Auth Method Selector (Full-Round Pills) */}
+        <div className="flex rounded-full bg-surface p-1 border border-hairline text-ui font-heading font-bold shadow-level-1">
           <button
             type="button"
             onClick={() => { setMethod('phone'); setOtpSent(false); }}
-            className={`flex-1 py-2 rounded-lg transition-all ${
-              method === 'phone' ? 'bg-[#c8f542] text-stone-950 font-bold' : 'text-white/70 hover:text-white'
+            className={`flex-1 py-1.5 rounded-full transition-all ${
+              method === 'phone' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
             }`}
           >
             Mobile OTP
@@ -133,8 +128,8 @@ export default function AuthPage() {
           <button
             type="button"
             onClick={() => { setMethod('email'); setMagicLinkSent(false); }}
-            className={`flex-1 py-2 rounded-lg transition-all ${
-              method === 'email' ? 'bg-[#c8f542] text-stone-950 font-bold' : 'text-white/70 hover:text-white'
+            className={`flex-1 py-1.5 rounded-full transition-all ${
+              method === 'email' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
             }`}
           >
             Magic Link
@@ -142,8 +137,8 @@ export default function AuthPage() {
           <button
             type="button"
             onClick={() => setMethod('passkey')}
-            className={`flex-1 py-2 rounded-lg transition-all ${
-              method === 'passkey' ? 'bg-[#c8f542] text-stone-950 font-bold' : 'text-white/70 hover:text-white'
+            className={`flex-1 py-1.5 rounded-full transition-all ${
+              method === 'passkey' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
             }`}
           >
             Passkey
@@ -151,14 +146,14 @@ export default function AuthPage() {
         </div>
 
         {/* Card Body */}
-        <GlassCard className="p-6 sm:p-8 space-y-6">
+        <div className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-6 shadow-level-2">
           {/* Method 1: Phone OTP */}
           {method === 'phone' && (
             <>
               {!otpSent ? (
                 <form onSubmit={handleSendOtp} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-heading font-semibold text-white/90 mb-1.5">
+                    <label className="block text-ui font-heading font-bold text-ink mb-1.5">
                       Caregiver Mobile Number (India)
                     </label>
                     <div className="relative">
@@ -168,16 +163,16 @@ export default function AuthPage() {
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="+91 98765 43210"
                         required
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-white/18 bg-white/5 text-white/95 text-xs font-mono focus:outline-none focus:border-[#c8f542]"
+                        className="w-full px-4 py-2.5 rounded-full border border-hairline bg-surface text-ink text-ui font-mono focus:outline-none focus:border-primary"
                       />
                     </div>
-                    <div className="text-[11px] text-white/40 mt-1 font-mono">
+                    <div className="text-caption text-muted mt-1 font-mono">
                       We dispatch an instant 6-digit OTP via SMS / WhatsApp.
                     </div>
                   </div>
 
                   <Button
-                    variant="lime"
+                    variant="primary"
                     size="md"
                     type="submit"
                     disabled={isLoading}
@@ -190,13 +185,13 @@ export default function AuthPage() {
               ) : (
                 <form onSubmit={handleVerifyOtp} className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-heading font-semibold text-white/90">
+                    <span className="text-ui font-heading font-bold text-ink">
                       Enter 6-Digit Code
                     </span>
                     <button
                       type="button"
                       onClick={() => setOtpSent(false)}
-                      className="text-[11px] font-mono text-[#c8f542] hover:underline"
+                      className="text-caption font-mono text-primary hover:underline font-bold"
                     >
                       Change Phone
                     </button>
@@ -211,24 +206,24 @@ export default function AuthPage() {
                         maxLength={1}
                         value={digit}
                         onChange={(e) => handleOtpChange(idx, e.target.value)}
-                        className="w-12 h-12 text-center rounded-xl border border-white/18 bg-white/5 text-white text-lg font-mono font-bold focus:outline-none focus:border-[#c8f542] focus:bg-[#c8f542]/10"
+                        className="w-11 h-12 text-center rounded-md border border-hairline bg-canvas text-ink text-lead font-mono font-bold focus:outline-none focus:border-primary focus:bg-surface"
                       />
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-white/50 pt-1">
+                  <div className="flex items-center justify-between text-caption text-muted pt-1">
                     <span>Code sent to {phone}</span>
                     <button
                       type="button"
                       onClick={handleAutofillDemoOtp}
-                      className="text-[#c8f542] font-mono underline"
+                      className="text-primary font-mono font-bold underline"
                     >
                       Auto-fill (123456)
                     </button>
                   </div>
 
                   <Button
-                    variant="lime"
+                    variant="primary"
                     size="md"
                     type="submit"
                     disabled={isLoading || otp.join('').length < 6}
@@ -257,7 +252,7 @@ export default function AuthPage() {
                   />
 
                   <Button
-                    variant="lime"
+                    variant="primary"
                     size="md"
                     type="submit"
                     disabled={isLoading}
@@ -269,15 +264,15 @@ export default function AuthPage() {
                 </form>
               ) : (
                 <div className="text-center space-y-4 py-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#c8f542]/15 text-[#c8f542] flex items-center justify-center mx-auto">
+                  <div className="w-12 h-12 rounded-full bg-discount-surface text-green-strong flex items-center justify-center mx-auto">
                     <Icon name="letter-opened-bold" size={24} />
                   </div>
-                  <h3 className="font-heading font-bold text-white text-base">Check Your Inbox</h3>
-                  <p className="text-xs text-white/60 font-body">
+                  <h3 className="font-heading font-bold text-ink text-heading">Check Your Inbox</h3>
+                  <p className="text-ui text-body">
                     We sent a secure sign-in token to <strong>{email}</strong>.
                   </p>
                   <Button
-                    variant="lime"
+                    variant="primary"
                     size="sm"
                     onClick={handleSimulateOpenMagicLink}
                     icon="arrow-right-linear"
@@ -292,17 +287,17 @@ export default function AuthPage() {
           {/* Method 3: Passkey */}
           {method === 'passkey' && (
             <div className="text-center space-y-4 py-3">
-              <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 text-[#c8f542] flex items-center justify-center mx-auto">
+              <div className="w-14 h-14 rounded-full bg-canvas border border-hairline text-primary flex items-center justify-center mx-auto">
                 <Icon name="fingerprint-bold" size={32} />
               </div>
               <div className="space-y-1">
-                <h3 className="font-heading font-bold text-white text-base">WebAuthn Biometric Passkey</h3>
-                <p className="text-xs text-white/60 font-body max-w-xs mx-auto">
+                <h3 className="font-heading font-bold text-ink text-heading">WebAuthn Biometric Passkey</h3>
+                <p className="text-ui text-body max-w-xs mx-auto">
                   Sign in instantly using Touch ID, Windows Hello, or Android Fingerprint.
                 </p>
               </div>
               <Button
-                variant="lime"
+                variant="primary"
                 size="md"
                 onClick={handlePasskeyAuth}
                 disabled={isLoading}
@@ -317,20 +312,20 @@ export default function AuthPage() {
           {/* Social / Alternative divider */}
           <div className="relative py-2">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
+              <div className="w-full border-t border-hairline" />
             </div>
-            <div className="relative flex justify-center text-[10px] font-mono uppercase tracking-wider">
-              <span className="bg-[#0a2a12] px-3 text-white/40">Or Continue With</span>
+            <div className="relative flex justify-center text-micro font-mono uppercase tracking-wider font-bold">
+              <span className="bg-surface px-3 text-muted">Or Continue With</span>
             </div>
           </div>
 
           {/* Google Sign In */}
           <Button
-            variant="ghost"
+            variant="outline-neutral"
             size="md"
             onClick={handleGoogleAuth}
             disabled={isLoading}
-            className="w-full justify-center border-white/18 text-xs font-heading font-semibold"
+            className="w-full justify-center text-ui font-heading font-bold"
           >
             <span className="flex items-center gap-2">
               <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -354,16 +349,17 @@ export default function AuthPage() {
               <span>Continue with Google</span>
             </span>
           </Button>
-        </GlassCard>
+        </div>
 
         {/* DPDP Compliance Notice */}
-        <div className="text-center text-[11px] text-white/40 font-mono space-y-1">
+        <div className="text-center text-caption text-muted font-mono space-y-1">
           <div>Protected by Indian DPDP Act 2023 · Zero Password Vulnerability</div>
-          <a href="http://localhost:3000" className="text-[#c8f542] hover:underline">
+          <a href="http://localhost:3000" className="text-primary font-bold hover:underline">
             Back to Public Homepage
           </a>
         </div>
       </div>
-    </Frame>
+    </div>
   );
 }
+

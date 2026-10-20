@@ -17,23 +17,24 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   const generatedId = id || `chk-${Math.random().toString(36).substring(2, 8)}`;
 
   return (
-    <div className={`flex items-start gap-3 select-none text-left font-body ${className}`}>
+    <div className={`flex items-start gap-2.5 select-none text-left font-sans ${className}`}>
       <div className="flex items-center h-5 mt-0.5">
         <input
           type="checkbox"
           id={generatedId}
-          className="h-4 w-4 rounded bg-white/5 border-white/20 text-[#c8f542] accent-[#c8f542] focus:ring-[#c8f542] focus:ring-offset-0 cursor-pointer"
+          className="h-4 w-4 rounded-xs border-hairline text-primary accent-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
           {...rest}
         />
       </div>
 
-      <div className="text-xs">
-        <label htmlFor={generatedId} className="font-medium text-white/90 cursor-pointer leading-tight block">
+      <div className="text-caption">
+        <label htmlFor={generatedId} className="font-bold text-ink cursor-pointer leading-tight block">
           {label}
         </label>
-        {description && <p className="text-white/50 mt-0.5 leading-normal">{description}</p>}
-        {error && <p className="text-[#ff5a4d] mt-1">{error}</p>}
+        {description && <p className="text-body font-medium mt-0.5 leading-normal">{description}</p>}
+        {error && <p className="text-hot font-medium mt-1">{error}</p>}
       </div>
     </div>
   );
 };
+

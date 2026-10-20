@@ -4,7 +4,7 @@ export interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
   isHighlighted?: boolean;
-  withHoverShift?: boolean; // hover -translate-y-1.5
+  withHoverShift?: boolean;
   withLimeGlow?: boolean;
 }
 
@@ -16,22 +16,23 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   withLimeGlow = false,
   ...rest
 }) => {
+  // Resting cards use a hairline border only, no shadow.
+  // Soft shadow (level-2) is reserved for elevated or hovered cards per DESIGN.md.
   const highlightClass = isHighlighted
-    ? 'border-[rgba(200,245,66,0.30)] shadow-[0_0_30px_rgba(200,245,66,0.12)]'
-    : 'border-white/12 hover:border-white/20';
+    ? 'border-primary ring-1 ring-primary'
+    : 'border-hairline';
 
-  const hoverShiftClass = withHoverShift
-    ? 'transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl'
-    : 'transition-colors duration-200';
-
-  const glowClass = withLimeGlow ? 'shadow-lime-glow' : '';
+  const hoverClass = withHoverShift
+    ? 'transition-all duration-150 hover:shadow-level-2'
+    : 'transition-colors duration-150';
 
   return (
     <div
-      className={`relative backdrop-blur-md bg-white/5 border rounded-[20px] p-6 text-white/90 overflow-hidden ${highlightClass} ${hoverShiftClass} ${glowClass} ${className}`}
+      className={`relative bg-surface border rounded-md p-4 text-ink ${highlightClass} ${hoverClass} ${className}`}
       {...rest}
     >
       {children}
     </div>
   );
 };
+

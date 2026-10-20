@@ -2,12 +2,8 @@
 
 import React from 'react';
 import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
   Button,
   Accordion,
-  Icon,
 } from '@kavach/ui';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SiteFooter } from '../../components/SiteFooter';
@@ -65,79 +61,69 @@ export default function HelpPage() {
   ];
 
   return (
-    <Frame withHatch={false} className="pb-16">
-      <HatchOverlay />
+    <div className="min-h-screen bg-canvas text-ink font-sans">
       <SiteHeader currentPath="/help" />
 
-      <main className="relative z-10 px-6 sm:px-10 lg:px-12 pt-12 max-w-4xl mx-auto space-y-14">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
         {/* Header */}
-        <div className="text-center space-y-4 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/18 bg-white/5 text-xs font-mono text-white/80">
-            <Icon name="help-bold" size={14} color="#c8f542" />
-            <span>Help Center &amp; Guides</span>
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-surface text-caption font-bold text-primary">
+            <span>Knowledge Base &amp; Setup Guide</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-heading font-bold tracking-tight text-white/95">
+          <h1 className="text-display font-bold text-ink tracking-tight">
             How Can We Help You?
           </h1>
 
-          <p className="text-sm sm:text-base text-white/60 font-body">
-            Everything you need to pair an old tablet, configure caregiver alerts, and protect your family.
+          <p className="text-lead text-body font-medium">
+            Step-by-step instructions for placing your tabletop tablet and answering scam questions.
           </p>
         </div>
 
-        {/* Quick Setup 3-Step Guide */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-heading font-bold text-white/95">
-              3-Minute Living Room Setup
-            </h2>
-            <span className="text-xs font-mono text-[#c8f542]">Zero App Installation</span>
+        {/* 3 Step Setup Guide */}
+        <div className="space-y-4">
+          <div className="text-center space-y-1">
+            <h2 className="text-heading font-bold text-ink">3-Minute Living Room Setup</h2>
+            <p className="text-caption text-body">Everything you need to activate tabletop protection today.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {setupSteps.map((st) => (
-              <GlassCard key={st.step} className="p-6 space-y-3">
-                <div className="w-8 h-8 rounded-lg bg-[#c8f542]/20 text-[#c8f542] font-mono font-bold text-xs flex items-center justify-center">
-                  {st.step}
-                </div>
-                <h3 className="font-heading font-bold text-white/90 text-sm">{st.title}</h3>
-                <p className="text-xs text-white/60 font-body leading-relaxed">{st.desc}</p>
-              </GlassCard>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {setupSteps.map((stg) => (
+              <div key={stg.step} className="bg-surface border border-hairline rounded-md p-6 space-y-3 hover:shadow-level-2 transition-shadow">
+                <span className="w-10 h-10 rounded-md bg-canvas border border-hairline text-primary flex items-center justify-center font-bold text-ui">
+                  {stg.step}
+                </span>
+                <h3 className="text-ui font-bold text-ink">{stg.title}</h3>
+                <p className="text-caption font-medium text-body leading-relaxed">{stg.desc}</p>
+              </div>
             ))}
           </div>
         </div>
 
         {/* FAQ Accordion */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-heading font-bold text-white/95">
-            Frequently Asked Questions
-          </h2>
-          <Accordion items={faqs} allowMultiple={false} />
+        <div className="space-y-4">
+          <h2 className="text-heading font-bold text-ink text-center">Frequently Asked Questions</h2>
+          <Accordion items={faqs} />
         </div>
 
-        {/* Still need help card */}
-        <GlassCard className="p-8 text-center space-y-4 border-[#c8f542]/20">
-          <div className="w-12 h-12 rounded-2xl bg-[#c8f542]/10 border border-[#c8f542]/30 text-[#c8f542] flex items-center justify-center mx-auto">
-            <Icon name="chat-square-call-bold" size={24} />
-          </div>
-          <div className="space-y-1">
-            <h3 className="font-heading font-bold text-lg text-white/95">
-              Have a Specific Household Setup Question?
-            </h3>
-            <p className="text-xs sm:text-sm text-white/60 max-w-md mx-auto">
-              Our engineering team responds to caregiver inquiries within 4 business hours.
-            </p>
-          </div>
-          <div className="pt-2">
-            <Button variant="lime" size="sm" href="/contact">
+        {/* Contact CTA */}
+        <div className="bg-surface border border-hairline rounded-md p-8 text-center space-y-3 shadow-sm">
+          <h3 className="text-heading font-bold text-ink">Still have questions?</h3>
+          <p className="text-body font-medium text-body max-w-md mx-auto">
+            Our caregiver engineering team is available 7 days a week to help configure tablets for elderly parents.
+          </p>
+          <div className="pt-2 flex justify-center gap-3">
+            <Button variant="primary" size="md" href="/contact">
               Contact Caregiver Support
             </Button>
+            <Button variant="outline-neutral" size="md" href="/how-it-works">
+              Read How It Works
+            </Button>
           </div>
-        </GlassCard>
-
-        <SiteFooter />
+        </div>
       </main>
-    </Frame>
+
+      <SiteFooter />
+    </div>
   );
 }

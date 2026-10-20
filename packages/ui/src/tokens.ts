@@ -1,39 +1,87 @@
 /**
- * Kavach CoinCompass Design System Tokens (The Theme is Law)
+ * DESIGN.md Design System Tokens (Single Source of Truth)
+ * Deals Community High-Density Architecture
  */
 
-export const THEME_TOKENS = {
+export const DESIGN_TOKENS = {
   colors: {
-    bodyBg: '#e3e8dc',
-    mainDark0: '#0a2a12',
-    mainDark1: '#0d3617',
-    mainGradient: 'linear-gradient(160deg, #0a2a12 0%, #0d3617 45%, #0a2a12 100%)',
-    accentLime: '#c8f542',
-    accentLimeHover: '#b5e332',
-    cautionAmber: '#f5b942',
-    dangerRed: '#ff5a4d',
-    textPrimary: 'rgba(255, 255, 255, 0.90)',
-    textSecondary: 'rgba(255, 255, 255, 0.60)',
-    textMuted: 'rgba(255, 255, 255, 0.28)',
-    borderSubtle: 'rgba(255, 255, 255, 0.10)',
-    borderMedium: 'rgba(255, 255, 255, 0.18)',
-    borderHighlight: 'rgba(200, 245, 66, 0.30)',
-    cardBg: 'rgba(255, 255, 255, 0.05)',
+    // Brand & Action
+    primary: '#30a83c',
+    onPrimary: '#ffffff',
+    greenStrong: '#1e7e29',
+
+    // Status Spectrum (Strictly Functional)
+    hot: '#e02828',
+    cold: '#1877f2',
+    warm: '#f57c00',
+    premium: '#7c3aed',
+    discountSurface: '#e6f7ec',
+    warningSurface: '#fef9c3',
+    warningText: '#854d0e',
+
+    // Surfaces & Lines
+    canvas: '#f2f4f7',
+    surface: '#ffffff',
+    hairline: '#e2e5e9',
+
+    // Typography Ink
+    ink: '#111111',
+    body: '#595f69',
+    muted: '#8c939d',
   },
-  geometry: {
-    frameRadius: '28px',
-    pagePadding: 'p-3 sm:p-6 lg:p-10',
-    hoverScale: 1.04,
-    cardTiltMaxDeg: 6,
-    cardTranslateHoverY: '-1.5',
+
+  typography: {
+    fonts: {
+      sans: "'Mulish', 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      mono: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    },
+    weights: {
+      medium: 500,
+      bold: 700,
+    },
+    scale: {
+      display: { size: '48px', weight: 700, lineHeight: '1.1', letterSpacing: '0' },
+      headingLg: { size: '24px', weight: 700, lineHeight: '1.2', letterSpacing: '0' },
+      heading: { size: '20px', weight: 700, lineHeight: '1.25', letterSpacing: '0' },
+      lead: { size: '18px', weight: 500, lineHeight: '1.4', letterSpacing: '0' },
+      body: { size: '16px', weight: 500, lineHeight: '1.5', letterSpacing: '0' },
+      ui: { size: '14px', weight: 700, lineHeight: '1.3', letterSpacing: '0' },
+      caption: { size: '12px', weight: 500, lineHeight: '1.3', letterSpacing: '0' },
+      micro: { size: '10px', weight: 700, lineHeight: '1.2', letterSpacing: '0' },
+      mono: { size: '16px', weight: 500, lineHeight: '1.4', letterSpacing: '0' },
+    },
   },
-  patterns: {
-    hatchOverlay: 'repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 1px, transparent 1px 9px)',
+
+  spacing: {
+    xxs: '2px',
+    xs: '4px',
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+    xl: '24px',
+    xxl: '40px',
   },
-  fonts: {
-    headings: 'Geist, Noto Sans Devanagari, Noto Sans Gujarati, sans-serif',
-    body: 'Inter, Noto Sans Devanagari, Noto Sans Gujarati, sans-serif',
+
+  radius: {
+    xs: '2px',
+    sm: '4px',
+    md: '8px',
+    full: '540px',
+    circle: '9999px',
+  },
+
+  elevation: {
+    level0: 'none',
+    level1: '1px solid #e2e5e9',
+    level2: '0 4px 12px rgba(11, 22, 44, 0.09)',
+    level3: '-1px 11px 15px -11px rgba(0, 0, 0, 0.38)',
+  },
+
+  breakpoints: {
+    mobileMax: '767px',
+    desktopMin: '768px',
   },
 } as const;
 
-export type ThemeTokens = typeof THEME_TOKENS;
+export type DesignTokens = typeof DESIGN_TOKENS;
+export const THEME_TOKENS = DESIGN_TOKENS; // Backward compatibility alias

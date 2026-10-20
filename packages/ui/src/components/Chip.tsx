@@ -2,7 +2,7 @@ import React from 'react';
 
 export interface ChipProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
-  variant?: 'default' | 'lime' | 'amber' | 'red' | 'outline';
+  variant?: 'default' | 'primary' | 'warning' | 'hot' | 'cold' | 'outline' | 'lime' | 'amber' | 'red';
   size?: 'sm' | 'md';
   icon?: string;
   className?: string;
@@ -16,22 +16,32 @@ export const Chip: React.FC<ChipProps> = ({
   className = '',
   ...rest
 }) => {
+  // Normalize legacy variants
+  let resolvedVariant = variant;
+  if (variant === 'lime') resolvedVariant = 'primary';
+  if (variant === 'amber') resolvedVariant = 'warning';
+  if (variant === 'red') resolvedVariant = 'hot';
+
   const sizeStyles = {
-    sm: 'text-[11px] px-2.5 py-0.5 gap-1',
-    md: 'text-xs px-3 py-1 gap-1.5',
+    sm: 'text-micro px-2.5 py-0.5 gap-1',
+    md: 'text-caption px-3 py-1 gap-1.5',
   }[size];
 
   const variantStyles = {
-    default: 'bg-white/10 text-white/90 border border-white/14',
-    lime: 'bg-[#c8f542]/15 text-[#c8f542] border border-[#c8f542]/30',
-    amber: 'bg-[#f5b942]/15 text-[#f5b942] border border-[#f5b942]/30',
-    red: 'bg-[#ff5a4d]/15 text-[#ff5a4d] border border-[#ff5a4d]/30',
-    outline: 'border border-white/20 text-white/80 bg-transparent',
-  }[variant];
+    default: 'bg-canvas text-body border border-hairline',
+    primary: 'bg-primary text-on-primary border border-transparent font-bold',
+    warning: 'bg-warning-surface text-warning-text border border-warning-surface font-bold',
+    hot: 'bg-hot text-white border border-transparent font-bold',
+    cold: 'bg-cold text-white border border-transparent font-bold',
+    outline: 'border border-hairline text-ink bg-surface',
+    lime: 'bg-primary text-on-primary border border-transparent font-bold',
+    amber: 'bg-warning-surface text-warning-text border border-warning-surface font-bold',
+    red: 'bg-hot text-white border border-transparent font-bold',
+  }[resolvedVariant];
 
   return (
     <span
-      className={`inline-flex items-center font-heading font-medium tracking-tight rounded-full backdrop-blur-sm select-none ${sizeStyles} ${variantStyles} ${className}`}
+      className={`inline-flex items-center font-sans font-medium rounded-full select-none ${sizeStyles} ${variantStyles} ${className}`}
       {...rest}
     >
       {icon && (
@@ -42,3 +52,4 @@ export const Chip: React.FC<ChipProps> = ({
     </span>
   );
 };
+

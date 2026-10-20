@@ -1,66 +1,60 @@
 'use client';
 
 import React from 'react';
-import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
-  Icon,
-} from '@kavach/ui';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SiteFooter } from '../../components/SiteFooter';
 import { LegalBanner } from '../../components/LegalBanner';
 
 export default function GrievancePage() {
   return (
-    <Frame withHatch={false} className="pb-16">
-      <HatchOverlay />
-      <SiteHeader />
+    <div className="min-h-screen bg-canvas text-ink font-sans">
+      <SiteHeader currentPath="/grievance" />
 
-      <main className="relative z-10 px-6 sm:px-10 lg:px-12 pt-12 max-w-4xl mx-auto space-y-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <LegalBanner category="Grievance Redressal Mechanism" />
 
         <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/18 bg-white/5 text-xs font-mono text-white/80">
-            <Icon name="user-id-bold" size={14} color="#c8f542" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-surface text-caption font-bold text-primary">
+            {/* @ts-expect-error solar icon */}
+            <iconify-icon icon="solar:user-id-bold" width="16" height="16" />
             <span>Statutory Compliance: IT Rules 2021 &amp; DPDP Act 2023</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-white/95">
+          <h1 className="text-display font-bold text-ink tracking-tight">
             Grievance Redressal Officer
           </h1>
 
-          <div className="text-xs font-mono text-white/50 border-b border-white/10 pb-4">
+          <div className="text-caption text-body font-mono border-b border-hairline pb-4">
             Published in accordance with Information Technology (Intermediary Guidelines) Rules, 2021
           </div>
         </div>
 
-        <GlassCard className="p-6 sm:p-8 space-y-6 text-sm text-white/80 font-body leading-relaxed">
+        <div className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-6 text-body font-medium text-body leading-relaxed shadow-sm">
           <section className="space-y-3">
-            <h2 className="text-lg font-heading font-bold text-white/95">1. Designated Grievance Officer</h2>
-            <p className="text-xs text-white/70">
+            <h2 className="text-heading font-bold text-ink">1. Designated Grievance Officer</h2>
+            <p className="text-caption font-medium text-body">
               Users and Data Principals may direct complaints regarding personal data processing, terms of service compliance, or privacy concerns to our appointed Grievance Officer:
             </p>
 
-            <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2.5 text-xs">
+            <div className="p-4 rounded-md bg-canvas border border-hairline space-y-3 text-caption font-sans">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <div className="text-white/40 uppercase font-mono text-[10px]">Officer Name</div>
-                  <div className="font-heading font-bold text-white text-sm">Pritpal Singh</div>
+                  <div className="text-muted uppercase font-mono text-micro">Officer Name</div>
+                  <div className="font-bold text-ink text-ui">Pritpal Singh</div>
                 </div>
                 <div>
-                  <div className="text-white/40 uppercase font-mono text-[10px]">Designation</div>
-                  <div className="text-white/90">Data Protection &amp; Grievance Redressal Lead</div>
+                  <div className="text-muted uppercase font-mono text-micro">Designation</div>
+                  <div className="text-ink font-medium">Data Protection &amp; Grievance Redressal Lead</div>
                 </div>
                 <div>
-                  <div className="text-white/40 uppercase font-mono text-[10px]">Direct Grievance Email</div>
-                  <a href="mailto:grievance@kavach.ai" className="text-[#c8f542] font-semibold hover:underline">
+                  <div className="text-muted uppercase font-mono text-micro">Direct Grievance Email</div>
+                  <a href="mailto:grievance@kavach.ai" className="text-primary font-bold hover:underline">
                     grievance@kavach.ai
                   </a>
                 </div>
                 <div>
-                  <div className="text-white/40 uppercase font-mono text-[10px]">Physical Postal Address</div>
-                  <div className="text-white/80">
+                  <div className="text-muted uppercase font-mono text-micro">Physical Postal Address</div>
+                  <div className="text-ink font-medium">
                     Kavach Security Technologies Pvt. Ltd.<br />
                     Koramangala 4th Block, Bengaluru, Karnataka 560034, India
                   </div>
@@ -70,8 +64,8 @@ export default function GrievancePage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-heading font-bold text-white/95">2. Grievance Redressal Process &amp; Timelines</h2>
-            <div className="space-y-2 text-xs text-white/70">
+            <h2 className="text-heading font-bold text-ink">2. Grievance Redressal Process &amp; Timelines</h2>
+            <div className="space-y-2 text-caption font-medium text-body">
               <p>
                 <strong>Acknowledgement within 24 Hours:</strong> Upon receiving your grievance notice, our office will generate a unique ticket reference ID and acknowledge receipt within twenty-four (24) hours.
               </p>
@@ -82,15 +76,15 @@ export default function GrievancePage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-heading font-bold text-white/95">3. Data Protection Board of India (DPBI)</h2>
-            <p className="text-xs text-white/70">
+            <h2 className="text-heading font-bold text-ink">3. Data Protection Board of India (DPBI)</h2>
+            <p className="text-caption font-medium text-body">
               If you remain dissatisfied with the resolution provided by our Grievance Officer, you retain the statutory right to appeal directly to the Data Protection Board of India under the provisions of the DPDP Act 2023.
             </p>
           </section>
-        </GlassCard>
-
-        <SiteFooter />
+        </div>
       </main>
-    </Frame>
+
+      <SiteFooter />
+    </div>
   );
 }

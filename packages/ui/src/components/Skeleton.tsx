@@ -4,7 +4,7 @@ export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   width?: string | number;
   height?: string | number;
-  rounded?: 'full' | 'md' | 'xl' | '2xl';
+  rounded?: 'full' | 'md' | 'xs' | 'sm';
 }
 
 export const Skeleton: React.FC<SkeletonProps> = ({
@@ -18,13 +18,13 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   const roundedClasses = {
     full: 'rounded-full',
     md: 'rounded-md',
-    xl: 'rounded-xl',
-    '2xl': 'rounded-2xl',
+    xs: 'rounded-xs',
+    sm: 'rounded-sm',
   }[rounded];
 
   return (
     <div
-      className={`animate-pulse bg-white/10 ${roundedClasses} ${className}`}
+      className={`animate-pulse bg-canvas border border-hairline/60 ${roundedClasses} ${className}`}
       style={{
         width,
         height,
@@ -35,3 +35,4 @@ export const Skeleton: React.FC<SkeletonProps> = ({
     />
   );
 };
+

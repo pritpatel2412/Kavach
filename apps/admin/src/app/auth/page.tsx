@@ -3,12 +3,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
   Button,
   Icon,
   KavachLogo,
+  Badge,
 } from '@kavach/ui';
 
 export default function AdminAuthPage() {
@@ -29,57 +27,57 @@ export default function AdminAuthPage() {
   };
 
   return (
-    <Frame withHatch={false} className="min-h-screen flex flex-col justify-center items-center py-12 px-4 sm:px-6">
-      <HatchOverlay />
-
-      <div className="relative z-10 w-full max-w-md space-y-8">
+    <div className="min-h-screen bg-canvas text-ink font-body flex flex-col justify-center items-center py-12 px-4 sm:px-6">
+      <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <div className="flex justify-center">
             <KavachLogo size={42} showWordmark={true} />
           </div>
-          <h1 className="text-2xl font-heading font-bold text-white tracking-tight">
-            Kavach Security Operations Console
+          <h1 className="text-display font-heading font-bold text-ink tracking-tight">
+            Security Operations Console
           </h1>
-          <div className="inline-block p-1 px-3 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-mono font-bold">
-            Zero Passwords · Hardware MFA Required
+          <div>
+            <Badge variant="warning" className="font-mono text-micro font-bold">
+              Zero Passwords · Hardware MFA Required
+            </Badge>
           </div>
         </div>
 
-        <GlassCard className="p-6 sm:p-8 space-y-6">
-          <div className="flex rounded-xl bg-white/5 p-1 border border-white/10 text-xs font-heading font-semibold">
+        <div className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-6 shadow-level-2">
+          <div className="flex rounded-full bg-canvas p-1 border border-hairline text-caption font-heading font-bold">
             <button
               onClick={() => setMethod('google')}
-              className={`flex-1 py-2 rounded-lg transition-all ${
-                method === 'google' ? 'bg-[#c8f542] text-stone-950 font-bold' : 'text-white/70 hover:text-white'
+              className={`flex-1 py-1.5 rounded-full transition-all ${
+                method === 'google' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
               }`}
             >
-              Google Workspace
+              Google SSO
             </button>
             <button
               onClick={() => setMethod('passkey')}
-              className={`flex-1 py-2 rounded-lg transition-all ${
-                method === 'passkey' ? 'bg-[#c8f542] text-stone-950 font-bold' : 'text-white/70 hover:text-white'
+              className={`flex-1 py-1.5 rounded-full transition-all ${
+                method === 'passkey' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
               }`}
             >
               FIDO2 Passkey
             </button>
             <button
               onClick={() => setMethod('totp')}
-              className={`flex-1 py-2 rounded-lg transition-all ${
-                method === 'totp' ? 'bg-[#c8f542] text-stone-950 font-bold' : 'text-white/70 hover:text-white'
+              className={`flex-1 py-1.5 rounded-full transition-all ${
+                method === 'totp' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
               }`}
             >
-              TOTP Authenticator
+              TOTP App
             </button>
           </div>
 
           {method === 'google' && (
             <div className="space-y-4 text-center py-2">
-              <p className="text-xs text-white/70 font-body">
+              <p className="text-ui text-body">
                 Authorized @kavach.ai internal engineering personnel only.
               </p>
               <Button
-                variant="lime"
+                variant="primary"
                 size="md"
                 onClick={handleSimulateAdminLogin}
                 disabled={isLoading}
@@ -92,14 +90,14 @@ export default function AdminAuthPage() {
 
           {method === 'passkey' && (
             <div className="space-y-4 text-center py-2">
-              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 text-[#c8f542] flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-full bg-discount-surface text-green-strong flex items-center justify-center mx-auto">
                 <Icon name="key-bold" size={24} />
               </div>
-              <p className="text-xs text-white/70 font-body">
+              <p className="text-ui text-body">
                 Insert your YubiKey or authenticate with device biometrics.
               </p>
               <Button
-                variant="lime"
+                variant="primary"
                 size="md"
                 onClick={handleSimulateAdminLogin}
                 disabled={isLoading}
@@ -114,7 +112,7 @@ export default function AdminAuthPage() {
           {method === 'totp' && (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-heading font-semibold text-white/90 mb-1.5">
+                <label className="block text-ui font-heading font-bold text-ink mb-1.5">
                   6-Digit Authenticator App Code
                 </label>
                 <input
@@ -123,11 +121,11 @@ export default function AdminAuthPage() {
                   placeholder="000 000"
                   value={totpCode}
                   onChange={(e) => setTotpCode(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/18 bg-white/5 text-white text-center font-mono text-lg font-bold tracking-widest focus:outline-none focus:border-[#c8f542]"
+                  className="w-full px-4 py-2.5 rounded-md border border-hairline bg-canvas text-ink text-center font-mono text-lead font-bold tracking-widest focus:outline-none focus:border-primary focus:bg-surface"
                 />
               </div>
               <Button
-                variant="lime"
+                variant="primary"
                 size="md"
                 onClick={handleSimulateAdminLogin}
                 disabled={isLoading || totpCode.length < 6}
@@ -137,12 +135,13 @@ export default function AdminAuthPage() {
               </Button>
             </div>
           )}
-        </GlassCard>
+        </div>
 
-        <div className="text-center text-[11px] text-white/40 font-mono">
+        <div className="text-center text-caption text-muted font-mono">
           Strict access audit logging enabled under ISO 27001 &amp; DPDP 2023.
         </div>
       </div>
-    </Frame>
+    </div>
   );
 }
+

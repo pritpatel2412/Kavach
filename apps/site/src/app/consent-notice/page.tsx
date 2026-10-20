@@ -2,12 +2,7 @@
 
 import React, { useState } from 'react';
 import {
-  Frame,
-  HatchOverlay,
-  GlassCard,
   Button,
-  Tabs,
-  Icon,
 } from '@kavach/ui';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SiteFooter } from '../../components/SiteFooter';
@@ -17,56 +12,59 @@ export default function ConsentNoticePage() {
   const [lang, setLang] = useState<'en' | 'hi' | 'gu'>('en');
 
   return (
-    <Frame withHatch={false} className="pb-16">
-      <HatchOverlay />
-      <SiteHeader />
+    <div className="min-h-screen bg-canvas text-ink font-sans">
+      <SiteHeader currentPath="/consent-notice" />
 
-      <main className="relative z-10 px-6 sm:px-10 lg:px-12 pt-12 max-w-4xl mx-auto space-y-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <LegalBanner category="Consent Notice" />
 
         <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/18 bg-white/5 text-xs font-mono text-white/80">
-            <Icon name="verified-check-bold" size={14} color="#c8f542" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-surface text-caption font-bold text-primary">
+            {/* @ts-expect-error solar icon */}
+            <iconify-icon icon="solar:verified-check-bold" width="16" height="16" />
             <span>Trilingual Senior Citizen Notice · DPDP 2023 Aligned</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-white/95">
+          <h1 className="text-display font-bold text-ink tracking-tight">
             Plain-Language Elder Consent Notice
           </h1>
 
-          <p className="text-xs sm:text-sm text-white/60 font-body">
+          <p className="text-lead text-body font-medium">
             This notice is designed for household display or reading aloud before activating Kavach on a living room tablet.
           </p>
         </div>
 
-        {/* Language Switcher */}
+        {/* Language Switcher Full-Round Pills */}
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={() => setLang('en')}
-            className={`px-4 py-2 rounded-xl text-xs font-heading font-semibold transition-all ${
+            className={`px-4 py-1.5 rounded-full text-ui font-bold transition-colors ${
               lang === 'en'
-                ? 'bg-[#c8f542] text-stone-950 font-bold'
-                : 'bg-white/5 text-white/70 hover:text-white border border-white/10'
+                ? 'bg-ink text-surface'
+                : 'bg-surface text-body border border-hairline hover:bg-canvas hover:text-ink'
             }`}
           >
             English
           </button>
           <button
+            type="button"
             onClick={() => setLang('hi')}
-            className={`px-4 py-2 rounded-xl text-xs font-heading font-semibold transition-all ${
+            className={`px-4 py-1.5 rounded-full text-ui font-bold transition-colors ${
               lang === 'hi'
-                ? 'bg-[#c8f542] text-stone-950 font-bold'
-                : 'bg-white/5 text-white/70 hover:text-white border border-white/10'
+                ? 'bg-ink text-surface'
+                : 'bg-surface text-body border border-hairline hover:bg-canvas hover:text-ink'
             }`}
           >
             हिन्दी (Hindi)
           </button>
           <button
+            type="button"
             onClick={() => setLang('gu')}
-            className={`px-4 py-2 rounded-xl text-xs font-heading font-semibold transition-all ${
+            className={`px-4 py-1.5 rounded-full text-ui font-bold transition-colors ${
               lang === 'gu'
-                ? 'bg-[#c8f542] text-stone-950 font-bold'
-                : 'bg-white/5 text-white/70 hover:text-white border border-white/10'
+                ? 'bg-ink text-surface'
+                : 'bg-surface text-body border border-hairline hover:bg-canvas hover:text-ink'
             }`}
           >
             ગુજરાતી (Gujarati)
@@ -74,19 +72,19 @@ export default function ConsentNoticePage() {
         </div>
 
         {/* Notice Card */}
-        <GlassCard className="p-6 sm:p-10 space-y-6">
+        <div className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-6 text-body font-medium text-body leading-relaxed shadow-sm">
           {lang === 'en' && (
-            <div className="space-y-5 text-white/90 font-body">
-              <div className="border-b border-white/10 pb-4">
-                <h2 className="text-xl sm:text-2xl font-heading font-bold text-white">
+            <div className="space-y-4">
+              <div className="border-b border-hairline pb-3">
+                <h2 className="text-heading font-bold text-ink">
                   Notice to Senior Household Members
                 </h2>
-                <div className="text-xs font-mono text-white/50 pt-1">
+                <div className="text-caption font-mono text-muted pt-1">
                   Plain English · No Fine Print
                 </div>
               </div>
 
-              <div className="space-y-4 text-sm sm:text-base leading-relaxed text-white/80">
+              <div className="space-y-3 text-caption font-medium text-body">
                 <p>
                   <strong>What this tablet does:</strong> This device has been placed on the table by your family to protect you from telephone extortion, fake police threats, and banking fraud.
                 </p>
@@ -99,7 +97,7 @@ export default function ConsentNoticePage() {
                 <p>
                   <strong>Warning Alerts:</strong> If a caller tries to scare or isolate you, this tablet will loudly warn you using your son or daughter’s voice, and will notify your family immediately.
                 </p>
-                <p className="text-xs text-white/60 pt-2 border-t border-white/10">
+                <p className="text-muted pt-2 border-t border-hairline">
                   You can turn this device off at any time by pressing the red &ldquo;Stop Guardian&rdquo; button on the screen.
                 </p>
               </div>
@@ -107,17 +105,17 @@ export default function ConsentNoticePage() {
           )}
 
           {lang === 'hi' && (
-            <div className="space-y-5 text-white/90 font-body">
-              <div className="border-b border-white/10 pb-4">
-                <h2 className="text-xl sm:text-2xl font-heading font-bold text-white">
+            <div className="space-y-4">
+              <div className="border-b border-hairline pb-3">
+                <h2 className="text-heading font-bold text-ink">
                   घर के वरिष्ठ सदस्यों के लिए सूचना
                 </h2>
-                <div className="text-xs font-mono text-white/50 pt-1">
+                <div className="text-caption font-mono text-muted pt-1">
                   सरल हिन्दी भाषा · कोई गुप्त नियम नहीं
                 </div>
               </div>
 
-              <div className="space-y-4 text-sm sm:text-base leading-relaxed text-white/80">
+              <div className="space-y-3 text-caption font-medium text-body">
                 <p>
                   <strong>यह टैबलेट क्या करता है:</strong> आपके परिवार ने आपको फर्जी पुलिस, डिजिटल अरेस्ट और बैंक धोखाधड़ी के फोन कॉल्स से बचाने के लिए यह कवच डिवाइस रखा है।
                 </p>
@@ -130,7 +128,7 @@ export default function ConsentNoticePage() {
                 <p>
                   <strong>सावधानी चेतावनी:</strong> यदि कोई ठग आपको धमकाता है, तो यह टैबलेट आपके बेटे या बेटी की आवाज़ में चेतावनी देगा और आपके परिवार को तुरंत संदेश भेजेगा।
                 </p>
-                <p className="text-xs text-white/60 pt-2 border-t border-white/10">
+                <p className="text-muted pt-2 border-t border-hairline">
                   आप जब चाहें स्क्रीन पर लाल बटन दबाकर इसे बंद कर सकते हैं।
                 </p>
               </div>
@@ -138,17 +136,17 @@ export default function ConsentNoticePage() {
           )}
 
           {lang === 'gu' && (
-            <div className="space-y-5 text-white/90 font-body">
-              <div className="border-b border-white/10 pb-4">
-                <h2 className="text-xl sm:text-2xl font-heading font-bold text-white">
+            <div className="space-y-4">
+              <div className="border-b border-hairline pb-3">
+                <h2 className="text-heading font-bold text-ink">
                   ઘરના વડીલ સભ્યો માટે સૂચના
                 </h2>
-                <div className="text-xs font-mono text-white/50 pt-1">
+                <div className="text-caption font-mono text-muted pt-1">
                   સરળ ગુજરાતી ભાષા · કોઈ છૂપી શરતો નથી
                 </div>
               </div>
 
-              <div className="space-y-4 text-sm sm:text-base leading-relaxed text-white/80">
+              <div className="space-y-3 text-caption font-medium text-body">
                 <p>
                   <strong>આ ટેબ્લેટ શું કરે છે:</strong> તમારા પરિવારે તમને નકલી પોલીસ અને બેંક છેતરપિંડીના કોલથી બચાવવા માટે આ કવચ ડિવાઇસ રાખ્યું છે.
                 </p>
@@ -161,23 +159,23 @@ export default function ConsentNoticePage() {
                 <p>
                   <strong>ચેતવણી:</strong> જો કોઈ તમને ડરાવવાનો પ્રયાસ કરશે, તો આ ડિવાઇસ તમારા સંતાનના અવાજમાં તમને સાવધાન કરશે અને પરિવારને જાણ કરશે.
                 </p>
-                <p className="text-xs text-white/60 pt-2 border-t border-white/10">
+                <p className="text-muted pt-2 border-t border-hairline">
                   તમે કોઈપણ સમયે સ્ક્રીન પર લાલ બટન દબાવીને આ બંધ કરી શકો છો.
                 </p>
               </div>
             </div>
           )}
-        </GlassCard>
+        </div>
 
         {/* Printable button */}
         <div className="text-center pt-2">
-          <Button variant="ghost" size="sm" icon="printer-bold" onClick={() => window.print()}>
+          <Button variant="outline-neutral" size="md" icon="printer-bold" onClick={() => window.print()}>
             Print Household Physical Notice Card
           </Button>
         </div>
-
-        <SiteFooter />
       </main>
-    </Frame>
+
+      <SiteFooter />
+    </div>
   );
 }
