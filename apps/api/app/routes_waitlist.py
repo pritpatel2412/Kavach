@@ -112,7 +112,7 @@ def post_waitlist_signup(body: WaitlistPublicIn, request: Request):
                     "UPDATE waitlist SET confirmation_token_hash = ?, updated_at = ? WHERE id = ?;",
                     (token_hash, now_iso, existing_id),
                 )
-            confirm_url = f"{s.public_url}/api/waitlist/confirm?token={raw_token}"
+            confirm_url = f"{s.public_site_url}/waitlist/confirmed?token={raw_token}"
             enqueue_email(
                 recipient=clean_email,
                 template="waitlist_confirm",
@@ -161,7 +161,7 @@ def post_waitlist_signup(body: WaitlistPublicIn, request: Request):
 
     # If email provided, enqueue double opt-in confirmation email
     if clean_email:
-        confirm_url = f"{s.public_url}/api/waitlist/confirm?token={raw_token}"
+        confirm_url = f"{s.public_site_url}/waitlist/confirmed?token={raw_token}"
         enqueue_email(
             recipient=clean_email,
             template="waitlist_confirm",
@@ -217,11 +217,18 @@ def get_confirm_waitlist(token: str = Query(...)):
             is_marketing=False,
         )
 
+    status_str = "success" if should_send_welcome else "already_confirmed"
+    msg_str = (
+        f"Your spot is officially secured at Priority #{rank}."
+        if should_send_welcome
+        else f"Your spot was already secured at Priority #{rank}."
+    )
     return {
         "ok": True,
         "confirmed": True,
+        "status": status_str,
         "rank": rank,
-        "message": f"Your spot is officially secured at Priority #{rank}.",
+        "message": msg_str,
     }
 
 

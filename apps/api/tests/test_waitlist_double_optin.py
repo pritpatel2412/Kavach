@@ -238,3 +238,67 @@ def test_admin_campaigns_and_suppression():
     # Exactly 1 sent (active), 1 suppressed
     assert res_send.json()["suppressed"] >= 1
     assert res_send.json()["enqueued"] >= 1
+
+
+def test_waitlist_confirmed_states_and_rfc8058_unsubscribe(monkeypatch):
+    """X3 verification: /waitlist/confirmed token lifecycle and RFC 8058 unsubscribe."""
+    import re
+    from app.config import get_settings
+
+    s = get_settings()
+    site_url = s.public_site_url
+
+    # 1. Sign up user
+    res = client.post(
+        "/api/waitlist",
+        json={"name": "Rajesh Gupta", "email": "rajesh.gupta@example.com", "language": "hi-IN"},
+    )
+    assert res.status_code == 200
+
+    # 2. Verify confirmation email link points to public_site_url /waitlist/confirmed
+    with db.db() as conn:
+        cursor = conn.execute(
+            "SELECT html_body FROM email_outbox WHERE recipient = 'rajesh.gupta@example.com' ORDER BY id DESC LIMIT 1;"
+        )
+        html = cursor.fetchone()[0]
+
+    match = re.search(r'href="([^"]+/waitlist/confirmed\?token=([^"]+))"', html)
+    assert match is not None, "Email HTML must contain link to /waitlist/confirmed?token=..."
+    full_link = match.group(1)
+    token = match.group(2)
+    assert full_link.startswith(f"{site_url}/waitlist/confirmed?token=")
+
+    # 3. First confirmation: success state
+    res_conf_1 = client.get(f"/api/waitlist/confirm?token={token}")
+    assert res_conf_1.status_code == 200
+    data_1 = res_conf_1.json()
+    assert data_1["status"] == "success"
+    assert data_1["confirmed"] is True
+    assert data_1["rank"] >= 1
+
+    # 4. Second confirmation with same token: already_confirmed state
+    res_conf_2 = client.get(f"/api/waitlist/confirm?token={token}")
+    assert res_conf_2.status_code == 200
+    data_2 = res_conf_2.json()
+    assert data_2["status"] == "already_confirmed"
+    assert data_2["confirmed"] is True
+
+    # 5. Invalid token: 400 error
+    res_invalid = client.get("/api/waitlist/confirm?token=completely_invalid_token_999")
+    assert res_invalid.status_code == 400
+    assert res_invalid.json()["detail"]["error"] == "invalid_token"
+
+    # 6. RFC 8058 One-Click POST Unsubscribe
+    unsub_token = create_action_token("rajesh.gupta@example.com", purpose="email_unsubscribe")
+    res_unsub_post = client.post(f"/api/waitlist/unsubscribe?token={unsub_token}")
+    assert res_unsub_post.status_code == 200
+    assert res_unsub_post.json()["unsubscribed"] is True
+    assert is_suppressed("rajesh.gupta@example.com") is True
+
+    # 7. GET Unsubscribe (same endpoint accepts both GET and POST)
+    unsub_token_2 = create_action_token("another_user@example.com", purpose="email_unsubscribe")
+    res_unsub_get = client.get(f"/api/waitlist/unsubscribe?token={unsub_token_2}")
+    assert res_unsub_get.status_code == 200
+    assert res_unsub_get.json()["unsubscribed"] is True
+    assert is_suppressed("another_user@example.com") is True
+
