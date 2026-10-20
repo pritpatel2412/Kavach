@@ -312,12 +312,14 @@
     display: none;
     width: 100%;
     max-width: 860px;
+    box-sizing: border-box;
     background: var(--card);
     backdrop-filter: blur(16px);
     border: 1px solid var(--card-border);
     border-radius: 20px;
     padding: 22px;
     margin-top: 10px;
+    overflow-x: hidden;
   }
   body.judge #judge {
     display: block;
@@ -329,6 +331,8 @@
     margin-bottom: 14px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .judge-title {
     font-size: 14px;
@@ -384,7 +388,7 @@
   }
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 10px;
     margin: 14px 0;
   }
@@ -393,6 +397,8 @@
     border: 1px solid var(--line);
     border-radius: 12px;
     padding: 10px 14px;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
   .stat-card .label {
     font-size: 11px;
@@ -407,11 +413,13 @@
     color: #fff;
     margin-top: 3px;
     font-family: "JetBrains Mono", monospace;
+    word-break: break-all;
   }
   .judge-controls {
     display: flex;
     gap: 10px;
     margin: 12px 0;
+    flex-wrap: wrap;
   }
   button.ghost {
     background: rgba(255, 255, 255, 0.06);
@@ -432,15 +440,38 @@
     font-size: 12px;
     max-height: 240px;
     overflow-y: auto;
+    overflow-x: hidden;
+    word-break: break-word;
     color: #cbd5e1;
     background: #090e17;
     border: 1px solid var(--line);
     border-radius: 12px;
     padding: 10px 14px;
+    box-sizing: border-box;
   }
   #log div {
     padding: 4px 0;
     border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  @media (max-width: 480px) {
+    #judge {
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 12px;
+    }
+    .stats-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .stat-card {
+      padding: 8px 10px;
+    }
+    .stat-card .val {
+      font-size: 14px;
+    }
+    .judge-controls button {
+      width: 100%;
+    }
   }
 </style>
 </head>

@@ -40,6 +40,7 @@ class Settings:
     brand_name: str
     brand_domain: str
     ticket_prefix: str
+    github_repo_url: str
     # Admin settings
     admin_enabled: bool
     admin_allowed_emails: tuple[str, ...]
@@ -101,6 +102,7 @@ def get_settings() -> Settings:
         brand_name=brand_name,
         brand_domain=brand_domain,
         ticket_prefix=os.getenv("TICKET_PREFIX", "KAV").strip().upper(),
+        github_repo_url=os.getenv("GITHUB_REPO_URL", "https://github.com/pritpatel2412/Kavach").strip(),
         admin_enabled=_bool("ADMIN_ENABLED", True),  # default True for local/dev/test; in prod deploy explicitly set
         admin_allowed_emails=allowed_list,
         admin_origin=os.getenv("ADMIN_ORIGIN", "http://localhost:3002").rstrip("/"),

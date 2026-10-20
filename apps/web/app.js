@@ -255,8 +255,19 @@ function elderId() {
 
 async function loadElders() {
   try {
+    const isMock = q.get("mock") === "1";
     const token = q.get("token") || localStorage.getItem("kavach_guardian_token") || "";
-    const headers = token ? { "Authorization": "Bearer " + token } : {};
+    if (!token) {
+      if (isMock) {
+        const sel = $("elder");
+        sel.innerHTML = '<option value="">— select / चुनें —</option>' +
+          '<option value="demo_elder_1">Dada ji (hi-IN)</option>' +
+          '<option value="demo_elder_2">Dadi ji (hi-IN)</option>';
+        if (q.get("elder")) sel.value = q.get("elder");
+      }
+      return;
+    }
+    const headers = { "Authorization": "Bearer " + token };
     const r = await fetch("/api/elders", { headers });
     if (!r.ok) return;
     const data = await r.json();

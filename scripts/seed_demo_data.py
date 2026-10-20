@@ -60,7 +60,7 @@ def seed_demo_data(clean: bool = False) -> None:
         if clean:
             print("Purging existing demo dataset...")
             conn.execute("DELETE FROM waitlist WHERE email LIKE '%@demo.kavach.internal';")
-            conn.execute("DELETE FROM tickets WHERE email LIKE '%@demo.kavach.internal';")
+            conn.execute("DELETE FROM tickets WHERE requester_email LIKE '%@demo.kavach.internal';")
             conn.execute("DELETE FROM ticket_messages WHERE id LIKE 'msg_demo_%';")
             conn.execute("DELETE FROM guardians WHERE id LIKE 'demo_hh_%';")
             conn.execute("DELETE FROM elders WHERE id LIKE 'demo_elder_%';")

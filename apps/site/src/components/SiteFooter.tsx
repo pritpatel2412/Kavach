@@ -85,17 +85,17 @@ export function SiteFooter() {
 
         {/* Foot Row with Social Icons and Legal Notes */}
         <div className="pt-6 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-4 text-caption text-muted">
-          <div>&copy; 2026 Kavach Security Inc. Strictly synthetic evaluation data.</div>
+          <div>&copy; {new Date().getFullYear()} {process.env.NEXT_PUBLIC_BRAND_NAME || "Kavach"} Security Technologies. Strictly synthetic evaluation data.</div>
           <div className="flex items-center gap-3">
             <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter" className="w-8 h-8 rounded-circle bg-canvas border border-hairline flex items-center justify-center text-body hover:text-ink hover:border-body">
               {/* @ts-expect-error solar icon */}
               <iconify-icon icon="solar:share-circle-bold" width="16" height="16" />
             </a>
-            <a href="https://github.com/pritpatel2412/Kavach" target="_blank" rel="noreferrer" aria-label="GitHub" className="w-8 h-8 rounded-circle bg-canvas border border-hairline flex items-center justify-center text-body hover:text-ink hover:border-body">
+            <a href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "https://github.com/pritpatel2412/Kavach"} target="_blank" rel="noreferrer" aria-label="GitHub Repository" className="w-8 h-8 rounded-circle bg-canvas border border-hairline flex items-center justify-center text-body hover:text-ink hover:border-body">
               {/* @ts-expect-error solar icon */}
               <iconify-icon icon="solar:code-circle-bold" width="16" height="16" />
             </a>
-            <a href="mailto:support@kavach.ai" aria-label="Email" className="w-8 h-8 rounded-circle bg-canvas border border-hairline flex items-center justify-center text-body hover:text-ink hover:border-body">
+            <a href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@kavach.ai"}`} aria-label="Email Support" className="w-8 h-8 rounded-circle bg-canvas border border-hairline flex items-center justify-center text-body hover:text-ink hover:border-body">
               {/* @ts-expect-error solar icon */}
               <iconify-icon icon="solar:letter-bold" width="16" height="16" />
             </a>

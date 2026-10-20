@@ -7,6 +7,21 @@ export const metadata: Metadata = {
   title: "Kavach · Guardian Portal & Household Security",
   description:
     "Real-time monitoring, familial voice interventions, and alert controls for caregivers.",
+  openGraph: {
+    title: "Kavach · Guardian Portal & Household Security",
+    description:
+      "Real-time monitoring, familial voice interventions, and alert controls for caregivers.",
+    url: "https://kavach.ai/app",
+    siteName: "Kavach",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kavach · Guardian Portal & Household Security",
+    description:
+      "Real-time monitoring, familial voice interventions, and alert controls for caregivers.",
+  },
 };
 
 export default function RootLayout({

@@ -51,6 +51,7 @@ export function SiteHeader({ currentPath }: SiteHeaderProps) {
             </span>
             <input
               type="text"
+              aria-label="Search scams, numbers, and advisories"
               placeholder="Search scams, numbers, advisories..."
               className="w-full h-9 pl-10 pr-4 rounded-full border border-hairline bg-surface text-ink text-body placeholder:text-muted focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
             />
@@ -124,6 +125,7 @@ export function SiteHeader({ currentPath }: SiteHeaderProps) {
             </span>
             <input
               type="text"
+              aria-label="Search scams, numbers, and advisories"
               placeholder="Search scams..."
               className="w-full h-9 pl-10 pr-4 rounded-full border border-hairline bg-surface text-ink text-body placeholder:text-muted focus:border-primary outline-none"
             />

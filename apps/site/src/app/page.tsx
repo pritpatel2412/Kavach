@@ -376,7 +376,7 @@ export default function LandingPage() {
             </div>
 
             {/* 6 CORE ARCHITECTURE FEATURES */}
-            <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
+            <div id="how-it-works" className="bg-surface border border-hairline rounded-md p-6 space-y-4">
               <div>
                 <h3 className="text-heading font-bold text-ink">Built to Break the Psychological Trance</h3>
                 <p className="text-caption text-body">

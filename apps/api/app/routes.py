@@ -26,6 +26,9 @@ def api_config():
         "llm_enabled": bool(s.llm_provider and s.llm_api_key),
         "liveness_threshold": s.liveness_threshold,
         "max_stt_minutes_per_day": s.max_stt_minutes_per_day,
+        "brand_name": s.brand_name,
+        "brand_domain": s.brand_domain,
+        "github_repo_url": s.github_repo_url,
     }
 
 

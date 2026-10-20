@@ -353,8 +353,10 @@ export default function CustomerPortalPage() {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="block text-caption text-body">Optional Feedback</label>
+                      <label htmlFor="csatFeedbackInput" className="block text-caption text-body">Optional Feedback</label>
                       <input
+                        id="csatFeedbackInput"
+                        aria-label="Optional Feedback"
                         type="text"
                         className="w-full rounded-md border border-hairline bg-surface p-2.5 text-caption text-ink focus:outline-none focus:ring-1 focus:ring-primary"
                         placeholder="Tell us what went well or what we can improve..."

@@ -7,6 +7,21 @@ export const metadata: Metadata = {
   title: "Kavach · Administration & Operations Console [MOCK]",
   description:
     "Internal administration console for Kavach operations, detector weights, telemetry, and data-rights queue.",
+  openGraph: {
+    title: "Kavach · Administration & Operations Console [MOCK]",
+    description:
+      "Internal administration console for Kavach operations, detector weights, telemetry, and data-rights queue.",
+    url: "https://kavach.ai/admin",
+    siteName: "Kavach",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kavach · Administration & Operations Console [MOCK]",
+    description:
+      "Internal administration console for Kavach operations, detector weights, telemetry, and data-rights queue.",
+  },
 };
 
 export default function RootLayout({
