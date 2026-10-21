@@ -20,7 +20,7 @@ export const Stepper: React.FC<StepperProps> = ({
   className = '',
 }) => {
   return (
-    <nav aria-label="Progress" className={`w-full ${className}`}>
+    <nav aria-label="Progress" className={`w-full font-sans ${className}`}>
       <ol className="flex items-center justify-between w-full">
         {steps.map((step, idx) => {
           const isComplete = idx < activeStep;
@@ -38,12 +38,12 @@ export const Stepper: React.FC<StepperProps> = ({
                   type="button"
                   disabled={!onStepClick || idx > activeStep}
                   onClick={() => onStepClick?.(idx)}
-                  className={`flex items-center justify-center w-8 h-8 rounded-full border text-xs font-mono font-bold transition-all z-10 shrink-0 ${
+                  className={`flex items-center justify-center w-8 h-8 rounded-full border text-caption font-bold transition-all z-10 shrink-0 ${
                     isComplete
-                      ? 'bg-[#c8f542] border-[#c8f542] text-[#0a2a12]'
+                      ? 'bg-primary border-primary text-on-primary'
                       : isCurrent
-                      ? 'border-[#c8f542] text-[#c8f542] bg-[#c8f542]/15 shadow-lime-glow'
-                      : 'border-white/20 text-white/40 bg-white/5'
+                      ? 'border-primary text-primary bg-green-surface'
+                      : 'border-hairline text-muted bg-canvas'
                   }`}
                 >
                   {isComplete ? (
@@ -57,7 +57,7 @@ export const Stepper: React.FC<StepperProps> = ({
                 {idx !== steps.length - 1 && (
                   <div
                     className={`h-0.5 w-full ml-2 sm:ml-4 transition-colors ${
-                      isComplete ? 'bg-[#c8f542]' : 'bg-white/10'
+                      isComplete ? 'bg-primary' : 'bg-hairline'
                     }`}
                   />
                 )}
@@ -65,8 +65,8 @@ export const Stepper: React.FC<StepperProps> = ({
 
               <div className="mt-2 text-center w-full">
                 <div
-                  className={`text-xs font-heading font-medium tracking-tight truncate ${
-                    isCurrent ? 'text-[#c8f542]' : isComplete ? 'text-white/80' : 'text-white/40'
+                  className={`text-caption font-medium tracking-tight truncate ${
+                    isCurrent ? 'text-ink font-bold' : isComplete ? 'text-body' : 'text-muted'
                   }`}
                 >
                   {step.title}

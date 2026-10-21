@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'outline-green' | 'outline-neutral' | 'muted' | 'tag' | 'danger' | 'link' | 'lime' | 'ghost';
+  variant?: 'primary' | 'outline-green' | 'outline-neutral' | 'ghost' | 'destructive' | 'muted' | 'tag' | 'danger' | 'link';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
   className?: string;
@@ -22,32 +22,33 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   ...rest
 }) => {
-  // Normalize legacy variants
+  // Normalize legacy and alias variants
   let resolvedVariant = variant;
-  if (variant === 'lime') resolvedVariant = 'primary';
-  if (variant === 'ghost') resolvedVariant = 'outline-neutral';
+  if ((variant as string) === 'lime') resolvedVariant = 'primary';
+  if (variant === 'danger') resolvedVariant = 'destructive';
 
   const baseStyles =
-    'inline-flex items-center justify-center font-bold tracking-normal transition-colors duration-150 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]';
+    'inline-flex items-center justify-center font-bold tracking-normal transition-all duration-180 ease-out cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] hover:-translate-y-[1px] active:translate-y-0';
 
   const sizeStyles = resolvedVariant === 'tag'
     ? 'text-caption px-2 py-0.5 rounded-md gap-1'
     : {
-        sm: 'text-caption h-7 px-3 rounded-full gap-1.5',
-        md: 'text-ui h-9 px-3.5 rounded-full gap-2',
-        lg: 'text-body h-11 px-5 rounded-full gap-2.5',
+        sm: 'text-caption h-8 px-3.5 rounded-full gap-1.5',
+        md: 'text-ui h-10 px-4 rounded-full gap-2',
+        lg: 'text-body h-12 px-6 rounded-full gap-2.5',
       }[size];
 
+  // Downgrade, secondary, or destructive actions must NEVER use the primary green style.
   const variantStyles = {
-    primary: 'bg-primary text-on-primary hover:bg-green-strong shadow-sm border border-transparent',
-    'outline-green': 'bg-surface text-primary border border-primary hover:bg-discount-surface',
-    'outline-neutral': 'bg-surface text-ink border border-hairline hover:bg-canvas hover:border-body/40',
+    primary: 'bg-primary text-on-primary hover:bg-primary-hover shadow-sm border border-transparent',
+    'outline-green': 'bg-surface text-primary border border-primary hover:bg-green-surface',
+    'outline-neutral': 'bg-surface text-ink border border-hairline-dark hover:bg-canvas hover:border-body/40',
+    ghost: 'bg-transparent text-body hover:text-ink hover:bg-canvas border border-transparent',
+    destructive: 'bg-surface text-hot border border-hot/40 hover:bg-risk-alert-surface hover:border-hot',
     muted: 'bg-surface text-body border border-hairline hover:text-ink hover:bg-canvas',
     tag: 'bg-surface text-ink border border-hairline hover:bg-canvas rounded-md',
-    danger: 'bg-hot text-white hover:bg-red-700 shadow-sm border border-transparent',
-    link: 'text-primary hover:underline underline-offset-4 p-0 bg-transparent rounded-none h-auto font-bold',
-    lime: 'bg-primary text-on-primary hover:bg-green-strong shadow-sm border border-transparent',
-    ghost: 'bg-surface text-ink border border-hairline hover:bg-canvas',
+    link: 'text-primary hover:underline underline-offset-4 p-0 bg-transparent rounded-none h-auto font-bold hover:translate-y-0',
+    danger: 'bg-surface text-hot border border-hot/40 hover:bg-risk-alert-surface hover:border-hot',
   }[resolvedVariant];
 
   const content = (
