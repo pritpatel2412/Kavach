@@ -5,7 +5,7 @@ title = "Kavach Secret Detection Rules"
 useDefault = true
 
 [allowlist]
-description = "Global Allowlist for synthetic mock fixtures and tests"
+description = "Global Allowlist for synthetic mock fixtures, tests, and historical false positives"
 paths = [
   '''apps/api/tests/.*''',
   '''eval/.*''',
@@ -14,7 +14,16 @@ paths = [
 regexes = [
   '''mock_.*''',
   '''test_.*''',
-  '''dummy_.*'''
+  '''dummy_.*''',
+  '''kavach_secret_key_2026_non_default''',
+  '''dev_insecure_default_secret'''
+]
+stopwords = [
+  "kavach_secret_key_2026_non_default",
+  "dev_insecure_default_secret"
+]
+commits = [
+  "91bdd420c2e3fa563d77cdffa2e5ab18b3dbf726"
 ]
 
 [[rules]]

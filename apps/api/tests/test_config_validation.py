@@ -38,7 +38,7 @@ def make_settings(**overrides) -> Settings:
         admin_enabled=True,
         admin_allowed_emails=(),
         admin_origin="http://localhost:3002",
-        secret_key="kavach_secret_key_2026_non_default",
+        secret_key="dev_insecure_default_secret",
         email_mode="console",
         smtp_host="localhost",
         smtp_port=1025,
@@ -71,7 +71,7 @@ def test_validate_config_local_passes():
 def test_validate_config_prod_requires_strong_secret():
     s = make_settings(
         deploy_mode="production",
-        secret_key="kavach_secret_key_2026_non_default",
+        secret_key="dev_insecure_default_secret",
         database_url="postgresql://user:pass@ep-host.neon.tech/db?sslmode=require",
         email_mode="smtp",
         public_url="https://api.kavach.ai",

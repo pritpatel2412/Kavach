@@ -115,7 +115,7 @@ def get_settings() -> Settings:
         admin_enabled=_bool("ADMIN_ENABLED", True),  # default True for local/dev/test; in prod deploy explicitly set
         admin_allowed_emails=allowed_list,
         admin_origin=os.getenv("ADMIN_ORIGIN", "http://localhost:3002").rstrip("/"),
-        secret_key=os.getenv("KAVACH_SECRET", "kavach_secret_key_2026_non_default"),
+        secret_key=os.getenv("KAVACH_SECRET", "dev_insecure_default_secret"),
         email_mode=os.getenv("EMAIL_MODE", "console").strip().lower(),
         smtp_host=os.getenv("SMTP_HOST", "localhost"),
         smtp_port=int(os.getenv("SMTP_PORT", "1025")),
@@ -150,7 +150,7 @@ def validate_config(settings: Settings | None = None) -> None:
 
     if mode == "production":
         # 1. KAVACH_SECRET must not be default or weak
-        if settings.secret_key == "kavach_secret_key_2026_non_default" or len(settings.secret_key) < 16:
+        if settings.secret_key in ("dev_insecure_default_secret", "kavach_secret_key_2026_non_default") or len(settings.secret_key) < 16:
             raise RuntimeError(
                 "CONFIG HYGIENE ERROR [production]: KAVACH_SECRET must be set to a secure, random secret (min 16 chars). Default or weak secret is strictly forbidden in production."
             )

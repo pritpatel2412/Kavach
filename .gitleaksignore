@@ -1,0 +1,3 @@
+# Gitleaks ignore file
+# Format: <commit>:<path>:<rule-id>:<line-number>
+91bdd420c2e3fa563d77cdffa2e5ab18b3dbf726:apps/api/app/config.py:generic-api-key:144
