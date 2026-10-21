@@ -47,8 +47,8 @@ export default function HowItWorksPage() {
                 on a secondary device (an old tablet or phone kept on the tabletop). The elder taps &ldquo;Start&rdquo; or leaves
                 hands-free mode active.
               </p>
-              <div className="p-3 rounded-md bg-canvas border border-hairline text-caption font-mono text-body">
-                Acoustic room capture at 16 kHz PCM · Silence gated (zero credits burned when quiet)
+              <div className="p-3 rounded-md bg-canvas border border-hairline text-caption font-sans font-medium text-body">
+                Acoustic room capture at 16 kHz PCM · Real-time voice activity detection
               </div>
             </div>
           </div>
@@ -108,8 +108,8 @@ export default function HowItWorksPage() {
               <p className="text-body font-medium text-body leading-relaxed">
                 Simultaneously, the registered guardian receives a high-priority Telegram message with a 1-tap call-drop button and Push-to-Talk intercom directly to the elder&apos;s living room.
               </p>
-              <div className="p-3 rounded-md bg-canvas border border-hairline text-caption font-mono text-body">
-                Delivery latency &lt; 450 ms · Audio transcript excerpt &lt; 160 characters (DPDP compliant)
+              <div className="p-3 rounded-md bg-canvas border border-hairline text-caption font-sans font-medium text-body">
+                Fast multi-channel delivery · Audio transcript excerpt &le; 160 characters (7-day auto-purge)
               </div>
             </div>
           </div>

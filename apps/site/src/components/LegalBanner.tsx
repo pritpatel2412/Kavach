@@ -8,7 +8,7 @@ interface LegalBannerProps {
 
 export function LegalBanner({ category = 'Document' }: LegalBannerProps) {
   return (
-    <div className="mb-6 p-3.5 rounded-md border border-warning-surface bg-warning-surface text-warning-text text-caption font-mono flex items-center justify-between gap-3">
+    <div className="mb-6 p-3.5 rounded-md border border-warning-border bg-warning-surface text-warning-text text-caption font-sans font-medium flex items-center justify-between gap-3">
       <div className="flex items-center gap-2.5">
         {/* @ts-expect-error solar icon */}
         <iconify-icon icon="solar:shield-warning-bold" width="18" height="18" />

@@ -45,14 +45,14 @@ export default function RefundsPage() {
             <ul className="list-disc pl-5 space-y-1 text-caption font-medium text-body">
               <li>Your subscription will remain active until the end of your current paid billing period.</li>
               <li>You will not be billed on the subsequent renewal date.</li>
-              <li>Your household will transition gracefully to the Free Tier (60 monthly listening minutes and standard synthetic voice warning).</li>
+              <li>Your household will transition gracefully to the Free Tier (30 monthly listening minutes + 10 min reserve, with standard neutral warning voice).</li>
             </ul>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-heading font-bold text-ink">3. Unused Listening Minutes</h2>
             <p className="text-caption font-medium text-body">
-              Paid plans include monthly allocated speech-to-text listening minutes (300 mins for Plus, 1,000 mins for Family). In the event of subscription upgrade or plan modification, unused minutes carry forward for 30 days. Emergency reserve minutes (30 mins buffer on all accounts) never expire.
+              Paid plans include monthly allocated speech-to-text listening minutes (150 mins for Plus, 400 mins for Family). In the event of subscription upgrade or plan modification, unused minutes carry forward for 30 days. Emergency scam reserve minutes (30 mins buffer on Plus, 60 mins on Family) never expire.
             </p>
           </section>
 

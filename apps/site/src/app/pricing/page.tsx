@@ -181,7 +181,7 @@ export default function PricingPage() {
                   </div>
 
                   {/* Quota Highlights */}
-                  <div className="p-3 rounded-md bg-canvas border border-hairline mb-6 space-y-1.5 text-caption font-mono">
+                  <div className="p-3 rounded-md bg-canvas border border-hairline mb-6 space-y-1.5 text-caption font-sans">
                     <div className="flex justify-between text-body">
                       <span>Listening Quota:</span>
                       <span className="text-primary font-bold">{plan.minutesPerMonth} min/mo</span>
@@ -223,8 +223,8 @@ export default function PricingPage() {
 
         {/* GST Notice & Coupon Section */}
         <div className="max-w-2xl mx-auto text-center space-y-4">
-          <div className="text-caption text-body font-mono">
-            * All displayed subscription prices are inclusive of 18% GST. Tax invoices provided for all payments.
+          <div className="text-caption text-body font-sans font-medium">
+            * All displayed subscription prices are real, current, and inclusive of 18% GST. Tax invoices provided for all payments.
           </div>
 
           {/* Coupon Field Card */}
