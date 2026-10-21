@@ -1,0 +1,65 @@
+# Render Blueprint Specification for Kavach Backend
+# Documentation / Alternative:
+# Railway is a drop-in alternative requiring a Procfile:
+#   web: python -c 'from apps.api.app.db import init_db; init_db()' && uvicorn apps.api.app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips='*' --workers 1
+
+services:
+  - type: web
+    name: kavach-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore # Low-latency region closest to Indian users
+    plan: starter     # Always-on instance required (free tier sleeps and drops WebSockets)
+    numInstances: 1   # Single-instance constraint: in-memory WebSocket audio pipelines & intercom
+    healthCheckPath: /health
+    envVars:
+      - key: DEPLOY_MODE
+        value: production
+      - key: PORT
+        value: 10000
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: FEATURE_LIVE_STT
+        value: "0" # Kill switch default OFF for credit safety
+      - key: GLOBAL_STT_MINUTES_PER_DAY
+        value: "500"
+      - key: EMAIL_MODE
+        value: smtp
+      - key: ADMIN_ENABLED
+        value: "0" # Disabled by default in production
+      - key: KAVACH_MOCK_STT
+        value: "0"
+
+      # Secrets to configure in Render Dashboard (NEVER committed to git or printed in logs):
+      - key: KAVACH_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false # Neon pooled connection string with ?sslmode=require
+      - key: DATABASE_URL_UNPOOLED
+        sync: false # Neon direct unpooled connection string for migrations
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: FROM_EMAIL
+        value: notifications@kavach.ai
+      - key: FROM_NAME
+        value: Kavach Security
+      - key: REPLY_TO
+        value: support@kavach.ai
+      - key: GNANI_API_KEY
+        sync: false
+      - key: ADMIN_ALLOWED_EMAILS
+        sync: false
+      - key: ADMIN_ORIGIN
+        sync: false # e.g. https://admin.kavach.ai or https://kavach.ai
+      - key: PUBLIC_URL
+        sync: false # e.g. https://api.kavach.ai
+      - key: PUBLIC_SITE_URL
+        sync: false # e.g. https://kavach.ai

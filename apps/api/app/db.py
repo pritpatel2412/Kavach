@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
+import re
 import secrets
 import sqlite3
 import uuid
@@ -102,7 +103,65 @@ def db_path() -> Path:
     return p
 
 
-def connect() -> sqlite3.Connection:
+class DbRow(dict):
+    """Row adapter supporting both dictionary key lookup and integer index lookup."""
+    def __init__(self, cols, vals):
+        super().__init__(zip(cols, vals))
+        self._vals = tuple(vals)
+
+    def __getitem__(self, k):
+        if isinstance(k, int):
+            return self._vals[k]
+        return super().__getitem__(k)
+
+
+def _kavach_row_factory(cursor):
+    desc = cursor.description
+    cols = [col.name for col in desc] if desc else []
+    def make_row(values):
+        return DbRow(cols, values)
+    return make_row
+
+
+class PostgresConnectionWrapper:
+    """Wraps psycopg Connection: translates SQLite '?' parameters to '%s' and matches connection API."""
+    def __init__(self, raw_conn):
+        self._raw = raw_conn
+
+    def execute(self, query: str, params: tuple | list | None = None):
+        pg_query = re.sub(r'(?<!\?)\?', '%s', query)
+        cur = self._raw.cursor()
+        cur.execute(pg_query, params or ())
+        return cur
+
+    def commit(self):
+        self._raw.commit()
+
+    def rollback(self):
+        self._raw.rollback()
+
+    def close(self):
+        self._raw.close()
+
+
+def is_postgres() -> bool:
+    s = get_settings()
+    url = s.database_url or os.getenv("DATABASE_URL", "")
+    return bool(url and (url.startswith("postgres://") or url.startswith("postgresql://")))
+
+
+def connect():
+    if is_postgres():
+        import psycopg
+        s = get_settings()
+        url = s.database_url or os.getenv("DATABASE_URL", "")
+        raw = psycopg.connect(
+            url,
+            row_factory=_kavach_row_factory,
+            prepare_threshold=None,
+            connect_timeout=10,
+        )
+        return PostgresConnectionWrapper(raw)
     con = sqlite3.connect(str(db_path()), check_same_thread=False, timeout=30.0)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
@@ -110,7 +169,7 @@ def connect() -> sqlite3.Connection:
 
 
 @contextmanager
-def db() -> Iterator[sqlite3.Connection]:
+def db() -> Iterator[Any]:
     con = connect()
     try:
         yield con
@@ -123,10 +182,17 @@ def db() -> Iterator[sqlite3.Connection]:
 
 
 def init_db() -> None:
-    from .migrations import run_migrations
-    target = db_path()
-    run_migrations(target)
-    log.info("sqlite ready and migrated at %s", target)
+    if is_postgres():
+        from .migrations import run_postgres_migrations
+        s = get_settings()
+        direct_url = s.database_url_unpooled or os.getenv("DATABASE_URL_UNPOOLED") or s.database_url or os.getenv("DATABASE_URL")
+        applied = run_postgres_migrations(direct_url)
+        log.info("PostgreSQL ready and migrated on %s (applied %d pending migrations)", s.neon_branch or "production", len(applied))
+    else:
+        from .migrations import run_migrations
+        target = db_path()
+        applied = run_migrations(target)
+        log.info("SQLite ready and migrated at %s (applied %d pending migrations)", target, len(applied))
 
 
 

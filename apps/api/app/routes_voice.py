@@ -154,3 +154,124 @@ def voice_delete(voice_profile_id: str, guardian: dict = Depends(require_guardia
             pass
     log.info("deleted voice profile %s (%s clip files)", voice_profile_id, len(paths))
     return {"deleted": True}
+
+
+_voice_jobs: dict[str, dict[str, Any]] = {}
+
+
+async def _process_voice_enroll_job(
+    job_id: str,
+    guardian: dict,
+    elder: dict,
+    sentence: str,
+    audio: bytes,
+    filename: str,
+    s: Any,
+):
+    try:
+        lang = elder["language"] or s.default_lang
+        if s.mock_stt:
+            transcript = sentence
+            embedding = {"embedding": "mock", "shape": [1, 768], "dtype": "torch.bfloat16"}
+        else:
+            transcript = await stt_rest.transcribe_file(
+                s.gnani_api_key, audio, language_code=lang, filename=filename)
+            if not liveness_ok(transcript, sentence, s.liveness_threshold):
+                _voice_jobs[job_id] = {
+                    "status": "failed",
+                    "error": "liveness_failed",
+                    "message": "Spoken sentence did not match challenge phrase.",
+                    "guardian_id": guardian["id"],
+                }
+                return
+            embedding = await gnani_tts.create_embedding(s.gnani_api_key, audio, filename=filename)
+
+        profile_id = db.insert_voice_profile(
+            guardian["id"], elder["id"], json.dumps(embedding), sentence)
+        clips = await render_profile_clips(
+            profile=profile_id,
+            lang=lang,
+            embedding=embedding,
+            elder_name=elder["name"],
+            guardian_name=guardian["name"],
+            gender=guardian["gender"],
+            mock=s.mock_stt,
+        )
+        for c in clips:
+            if c.get("url"):
+                path = s.clips_dir / profile_id / f"{c['lang']}_L{c['level']}.wav"
+                db.insert_clip(profile_id, int(c["level"]), c["lang"], str(path))
+
+        _voice_jobs[job_id] = {
+            "status": "completed",
+            "guardian_id": guardian["id"],
+            "result": {
+                "voice_profile_id": profile_id,
+                "profile": profile_id,
+                "clips": clips,
+            },
+        }
+    except Exception as e:
+        log.exception("Voice enrollment job %s failed: %s", job_id, e)
+        _voice_jobs[job_id] = {
+            "status": "failed",
+            "error": "enrollment_error",
+            "message": str(e),
+            "guardian_id": guardian["id"],
+        }
+
+
+@router.post("/api/voice/enroll-async", status_code=202)
+async def voice_enroll_async(
+    request: Request,
+    audio_file: UploadFile = File(...),
+    challenge_id: str = Form(...),
+    elder_id: str = Form(...),
+    guardian_id: str | None = Form(None),
+    consent: str = Form(""),
+    guardian: dict = Depends(require_guardian),
+):
+    rate_limit_ip(request, max_requests=15, window_s=60.0)
+    if consent.strip().lower() != "true":
+        raise HTTPException(400, detail={"error": "consent_required"})
+    if guardian_id and guardian_id != guardian["id"]:
+        raise HTTPException(403, detail={"error": "forbidden", "message": "Cannot enroll for another guardian"})
+
+    elder = db.get_elder_for_guardian(elder_id, guardian["id"])
+    if not elder:
+        raise HTTPException(403, detail={"error": "forbidden", "message": "Elder does not belong to your account"})
+
+    _purge_challenges()
+    ch = _challenges.pop(challenge_id, None)
+    if not ch:
+        raise HTTPException(400, detail={"error": "challenge_invalid"})
+    sentence, _exp = ch
+
+    audio = await audio_file.read()
+    s = get_settings()
+
+    job_id = "vjob_" + uuid.uuid4().hex
+    _voice_jobs[job_id] = {"status": "processing", "guardian_id": guardian["id"]}
+
+    import asyncio
+    asyncio.create_task(_process_voice_enroll_job(
+        job_id=job_id,
+        guardian=guardian,
+        elder=elder,
+        sentence=sentence,
+        audio=audio,
+        filename=audio_file.filename or "speech.wav",
+        s=s,
+    ))
+
+    return {"job_id": job_id, "status": "processing", "poll_url": f"/api/voice/jobs/{job_id}"}
+
+
+@router.get("/api/voice/jobs/{job_id}")
+def get_voice_job(job_id: str, guardian: dict = Depends(require_guardian)):
+    job = _voice_jobs.get(job_id)
+    if not job:
+        raise HTTPException(404, detail={"error": "job_not_found"})
+    if job.get("guardian_id") and job["guardian_id"] != guardian["id"]:
+        raise HTTPException(403, detail={"error": "forbidden"})
+    return job

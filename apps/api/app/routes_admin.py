@@ -59,12 +59,13 @@ def post_verify_totp(body: VerifyTotpIn, request: Request, response: Response):
     user_agent = request.headers.get("user-agent", "")
     result = admin_auth.complete_totp_login(body.temp_token, body.code, ip=ip, user_agent=user_agent)
 
-    # Set httpOnly Secure SameSite cookie
+    s = get_settings()
+    is_secure = s.deploy_mode == "production" or request.url.scheme == "https"
     response.set_cookie(
         key=admin_auth.COOKIE_NAME,
         value=result["session_id"],
         httponly=True,
-        secure=False,  # Set to False for local dev over http, True in production via proxy
+        secure=is_secure,
         samesite="lax",
         max_age=admin_auth.ABSOLUTE_TIMEOUT_SECONDS,
         path="/admin-api",
@@ -371,4 +372,20 @@ def delete_suppression(
 def get_domain_auth(session: dict = Depends(admin_auth.require_permission("view_email"))):
     from .email.dns_check import get_domain_dns_checklist
     return get_domain_dns_checklist()
+
+
+@admin_router.get("/diagnostic/ip")
+def diagnostic_ip(request: Request, session: dict = Depends(admin_auth.require_permission("view_system"))):
+    """Admin-only diagnostic to inspect and calibrate TRUSTED_PROXY_HOPS behind reverse proxies."""
+    from .ratelimit import get_client_ip
+    s = get_settings()
+    raw_xff = request.headers.get("x-forwarded-for")
+    return {
+        "client_host": request.client.host if request.client else None,
+        "x_forwarded_for_raw": raw_xff,
+        "x_forwarded_for_parsed": [ip.strip() for ip in raw_xff.split(",")] if raw_xff else [],
+        "trusted_proxy_hops": s.trusted_proxy_hops,
+        "resolved_client_ip": get_client_ip(request),
+    }
+
 

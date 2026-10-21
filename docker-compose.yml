@@ -1,0 +1,64 @@
+# Local prod-like multi-container stack: Postgres 16 + Kavach API + Mailpit SMTP
+# Allows end-to-end verification of PostgreSQL, email flows, and migrations without cloud credits
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kavach-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kavach_prod
+      POSTGRES_USER: kavach
+      POSTGRES_PASSWORD: local_test_password_not_for_prod
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kavach -d kavach_prod"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: kavach-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port
+    environment:
+      MP_MAX_MESSAGES: 500
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kavach-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DEPLOY_MODE: demo
+      PORT: "8000"
+      WEB_CONCURRENCY: "1"
+      KAVACH_SECRET: "local_dev_secret_key_32_characters_long_min"
+      DATABASE_URL: "postgresql://kavach:local_test_password_not_for_prod@postgres:5432/kavach_prod"
+      DATABASE_URL_UNPOOLED: "postgresql://kavach:local_test_password_not_for_prod@postgres:5432/kavach_prod"
+      EMAIL_MODE: smtp
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      PUBLIC_URL: "http://localhost:8000"
+      PUBLIC_SITE_URL: "http://localhost:3000"
+      ADMIN_ORIGIN: "http://localhost:3002"
+      ADMIN_ENABLED: "1"
+      ADMIN_ALLOWED_EMAILS: "admin@kavach.ai"
+      KAVACH_MOCK_STT: "1"
+      TRUSTED_PROXY_HOPS: "1"
+      FEATURE_LIVE_STT: "0"
+
+volumes:
+  pgdata:

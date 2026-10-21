@@ -116,14 +116,64 @@ def api_neon_health():
 @app.get("/health")
 def health():
     s = get_settings()
-    return {"ok": True, "mock_stt": s.mock_stt, "has_api_key": bool(s.gnani_api_key)}
+    db_status = "ok"
+    email_queue_depth = 0
+    try:
+        with db.db() as conn:
+            cursor = conn.execute("SELECT 1")
+            cursor.fetchone()
+            try:
+                row = conn.execute("SELECT COUNT(*) as cnt FROM email_outbox WHERE status = 'queued'").fetchone()
+                if row:
+                    email_queue_depth = row[0] if isinstance(row, (tuple, list)) else row.get("cnt", 0)
+            except Exception:
+                pass
+    except Exception as e:
+        db_status = f"error: {str(e)[:80]}"
+
+    stt_mode = "mock" if s.mock_stt else ("live" if (s.gnani_api_key and s.feature_live_stt) else "mock_fallback")
+    commit_sha = os.getenv("GIT_COMMIT_SHA") or os.getenv("RENDER_GIT_COMMIT") or os.getenv("VERCEL_GIT_COMMIT_SHA") or "local"
+
+    return {
+        "ok": db_status == "ok",
+        "db": db_status,
+        "email_queue_depth": email_queue_depth,
+        "stt_mode": stt_mode,
+        "commit": commit_sha,
+        "mock_stt": s.mock_stt,
+        "has_api_key": bool(s.gnani_api_key),
+    }
 
 
 @app.websocket("/ws/session")
 async def ws_session(ws: WebSocket, lang: str = "", rate: int = 16000, profile: str = "default",
                      elder_id: str = "", replay: str = ""):
-    await ws.accept()
     s = get_settings()
+    origin = ws.headers.get("origin")
+    if origin and s.deploy_mode == "production":
+        if origin not in _allowed:
+            log.warning("WebSocket rejected: origin %s not in ALLOWED_ORIGINS", origin)
+            await ws.close(code=4003, reason="Origin not allowed")
+            return
+
+    await ws.accept()
+
+    # In production, require device/session authentication in the first message (never in URL)
+    if s.deploy_mode == "production":
+        try:
+            auth_msg = await asyncio.wait_for(ws.receive_json(), timeout=5.0)
+            token = auth_msg.get("token") or auth_msg.get("device_token")
+            if not token or not db.get_guardian_by_token(token):
+                log.warning("WebSocket authentication failed: invalid token")
+                await ws.send_json({"type": "error", "message": "Authentication failed: invalid token"})
+                await ws.close(code=4001, reason="Unauthorized")
+                return
+        except Exception:
+            log.warning("WebSocket authentication timeout: no token received in first message")
+            await ws.send_json({"type": "error", "message": "Authentication required in initial message"})
+            await ws.close(code=4001, reason="Authentication timeout")
+            return
+
     runner = SessionRunner(ws, s, lang or s.default_lang, rate, profile,
                            elder_id=elder_id or None, replay=replay or None)
     await runner.run()

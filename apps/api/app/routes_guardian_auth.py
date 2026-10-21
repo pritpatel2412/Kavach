@@ -117,7 +117,7 @@ def request_guardian_magic_link(body: MagicLinkRequestIn, request: Request):
 
 
 @router.post("/api/auth/guardian/verify")
-def verify_guardian_magic_link(body: VerifyMagicLinkIn, response: Response):
+def verify_guardian_magic_link(body: VerifyMagicLinkIn, response: Response, request: Request):
     """SaaS Guardian Login: Exchange valid magic link token for session + refresh token."""
     raw_token = body.token.strip()
     token_hash = _hash(raw_token)
@@ -189,13 +189,15 @@ def verify_guardian_magic_link(body: VerifyMagicLinkIn, response: Response):
             (session_id, guardian["id"], email, refresh_hash, now_iso, now_iso, session_expires),
         )
 
-    # Set httpOnly cookie
+    # Set httpOnly Secure SameSite cookie
+    s = get_settings()
+    is_secure = s.deploy_mode == "production" or request.url.scheme == "https"
     response.set_cookie(
         key="kavach_guardian_session",
         value=session_id,
         httponly=True,
         samesite="lax",
-        secure=False,
+        secure=is_secure,
         max_age=SESSION_ABSOLUTE_TTL_SECONDS,
     )
 
@@ -212,7 +214,7 @@ def verify_guardian_magic_link(body: VerifyMagicLinkIn, response: Response):
 
 
 @router.post("/api/auth/guardian/refresh")
-def refresh_guardian_session(body: RefreshTokenIn, response: Response):
+def refresh_guardian_session(body: RefreshTokenIn, response: Response, request: Request):
     """SaaS Guardian Session: Rotate refresh token and issue new session."""
     raw_refresh = body.refresh_token.strip()
     refresh_hash = _hash(raw_refresh)
@@ -269,12 +271,14 @@ def refresh_guardian_session(body: RefreshTokenIn, response: Response):
             (new_session_id, guardian_id, email, new_refresh_hash, now_iso, now_iso, new_expires),
         )
 
+    s = get_settings()
+    is_secure = s.deploy_mode == "production" or request.url.scheme == "https"
     response.set_cookie(
         key="kavach_guardian_session",
         value=new_session_id,
         httponly=True,
         samesite="lax",
-        secure=False,
+        secure=is_secure,
         max_age=SESSION_ABSOLUTE_TTL_SECONDS,
     )
 

@@ -113,7 +113,33 @@ class SessionRunner:
         self._fallback_task: asyncio.Task | None = None
 
     def _make_stt(self):
-        if self.s.mock_stt:
+        use_mock = self.s.mock_stt
+        self.is_demo_mode = False
+
+        if not use_mock:
+            # Cost guard 1: FEATURE_LIVE_STT kill switch (default OFF in demo/staging)
+            if not self.s.feature_live_stt:
+                log.info("Live STT disabled by FEATURE_LIVE_STT kill switch; falling back to MockStt")
+                use_mock = True
+                self.is_demo_mode = True
+            # Cost guard 2: LIVE_STT_ALLOWLIST
+            elif self.s.live_stt_allowlist:
+                guardian_email = ""
+                if self.elder:
+                    g = db.get_guardian(self.elder["guardian_id"])
+                    if g:
+                        guardian_email = (g.get("email") or "").strip().lower()
+                if not guardian_email or guardian_email not in self.s.live_stt_allowlist:
+                    log.info("Guardian '%s' not in LIVE_STT_ALLOWLIST; falling back to MockStt", guardian_email)
+                    use_mock = True
+                    self.is_demo_mode = True
+            # Cost guard 3: GLOBAL_STT_MINUTES_PER_DAY
+            elif db.get_daily_stt_minutes() >= self.s.global_stt_minutes_per_day:
+                log.warning("Daily STT global cap exceeded (%.1f min); falling back to MockStt", self.s.global_stt_minutes_per_day)
+                use_mock = True
+                self.is_demo_mode = True
+
+        if use_mock:
             stem = Path(self.replay or "demo_scam_hinglish.wav").stem
             fixture = self.s.fixtures_dir / "transcripts" / f"{stem}.json"
             if not fixture.is_file():
@@ -123,6 +149,7 @@ class SessionRunner:
                 else:
                     fixture = self.s.fixtures_dir / "transcripts" / "demo_scam_hinglish.json"
             return MockStt(fixture, self.s.mock_interval_s)
+
         if not self.s.gnani_api_key:
             raise RuntimeError("GNANI_API_KEY missing (or set KAVACH_MOCK_STT=1 for offline mode)")
         headers = build_headers(self.s.gnani_api_key, self.lang, sample_rate=self.rate,
@@ -137,6 +164,18 @@ class SessionRunner:
 
     def gated(self) -> bool:
         return self.playing or time.monotonic() < self.gate_until
+
+    async def _server_ping_loop(self) -> None:
+        """Pings client every 20 seconds to keep WebSocket connection alive behind reverse proxies."""
+        try:
+            while not self._stop:
+                await asyncio.sleep(20)
+                if not self._stop:
+                    await self.send({"type": "ping", "ts": time.time()})
+        except (asyncio.CancelledError, WebSocketDisconnect):
+            pass
+        except Exception:
+            pass
 
     async def _from_browser(self) -> None:
         try:
@@ -319,10 +358,15 @@ class SessionRunner:
         active_sessions[self.session_id] = self
         await self.stt.open()
         await self.send({"type": "state", "state": "listening", "lang": self.lang,
-                         "mock": self.s.mock_stt, "session_id": self.session_id,
+                         "mock": self.s.mock_stt, "demo_mode": getattr(self, "is_demo_mode", False) or self.s.mock_stt,
+                         "session_id": self.session_id,
                          "stt_minutes_today": today_mins,
                          "max_stt_minutes_per_day": self.s.max_stt_minutes_per_day})
-        tasks = [asyncio.create_task(self._from_browser()), asyncio.create_task(self._from_stt())]
+        tasks = [
+            asyncio.create_task(self._from_browser()),
+            asyncio.create_task(self._from_stt()),
+            asyncio.create_task(self._server_ping_loop()),
+        ]
         if self.replay and not self.s.mock_stt:
             tasks.append(asyncio.create_task(self._replay_wav()))
         try:

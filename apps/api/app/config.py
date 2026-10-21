@@ -66,8 +66,13 @@ class Settings:
     neon_auth_jwks_url: str | None
     neon_ai_gateway_base_url: str | None
     neon_ai_gateway_token: str | None
-    # Deployment Mode
+    # Deployment Mode & Proxy Calibration
     deploy_mode: str = "local"
+    trusted_proxy_hops: int = 1
+    # Cost Guards & Live STT Kill Switch
+    feature_live_stt: bool = False
+    global_stt_minutes_per_day: float = 500.0
+    live_stt_allowlist: tuple[str, ...] = ()
 
 
 
@@ -129,6 +134,10 @@ def get_settings() -> Settings:
         neon_auth_jwks_url=os.getenv("NEON_AUTH_JWKS_URL"),
         neon_ai_gateway_base_url=os.getenv("NEON_AI_GATEWAY_BASE_URL"),
         neon_ai_gateway_token=os.getenv("NEON_AI_GATEWAY_TOKEN"),
+        trusted_proxy_hops=int(os.getenv("TRUSTED_PROXY_HOPS", "1")),
+        feature_live_stt=_bool("FEATURE_LIVE_STT", default=False),
+        global_stt_minutes_per_day=float(os.getenv("GLOBAL_STT_MINUTES_PER_DAY", "500.0")),
+        live_stt_allowlist=tuple(e.strip().lower() for e in os.getenv("LIVE_STT_ALLOWLIST", "").split(",") if e.strip()),
     )
 
 
