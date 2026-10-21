@@ -1,9 +1,9 @@
-/**
- * Kavach Proposed Pricing Plans & Listening Quotas
- * Flag: PRICING_CONFIRMED = false (all prices clearly labeled as "Pricing preview")
- */
+import plansSlaData from './plans_sla.json';
 
-export const PRICING_CONFIRMED = false;
+export const PRICING_CONFIRMED = plansSlaData.pricingConfirmed;
+export const GST_RATE = plansSlaData.gstRate;
+export const MAX_DISCOUNT_PERCENT = plansSlaData.maxDiscountPercent;
+export const SLAS = plansSlaData.slas;
 
 export interface PlanFeature {
   text: string;
@@ -26,75 +26,8 @@ export interface PlanTier {
   ctaLabel: string;
 }
 
-export const PLANS: PlanTier[] = [
-  {
-    id: 'free',
-    name: 'Free (Caregiver Starter)',
-    tagline: 'Basic protection for single elders with manual call check',
-    priceMonthly: 0,
-    priceYearly: 0,
-    currency: '₹',
-    minutesPerMonth: 30,
-    emergencyReserveMinutes: 10,
-    eldersCovered: 1,
-    devicesSupported: 1,
-    features: [
-      { text: '30 live listening minutes / month', included: true },
-      { text: '10 min emergency scam reserve', included: true },
-      { text: 'Real-time visual elder alert banner', included: true },
-      { text: '1 family guardian Telegram alert', included: true },
-      { text: 'Generic Timbre warning voice', included: true },
-      { text: 'Personalized cloned family voice', included: false },
-      { text: 'Live Push-to-Talk intercom', included: false },
-    ],
-    ctaLabel: 'Start Free',
-  },
-  {
-    id: 'plus',
-    name: 'Plus (Individual Elder)',
-    tagline: 'Full scam guardian with personalized cloned family voice',
-    priceMonthly: 149,
-    priceYearly: 1299,
-    currency: '₹',
-    isPopular: true, // Middle card highlighted!
-    minutesPerMonth: 150,
-    emergencyReserveMinutes: 30,
-    eldersCovered: 1,
-    devicesSupported: 2,
-    features: [
-      { text: '150 live listening minutes / month', included: true },
-      { text: '30 min emergency scam reserve (never expires)', included: true },
-      { text: 'Consented cloned child/family warning voice', included: true },
-      { text: 'Live 1-click Push-to-Talk intercom', included: true },
-      { text: 'Up to 3 guardian Telegram alert recipients', included: true },
-      { text: 'Detailed plain-Hindi/English incident timeline', included: true },
-      { text: '7-day auto-expiring transcript retention', included: true },
-    ],
-    ctaLabel: 'Get Plus Plan',
-  },
-  {
-    id: 'family',
-    name: 'Family (Multi-Household)',
-    tagline: 'Comprehensive coverage for both maternal & paternal parents',
-    priceMonthly: 299,
-    priceYearly: 2499,
-    currency: '₹',
-    minutesPerMonth: 400,
-    emergencyReserveMinutes: 60,
-    eldersCovered: 3,
-    devicesSupported: 5,
-    features: [
-      { text: '400 shared listening minutes / month', included: true },
-      { text: '60 min emergency scam reserve', included: true },
-      { text: 'Up to 3 elder households covered simultaneously', included: true },
-      { text: 'Multiple family voices (son, daughter, grandchild)', included: true },
-      { text: 'Unlimited guardian intercom connections', included: true },
-      { text: 'Priority ASR keyword biasing', included: true },
-      { text: 'Dedicated WhatsApp caregiver support', included: true },
-    ],
-    ctaLabel: 'Get Family Plan',
-  },
-];
+export const PLANS: PlanTier[] = plansSlaData.plans as PlanTier[];
+
 
 export const PRICING_FAQS = [
   {

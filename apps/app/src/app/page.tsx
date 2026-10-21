@@ -12,6 +12,7 @@ import {
   Drawer,
   KavachLogo,
 } from '@kavach/ui';
+import { BRAND } from '@kavach/api-contract';
 import { MockBanner } from '../components/MockBanner';
 
 export default function GuardianDashboardPage() {
@@ -298,7 +299,7 @@ export default function GuardianDashboardPage() {
 
                 <div className="pt-2 border-t border-hairline">
                   <a
-                    href="http://localhost:3000/consent-notice"
+                    href={`${BRAND.siteUrl}/consent-notice`}
                     target="_blank"
                     rel="noreferrer"
                     className="text-caption text-primary hover:underline font-bold flex items-center justify-between"

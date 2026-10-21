@@ -8,6 +8,7 @@ import {
   Icon,
   KavachLogo,
 } from '@kavach/ui';
+import { BRAND } from '@kavach/api-contract';
 
 export default function AuthPage() {
   const router = useRouter();
@@ -354,7 +355,7 @@ export default function AuthPage() {
         {/* DPDP Compliance Notice */}
         <div className="text-center text-caption text-muted font-mono space-y-1">
           <div>Protected by Indian DPDP Act 2023 · Zero Password Vulnerability</div>
-          <a href="http://localhost:3000" className="text-primary font-bold hover:underline">
+          <a href={BRAND.siteUrl} className="text-primary font-bold hover:underline">
             Back to Public Homepage
           </a>
         </div>

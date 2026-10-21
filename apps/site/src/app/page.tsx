@@ -9,6 +9,7 @@ import {
   StageChips,
   Badge,
 } from '@kavach/ui';
+import { BRAND } from '@kavach/api-contract';
 import { SiteHeader } from '../components/SiteHeader';
 import { SiteFooter } from '../components/SiteFooter';
 
@@ -47,7 +48,7 @@ export default function LandingPage() {
             <Button
               variant="primary"
               size="lg"
-              href="http://localhost:3001"
+              href={BRAND.appUrl}
               icon="shield-check-bold"
             >
               Open Guardian App
@@ -55,7 +56,7 @@ export default function LandingPage() {
             <Button
               variant="outline-neutral"
               size="lg"
-              href="http://localhost:3001/elder"
+              href={`${BRAND.appUrl}/elder`}
               icon="devices-bold"
             >
               Launch Elder Kiosk
@@ -331,7 +332,7 @@ export default function LandingPage() {
             <Button
               variant="primary"
               size="lg"
-              href="http://localhost:3001"
+              href={BRAND.appUrl}
               icon="shield-check-bold"
             >
               Get Started with Guardian App

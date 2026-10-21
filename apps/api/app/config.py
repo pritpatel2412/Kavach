@@ -66,6 +66,9 @@ class Settings:
     neon_auth_jwks_url: str | None
     neon_ai_gateway_base_url: str | None
     neon_ai_gateway_token: str | None
+    # Deployment Mode
+    deploy_mode: str = "local"
+
 
 
 def get_settings() -> Settings:
@@ -78,6 +81,7 @@ def get_settings() -> Settings:
     brand_domain = os.getenv("BRAND_DOMAIN", "kavach.ai").strip()
 
     return Settings(
+        deploy_mode=os.getenv("DEPLOY_MODE", "local").strip().lower(),
         gnani_api_key=os.getenv("GNANI_API_KEY", ""),
         mock_stt=_bool("KAVACH_MOCK_STT", False),
         mock_interval_s=float(os.getenv("MOCK_SEGMENT_INTERVAL_S", "4")),
@@ -126,4 +130,76 @@ def get_settings() -> Settings:
         neon_ai_gateway_base_url=os.getenv("NEON_AI_GATEWAY_BASE_URL"),
         neon_ai_gateway_token=os.getenv("NEON_AI_GATEWAY_TOKEN"),
     )
+
+
+def validate_config(settings: Settings | None = None) -> None:
+    """Enforces fail-fast startup configuration rules per deployment mode."""
+    if settings is None:
+        settings = get_settings()
+
+    mode = settings.deploy_mode.lower()
+
+    if mode == "production":
+        # 1. KAVACH_SECRET must not be default or weak
+        if settings.secret_key == "kavach_secret_key_2026_non_default" or len(settings.secret_key) < 16:
+            raise RuntimeError(
+                "CONFIG HYGIENE ERROR [production]: KAVACH_SECRET must be set to a secure, random secret (min 16 chars). Default or weak secret is strictly forbidden in production."
+            )
+
+        # 2. Database URL must be set and use PostgreSQL with SSL
+        if not settings.database_url:
+            raise RuntimeError(
+                "CONFIG HYGIENE ERROR [production]: DATABASE_URL is required in production mode. Ephemeral SQLite is forbidden."
+            )
+        db_lower = settings.database_url.lower()
+        if not (db_lower.startswith("postgres://") or db_lower.startswith("postgresql://")):
+            raise RuntimeError(
+                "CONFIG HYGIENE ERROR [production]: DATABASE_URL must be a PostgreSQL connection string in production."
+            )
+        if "sslmode=require" not in db_lower and "ssl=" not in db_lower:
+            raise RuntimeError(
+                "CONFIG HYGIENE ERROR [production]: DATABASE_URL must require SSL (sslmode=require) in production."
+            )
+
+        # 3. Email mode must be smtp
+        if settings.email_mode != "smtp":
+            raise RuntimeError(
+                f"CONFIG HYGIENE ERROR [production]: EMAIL_MODE must be 'smtp' in production (got '{settings.email_mode}'). Console logging is forbidden."
+            )
+
+        # 4. URLs must not be localhost
+        for name, url in [
+            ("PUBLIC_URL", settings.public_url),
+            ("PUBLIC_SITE_URL", settings.public_site_url),
+            ("ADMIN_ORIGIN", settings.admin_origin),
+        ]:
+            if "localhost" in url.lower() or "127.0.0.1" in url:
+                raise RuntimeError(
+                    f"CONFIG HYGIENE ERROR [production]: {name} cannot point to localhost or 127.0.0.1 in production (got '{url}')."
+                )
+
+        # 5. Mock STT must not be enabled
+        if settings.mock_stt:
+            raise RuntimeError(
+                "CONFIG HYGIENE ERROR [production]: KAVACH_MOCK_STT cannot be enabled in production."
+            )
+
+        # 6. Admin protection
+        if settings.admin_enabled and not settings.admin_allowed_emails:
+            raise RuntimeError(
+                "CONFIG HYGIENE ERROR [production]: ADMIN_ALLOWED_EMAILS cannot be empty when ADMIN_ENABLED=1 in production."
+            )
+
+    elif mode == "staging":
+        if settings.email_mode not in ("smtp", "mock", "console"):
+            raise RuntimeError(f"CONFIG HYGIENE ERROR [staging]: Invalid EMAIL_MODE: {settings.email_mode}")
+        if settings.database_url:
+            db_lower = settings.database_url.lower()
+            if not (
+                db_lower.startswith("postgres://")
+                or db_lower.startswith("postgresql://")
+                or db_lower.startswith("sqlite://")
+            ):
+                raise RuntimeError("CONFIG HYGIENE ERROR [staging]: Invalid DATABASE_URL scheme.")
+
 

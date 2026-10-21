@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "lastUpdated": "2026-10-21",
+  "currency": "₹",
+  "gstRate": 0.18,
+  "maxDiscountPercent": 60,
+  "pricingConfirmed": false,
+  "plans": [
+    {
+      "id": "free",
+      "name": "Free (Caregiver Starter)",
+      "tagline": "Basic protection for single elders with manual call check",
+      "priceMonthly": 0,
+      "priceYearly": 0,
+      "monthlyPaise": 0,
+      "yearlyPaise": 0,
+      "minutesPerMonth": 30,
+      "emergencyReserveMinutes": 10,
+      "eldersCovered": 1,
+      "devicesSupported": 1,
+      "isPopular": false,
+      "ctaLabel": "Start Free",
+      "features": [
+        { "text": "30 live listening minutes / month", "included": true },
+        { "text": "10 min emergency scam reserve", "included": true },
+        { "text": "Real-time visual elder alert banner", "included": true },
+        { "text": "1 family guardian Telegram alert", "included": true },
+        { "text": "Generic Timbre warning voice", "included": true },
+        { "text": "Personalized cloned family voice", "included": false },
+        { "text": "Live Push-to-Talk intercom", "included": false }
+      ]
+    },
+    {
+      "id": "plus",
+      "name": "Plus (Individual Elder)",
+      "tagline": "Full scam guardian with personalized cloned family voice",
+      "priceMonthly": 149,
+      "priceYearly": 1299,
+      "monthlyPaise": 14900,
+      "yearlyPaise": 129900,
+      "minutesPerMonth": 150,
+      "emergencyReserveMinutes": 30,
+      "eldersCovered": 1,
+      "devicesSupported": 2,
+      "isPopular": true,
+      "ctaLabel": "Get Plus Plan",
+      "features": [
+        { "text": "150 live listening minutes / month", "included": true },
+        { "text": "30 min emergency scam reserve (never expires)", "included": true },
+        { "text": "Consented cloned child/family warning voice", "included": true },
+        { "text": "Live 1-click Push-to-Talk intercom", "included": true },
+        { "text": "Up to 3 guardian Telegram alert recipients", "included": true },
+        { "text": "Detailed plain-Hindi/English incident timeline", "included": true },
+        { "text": "7-day auto-expiring transcript retention", "included": true }
+      ]
+    },
+    {
+      "id": "family",
+      "name": "Family (Multi-Household)",
+      "tagline": "Comprehensive coverage for both maternal & paternal parents",
+      "priceMonthly": 299,
+      "priceYearly": 2499,
+      "monthlyPaise": 29900,
+      "yearlyPaise": 249900,
+      "minutesPerMonth": 400,
+      "emergencyReserveMinutes": 60,
+      "eldersCovered": 3,
+      "devicesSupported": 5,
+      "isPopular": false,
+      "ctaLabel": "Get Family Plan",
+      "features": [
+        { "text": "400 shared listening minutes / month", "included": true },
+        { "text": "60 min emergency scam reserve", "included": true },
+        { "text": "Up to 3 elder households covered simultaneously", "included": true },
+        { "text": "Multiple family voices (son, daughter, grandchild)", "included": true },
+        { "text": "Unlimited guardian intercom connections", "included": true },
+        { "text": "Priority ASR keyword biasing", "included": true },
+        { "text": "Dedicated WhatsApp caregiver support", "included": true }
+      ]
+    }
+  ],
+  "slas": {
+    "P0_EMERGENCY": {
+      "name": "P0: Scam Emergency",
+      "firstResponseMinutes": 15,
+      "resolutionMinutes": 120,
+      "autoEscalationMinutes": 10,
+      "categoryScope": "Digital Arrest, Police Impersonation, MDMA parcel threats, live coercion"
+    },
+    "P1_HIGH": {
+      "name": "P1: High",
+      "firstResponseMinutes": 120,
+      "resolutionMinutes": 720,
+      "autoEscalationMinutes": 90,
+      "categoryScope": "Account lockout, billing dispute, false alarm panic, hardware failure"
+    },
+    "P2_NORMAL": {
+      "name": "P2: Normal",
+      "firstResponseMinutes": 480,
+      "resolutionMinutes": 2880,
+      "autoEscalationMinutes": 0,
+      "categoryScope": "Tabletop kiosk setup, voice consent questions, listening mode config"
+    },
+    "P3_LOW": {
+      "name": "P3: Low",
+      "firstResponseMinutes": 1440,
+      "resolutionMinutes": 7200,
+      "autoEscalationMinutes": 0,
+      "categoryScope": "Feature requests, language suggestions, general feedback"
+    }
+  }
+}

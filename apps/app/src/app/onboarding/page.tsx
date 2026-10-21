@@ -11,6 +11,7 @@ import {
   KavachLogo,
   Badge,
 } from '@kavach/ui';
+import { BRAND } from '@kavach/api-contract';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -210,7 +211,7 @@ export default function OnboardingPage() {
                   3. I have read or displayed the trilingual notice card to {elderName}.
                 </p>
                 <a
-                  href="http://localhost:3000/consent-notice"
+                  href={`${BRAND.siteUrl}/consent-notice`}
                   target="_blank"
                   className="inline-flex items-center gap-1 text-primary font-bold hover:underline pt-1 font-mono text-caption"
                 >

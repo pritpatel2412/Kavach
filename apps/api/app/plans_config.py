@@ -5,44 +5,110 @@ import json
 from datetime import datetime, timezone
 from typing import Any
 
+from pathlib import Path
+
 from . import db
 
-# Pricing Tiers in Integer Paise (1 INR = 100 Paise)
+# Single Source of Truth for Plans and SLAs
+ROOT = Path(__file__).resolve().parents[3]
+PLANS_SLA_JSON_PATH = ROOT / "packages" / "api-contract" / "src" / "plans_sla.json"
+
+
+def _load_plans_sla_data() -> dict:
+    if PLANS_SLA_JSON_PATH.exists():
+        try:
+            with open(PLANS_SLA_JSON_PATH, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {
+        "gstRate": 0.18,
+        "maxDiscountPercent": 60,
+        "plans": [
+            {
+                "id": "free",
+                "name": "Free (Caregiver Starter)",
+                "monthlyPaise": 0,
+                "yearlyPaise": 0,
+                "minutesPerMonth": 30,
+                "emergencyReserveMinutes": 10,
+                "eldersCovered": 1,
+                "devicesSupported": 1,
+            },
+            {
+                "id": "plus",
+                "name": "Plus (Individual Elder)",
+                "monthlyPaise": 14900,
+                "yearlyPaise": 129900,
+                "minutesPerMonth": 150,
+                "emergencyReserveMinutes": 30,
+                "eldersCovered": 1,
+                "devicesSupported": 2,
+            },
+            {
+                "id": "family",
+                "name": "Family (Multi-Household)",
+                "monthlyPaise": 29900,
+                "yearlyPaise": 249900,
+                "minutesPerMonth": 400,
+                "emergencyReserveMinutes": 60,
+                "eldersCovered": 3,
+                "devicesSupported": 5,
+            },
+        ],
+        "slas": {
+            "P0_EMERGENCY": {
+                "name": "P0: Scam Emergency",
+                "firstResponseMinutes": 15,
+                "resolutionMinutes": 120,
+                "autoEscalationMinutes": 10,
+                "categoryScope": "Digital Arrest, Police Impersonation, MDMA parcel threats, live coercion",
+            },
+            "P1_HIGH": {
+                "name": "P1: High",
+                "firstResponseMinutes": 120,
+                "resolutionMinutes": 720,
+                "autoEscalationMinutes": 90,
+                "categoryScope": "Account lockout, billing dispute, false alarm panic, hardware failure",
+            },
+            "P2_NORMAL": {
+                "name": "P2: Normal",
+                "firstResponseMinutes": 480,
+                "resolutionMinutes": 2880,
+                "autoEscalationMinutes": 0,
+                "categoryScope": "Tabletop kiosk setup, voice consent questions, listening mode config",
+            },
+            "P3_LOW": {
+                "name": "P3: Low",
+                "firstResponseMinutes": 1440,
+                "resolutionMinutes": 7200,
+                "autoEscalationMinutes": 0,
+                "categoryScope": "Feature requests, language suggestions, general feedback",
+            },
+        },
+    }
+
+
+_RAW_PLANS_SLA = _load_plans_sla_data()
+
 PLANS = {
-    "free": {
-        "id": "free",
-        "name": "Free (Caregiver Starter)",
-        "monthly_paise": 0,
-        "yearly_paise": 0,
-        "minutes_per_month": 30,
-        "reserve_minutes": 10,
-        "elders": 1,
-        "devices": 1,
-    },
-    "plus": {
-        "id": "plus",
-        "name": "Plus (Individual Elder)",
-        "monthly_paise": 14900,   # ₹149.00
-        "yearly_paise": 129900,  # ₹1,299.00
-        "minutes_per_month": 150,
-        "reserve_minutes": 30,
-        "elders": 1,
-        "devices": 2,
-    },
-    "family": {
-        "id": "family",
-        "name": "Family (Multi-Household)",
-        "monthly_paise": 29900,   # ₹299.00
-        "yearly_paise": 249900,  # ₹2,499.00
-        "minutes_per_month": 400,
-        "reserve_minutes": 60,
-        "elders": 3,
-        "devices": 5,
-    },
+    p["id"]: {
+        "id": p["id"],
+        "name": p["name"],
+        "monthly_paise": p["monthlyPaise"],
+        "yearly_paise": p["yearlyPaise"],
+        "minutes_per_month": p["minutesPerMonth"],
+        "reserve_minutes": p["emergencyReserveMinutes"],
+        "elders": p["eldersCovered"],
+        "devices": p["devicesSupported"],
+    }
+    for p in _RAW_PLANS_SLA["plans"]
 }
 
-GST_RATE = 0.18  # 18% GST
-MAX_DISCOUNT_PERCENT = 60  # Strict 60% discount cap
+GST_RATE = float(_RAW_PLANS_SLA.get("gstRate", 0.18))  # 18% GST
+MAX_DISCOUNT_PERCENT = int(_RAW_PLANS_SLA.get("maxDiscountPercent", 60))  # Strict 60% discount cap
+SLAS = _RAW_PLANS_SLA.get("slas", {})
+
 
 
 def calculate_pricing(

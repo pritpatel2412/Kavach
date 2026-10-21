@@ -9,8 +9,9 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
+import os
 from . import db
-from .config import get_settings
+from .config import get_settings, validate_config
 from .routes import router as core_router
 from .routes_admin import admin_router
 from .routes_analytics import admin_analytics_router
@@ -50,6 +51,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    validate_config()
     db.init_db()
     db.purge_old_events(days=7)
     get_settings().clips_dir.mkdir(parents=True, exist_ok=True)
@@ -58,13 +60,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Kavach API", version="0.3.0", lifespan=lifespan)
 
-# S3-F: Locked CORS origins (includes frontend origins and admin origin)
+# S3-F: Locked CORS origins (includes frontend origins, admin origin, and ALLOWED_ORIGINS)
 _s = get_settings()
+_allowed_env = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
 _allowed = list({
     _s.public_url,
+    _s.public_site_url,
+    _s.admin_origin,
+    *_allowed_env,
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    _s.admin_origin,
     "http://localhost:3002",
     "http://127.0.0.1:3002",
     "http://localhost:3001",
@@ -73,6 +78,7 @@ _allowed = list({
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_allowed,
+
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

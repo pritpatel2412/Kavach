@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { KavachLogo, Button } from '@kavach/ui';
+import { BRAND } from '@kavach/api-contract';
 
 interface SiteHeaderProps {
+
   currentPath?: string;
   lang?: 'en' | 'hi' | 'gu';
   onLangChange?: (lang: 'en' | 'hi' | 'gu') => void;
@@ -137,7 +139,7 @@ export function SiteHeader({ currentPath, lang = 'en', onLangChange }: SiteHeade
 
             {/* Sign in link */}
             <a
-              href="http://localhost:3001/auth"
+              href={`${BRAND.appUrl}/auth`}
               className="hidden sm:inline-flex text-ui font-bold text-body hover:text-primary transition-colors px-2 py-1"
             >
               Sign In
@@ -147,11 +149,12 @@ export function SiteHeader({ currentPath, lang = 'en', onLangChange }: SiteHeade
             <Button
               variant="primary"
               size="sm"
-              href="http://localhost:3001"
+              href={BRAND.appUrl}
               className="shrink-0"
             >
               Guardian App
             </Button>
+
 
             {/* Mobile Hamburger Button */}
             <button
@@ -222,7 +225,7 @@ export function SiteHeader({ currentPath, lang = 'en', onLangChange }: SiteHeade
                     </a>
                   ))}
                   <a
-                    href="http://localhost:3001/elder"
+                    href={`${BRAND.appUrl}/elder`}
                     target="_blank"
                     rel="noreferrer"
                     className="text-ui font-bold text-body py-2 px-3 rounded-full hover:bg-canvas transition-colors flex items-center justify-between"
@@ -236,13 +239,14 @@ export function SiteHeader({ currentPath, lang = 'en', onLangChange }: SiteHeade
               </div>
 
               <div className="pt-4 border-t border-hairline space-y-2">
-                <Button variant="primary" size="md" href="http://localhost:3001" className="w-full">
+                <Button variant="primary" size="md" href={BRAND.appUrl} className="w-full">
                   Open Guardian App
                 </Button>
-                <Button variant="outline-neutral" size="md" href="http://localhost:3001/auth" className="w-full">
+                <Button variant="outline-neutral" size="md" href={`${BRAND.appUrl}/auth`} className="w-full">
                   Sign In to Account
                 </Button>
               </div>
+
             </div>
           </div>
         )}

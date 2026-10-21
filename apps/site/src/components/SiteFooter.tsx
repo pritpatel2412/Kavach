@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { KavachLogo, CountrySelector } from '@kavach/ui';
+import { BRAND } from '@kavach/api-contract';
 
 export function SiteFooter() {
   return (
@@ -39,9 +40,10 @@ export function SiteFooter() {
             <div><a href="/features" className="hover:text-primary transition-colors">Detection Engine</a></div>
             <div><a href="/pricing" className="hover:text-primary transition-colors">Pricing Plans</a></div>
             <div><a href="/pricing#waitlist" className="hover:text-primary transition-colors">Private Beta Waitlist</a></div>
-            <div><a href="http://localhost:3001" className="hover:text-primary transition-colors">Guardian Dashboard</a></div>
+            <div><a href={BRAND.appUrl} className="hover:text-primary transition-colors">Guardian Dashboard</a></div>
             <div><a href="/styleguide" className="hover:text-primary transition-colors font-bold text-primary">Design System (/styleguide)</a></div>
           </div>
+
 
           {/* Col 3: Learn & Advisories */}
           <div className="space-y-2">
