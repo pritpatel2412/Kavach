@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-scan:
+    name: Secret & Credential Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks Secret Detector
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false
+
+  test-python:
+    name: Backend Tests (SQLite + Postgres 16)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: kavach_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r apps/api/requirements.txt -e packages/detector
+
+      - name: Run Offline SQLite Test Suite
+        env:
+          KAVACH_MOCK_STT: "1"
+          DEPLOY_MODE: "local"
+        run: |
+          pytest -q
+
+      - name: Run Postgres Service Container Integration Tests
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/kavach_test"
+          DEPLOY_MODE: "staging"
+          KAVACH_MOCK_STT: "0"
+        run: |
+          pytest -q apps/api/tests/test_d2_container_backend.py
+
+      - name: Run Synthetic Eval Fast Subset (Zero Credits)
+        run: |
+          python eval/run_eval.py --transcripts eval/fixtures
+
+  build-frontends:
+    name: Frontend Multi-Zone Builds (Next.js 14)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Monorepo Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build All Next.js Apps & UI Packages
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_MOCK: "0"
+          NEXT_PUBLIC_BRAND_NAME: "Kavach"
+          NEXT_PUBLIC_BRAND_DOMAIN: "kavach.ai"
+          NEXT_PUBLIC_APP_URL: "https://kavach.ai/app"
+          NEXT_PUBLIC_SITE_URL: "https://kavach.ai"
+          NEXT_PUBLIC_ADMIN_URL: "https://kavach.ai/admin"
+        run: |
+          pnpm run build
