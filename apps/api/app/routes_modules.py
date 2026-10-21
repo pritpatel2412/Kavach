@@ -388,14 +388,15 @@ async def adjust_credits(
     session: dict = Depends(admin_auth.require_step_up),
 ):
     # Enforce 10-minute cooling period per household
-    last_adj = _last_credit_adjustment.get(body.household_id, 0)
     now_time = time.monotonic()
-    if now_time - last_adj < 600:
-        remaining = int(600 - (now_time - last_adj))
-        raise HTTPException(
-            status_code=429,
-            detail=f"Cooling period active. Please wait {remaining} seconds before adjusting credits for this household.",
-        )
+    if body.household_id in _last_credit_adjustment:
+        last_adj = _last_credit_adjustment[body.household_id]
+        if now_time - last_adj < 600:
+            remaining = int(600 - (now_time - last_adj))
+            raise HTTPException(
+                status_code=429,
+                detail=f"Cooling period active. Please wait {remaining} seconds before adjusting credits for this household.",
+            )
 
     now_iso = datetime.now(timezone.utc).isoformat()
     cid = f"cred_{secrets.token_hex(8)}"
