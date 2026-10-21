@@ -1,6 +1,6 @@
 # STATUS (update at the end of every session)
 
-**Last updated:** 20 Oct 2026 · **Deadline:** 10 Nov 2026 11:59 PM IST · **Submit target:** 8 Nov
+**Last updated:** 21 Oct 2026 · **Deadline:** 10 Nov 2026 11:59 PM IST · **Submit target:** 8 Nov
 
 ## Phase tracker
 | Phase | Window | Status | Owner |
@@ -15,13 +15,49 @@
 | Sprint F SaaS Frontend & CoinCompass Theme | 18 Oct | **Done** (packages/ui, packages/api-contract, apps/site, apps/app, apps/admin, elder kiosk, 10/10 theme audits) | A + B |
 | Sprint A Admin Console & Operations Backbone | 18-19 Oct | **Done** (Phases A0-A9: passwordless TOTP, audit hash chain, SMTP outbox, waitlist CRM, support inbox, coupons 60% cap, visual analytics, export center, 137 tests green) | A + B |
 | Sprint T Full-System Test Campaign & Evidence Report | 19 Oct | **Done** (14 testing layers, 487 total checks, 96.5% pass rate, 0 flaky tests, ISO 29119 artifacts) | A + B |
-| Sprint R Visual & Structural Redesign (DESIGN.md) | 20 Oct | **Done** (cool-gray ground #f2f4f7, white cards, brand green #30a83c, 540px pills, Mulish font, 33 routes, 100% build green, 139 tests green, docs/redesign/REPORT.md) | A + B |
 | Sprint X Blockers, Truth & Contest-Critical | 20 Oct | **Done** (X1-X9 complete: blind eval generalization, support portal D-007, waitlist confirmed & RFC 8058, GST pricing golden tests, passwordless auth & device pairing, D-001..D-009 defects closed, Neon cloud docs & consent-gated AI gateway, automated security gates, contest demo orchestration & runbook, 162 unit tests green) | A + B |
 | Sprint Y Make Every Claim True | 20 Oct | **Done** (Y1-Y6 complete: blind set marked burned, unsupported claims pruned, privacy truth & elder tap consent, single facts.json source, GST pricing math golden, D-001..D-009 regression evidence, 163 tests green, 0 credits) | A + B |
+| Sprint R One Coherent Product UI | 21 Oct | **Done** (R0-R8: Single DESIGN.md, UI_AUDIT.md with today's live screenshots, canonical @kavach/ui tokens & components, site single-tier nav, guardian app 4 calm cards & drawer disclosure, elder kiosk 48px AAA contrast & 2-step confirm sheet, admin 32px env strip & grouped sidebar, COPY_CHANGES.md, 164 unit tests green, all 4 apps compile clean, 0 credits) | A + B |
 | 5 Launch (nominated post) | 28 Oct | Scaffolded / In preparation | A + B |
 | 6 Eval + hardening (+ optional LLM layer) | 28 Oct-2 Nov | S1 LLM second-opinion layer scaffolded + tested; eval harness active | B / A |
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
 | Buffer | 9-10 Nov | | |
+
+## Done in Sprint R ("One Coherent Product UI")
+- **R0. System Audit & Comprehensive DESIGN.md Rewrite:**
+  - Audited 42 frontend routes and 43 UI components across `apps/site`, `apps/app`, `apps/admin`, `apps/web`, and `packages/ui`.
+  - Rewrote root `DESIGN.md` and `docs/design/DESIGN.md`, completely replacing residual German deal templates with Kavach's 4-stage Risk Scale (Calm, Caution L1, Alert L2, Emergency L3), elder kiosk accessibility rules ($\ge 48\text{px}$ status, $\ge 24\text{px}$ body, $\ge 56\text{px}$ touch targets, $\ge 7:1$ WCAG AAA contrast), admin console density tokens, and 120/180/240ms motion standards.
+  - Authored `docs/design/UI_AUDIT.md` using exclusively today's 5 live screenshots (`today_learn_3000.png`, `today_dashboard_3001.png`, `today_billing_3001.png`, `today_privacy_3001.png`, `today_elder_3001.png`), and purged all 11 legacy screenshots from the repository.
+- **R1. Single Design System (`packages/ui`):**
+  - Consolidated tokens into `tokens.ts` and `tailwind.preset.js`.
+  - Implemented/exported canonical components: `Button` (540px pills, 1px hover lift, destructive/ghost variants), `PillTabs`, `Card` (8px hairline with Level 2 hover lift), `StatCard` (tabular numbers), `Badge`, `RiskIndicator` (mandatory icon + label), `StageChips` (no font-mono), `Input`/`Select`/`Textarea`, `Modal`, `Drawer` (accessible slide-over), `Toast`, `Table`, `EmptyState`, `Skeleton`, `Stepper`, `Tooltip`, `PageHeader`, `AppShell`.
+- **R2. Marketing Site Redesign (`apps/site`):**
+  - Clean single-tier header navigation ($\le 5$ primary links: How it works, Learn, Pricing, Support, plus Guardian App CTA) with slim 1930 Cyber Helpline top utility bar, language switcher, responsive search drawer, and focus-trapped mobile drawer.
+  - Rebuilt landing page (`apps/site/src/app/page.tsx`): Hero $\rightarrow$ Sourced Stat Strip (₹4,057 Cr lost nationally per I4C, 97.3% synthetic recall, 0 raw audio retention) $\rightarrow$ 3-Step How-It-Works $\rightarrow$ 6 Core Features $\rightarrow$ Sample Preview $\rightarrow$ FAQ $\rightarrow$ Final CTA.
+  - Aligned `/pricing`, `/how-it-works`, `/learn`, and `/refunds` with canonical tokens and honest copy.
+- **R3. Guardian App Redesign (`apps/app`):**
+  - Redesigned Dashboard (`/`): 4 calm status cards max, 1 primary action, PillTabs, incident list with `RiskIndicator` & `StageChips`, right rail with elder moniker (hidden full legal name), and accessible slide-over `Drawer` for progressive disclosure.
+  - Reconciled Plus plan quota to 150 min (fixed legacy 300m display bug).
+  - Redesigned Billing (`/billing`): equal card heights, transparent prices, primary style reserved for recommended plan, collapsible promo code input.
+  - Redesigned Privacy (`/privacy`): DPDP-aligned data rights with destructive outline button styling.
+  - Replaced high-saturation yellow developer banner with subtle, calm "Demo mode" chip in `MockBanner.tsx`.
+- **R4. Elder Kiosk High-Contrast Interface (`apps/app/src/app/elder`):**
+  - Large typography: $\ge 48\text{px}$ status line with line-height $\ge 1.4$ for Devanagari script, $\ge 24\text{px}$ subheadings, $\ge 56\text{px}$ touch targets.
+  - Privacy protection: hidden full legal name (displays "Living Room Tablet · Kamala-ji").
+  - Protection deactivation guard: demoted neutral stop button with deliberate 2-step confirmation modal (`confirmStopOpen`).
+  - Strict WCAG AAA contrast ratio ($\ge 7:1$) on `#ffffff` cards and `#f2f4f7` ground.
+- **R5. Admin Console Refinement (`apps/admin`):**
+  - Compact 32px neutral environment strip (`AdminBanner.tsx`): dynamic `LOCAL`/`STAGING`/`PROD` tag, `DEMO DATA` chip only when seeded, quick Ctrl+K command launcher.
+  - Grouped collapsible sidebar into 5 canonical categories: Operate (3), Grow (2), Money (3), Safety (3), System (6) with a density toggle (Comfortable / Compact).
+  - Accessible contrast: dark slate/ink text on status tags ("All 14 Services Armed" at $\ge 4.5:1$ contrast) and tabular numbers on metrics.
+- **R6. Content-Truth Documentation:**
+  - Authored `docs/design/COPY_CHANGES.md` documenting before-and-after copy changes across all 7 truth invariants: acoustic reality over interception, DPDP zero audio retention over offline claims, transparent pricing over fake discounts, sample previews over testimonials, 150m plan quota reconciliation, admin environment derivation, and statutory draft notices on legal templates.
+- **R7 & R8. Motion, Responsive QA & Build Verification:**
+  - Standardized micro-animations (120ms buttons, 180ms cards, 240ms modals/drawers) respecting `prefers-reduced-motion`.
+  - All 164 unit tests green (`.venv\Scripts\python.exe -m pytest -q` passed in 144s with 0 failures).
+  - All Next.js builds clean (`@kavach/ui`, `@kavach/site`, `@kavach/app`, `@kavach/admin` with code 0).
+  - Zero paid Gnani credits consumed (0 / 5,000 budget burned).
+
 
 ## Done in Sprint Y ("Make every claim true")
 - **Y1. Blind Evaluation Truth & Burned Set Disclosure:**
