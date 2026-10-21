@@ -40,6 +40,27 @@ export default function SubprocessorsPage() {
       transfer: 'Domestic India',
     },
     {
+      name: 'Vercel Inc.',
+      role: 'Frontend Web Hosting & Edge Content Delivery',
+      location: 'Global Edge Network (Mumbai / Chennai Edge POPs)',
+      dataScope: 'Static web application assets (HTML/JS/CSS) and browser application bundles. No call audio or biometric data touches Vercel.',
+      transfer: 'Edge CDN distribution',
+    },
+    {
+      name: 'Render Services, Inc. / Railway Corp.',
+      role: 'Container Backend Runtime (API & Real-time WebSockets)',
+      location: 'Singapore (AWS ap-southeast-1)',
+      dataScope: 'FastAPI container process, in-memory scam detector pipeline, WebSocket streaming connection, and encrypted voice job processing.',
+      transfer: 'International transfer (Singapore - AWS ap-southeast-1)',
+    },
+    {
+      name: 'Transactional SMTP Relay (SendGrid / Resend / AWS SES)',
+      role: 'Transactional Email Dispatch',
+      location: 'Global / Singapore / India',
+      dataScope: 'Outbound email addresses, waitlist double opt-in verification tokens, and customer support ticket notifications.',
+      transfer: 'Encrypted TLS transit (RFC 3207)',
+    },
+    {
       name: 'Cloudflare, Inc.',
       role: 'Edge Content Delivery Network & DDoS Mitigation',
       location: 'Global Edge Anycast Network (Indian Data Centers)',

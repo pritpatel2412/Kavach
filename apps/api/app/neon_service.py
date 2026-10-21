@@ -18,12 +18,12 @@ neon_router = APIRouter(prefix="/api/neon", tags=["Neon Cloud"])
 import re
 
 def _sanitize_error(err: Any) -> str:
-    """Mask any embedded passwords or tokens in database error strings."""
+    """Mask any embedded user, passwords, or endpoints in database error strings."""
     s = str(err)
-    # Mask postgres://user:password@host
-    s = re.sub(r"://([^:]+):([^@]+)@", r"://\1:***@", s)
-    # Mask password=...
+    s = re.sub(r"://([^:]+):([^@]+)@([^/\s:]+)", r"://***:***@ep-***.neon.tech", s)
     s = re.sub(r"password=([^\s]+)", r"password=***", s)
+    s = re.sub(r"user=([^\s]+)", r"user=***", s)
+    s = re.sub(r"host=([^\s]+)", r"host=ep-***.neon.tech", s)
     return s
 
 
@@ -32,16 +32,22 @@ def test_neon_postgres_health() -> dict[str, Any]:
     db_url = os.getenv("DATABASE_URL")
     if not db_url or not (db_url.startswith("postgres://") or db_url.startswith("postgresql://")):
         return {
+            "ok": True,
             "status": "not_configured",
-            "message": "DATABASE_URL is not set to a Postgres connection string.",
+            "message": "DATABASE_URL is not set to a Postgres connection string (using SQLite).",
+            "branch": "local",
+            "pooled": False,
         }
 
     try:
         import psycopg
     except ImportError:
         return {
+            "ok": False,
             "status": "driver_missing",
             "message": "psycopg driver is not installed.",
+            "branch": os.getenv("NEON_BRANCH", "production"),
+            "pooled": "-pooler" in db_url,
         }
 
     t0 = time.perf_counter()
@@ -52,20 +58,24 @@ def test_neon_postgres_health() -> dict[str, Any]:
                 row = cur.fetchone()
                 latency_ms = round((time.perf_counter() - t0) * 1000, 2)
                 return {
+                    "ok": True,
                     "status": "healthy",
                     "latency_ms": latency_ms,
-                    "database": row[1] if row else None,
-                    "user": row[2] if row else None,
-                    "version": row[3][:40] if row else None,
-                    "connection": "pooled (-pooler)",
+                    "database": row[1] if row else "neondb",
+                    "user": "***",
+                    "version": row[3][:25] if row else None,
+                    "pooled": "-pooler" in db_url,
                     "branch": os.getenv("NEON_BRANCH", "production"),
                 }
     except Exception as e:
         clean_err = _sanitize_error(e)
         log.warning("Neon postgres health check failed: %s", clean_err)
         return {
+            "ok": False,
             "status": "error",
             "error": clean_err,
+            "pooled": "-pooler" in db_url,
+            "branch": os.getenv("NEON_BRANCH", "production"),
         }
 
 
@@ -133,9 +143,15 @@ def _build_neon_status_response() -> dict[str, Any]:
         auth.get("status") in ("healthy", "not_configured")
     )
 
+    db_url = os.getenv("DATABASE_URL") or ""
+    is_pooled = "-pooler" in db_url
+    branch = os.getenv("NEON_BRANCH", "production")
+
     return {
+        "ok": bool(is_overall_healthy),
+        "branch": branch,
+        "pooled": bool(is_pooled),
         "status": "healthy" if is_overall_healthy else "degraded",
-        "branch": os.getenv("NEON_BRANCH", "production"),
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "services": {
             "postgres": pg,

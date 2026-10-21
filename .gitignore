@@ -8,6 +8,13 @@ __pycache__/
 .pytest_cache/
 node_modules/
 # privacy: never commit voice data, embeddings, recordings
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite3
+clips/
+**/clips/
 *.embedding.json
 embeddings/
 recordings/

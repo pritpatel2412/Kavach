@@ -65,10 +65,22 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-heading font-bold text-ink">4. Cloud Infrastructure &amp; AI Gateways</h2>
+            <h2 className="text-heading font-bold text-ink">4. Cloud Infrastructure &amp; Hosting Architecture</h2>
             <div className="space-y-2 text-caption font-medium text-body">
               <p>
-                <strong>Neon Serverless PostgreSQL:</strong> Fleet health telemetry, account subscriptions, and cryptographic audit logs are hosted on Neon Serverless Postgres located in <strong>AWS Singapore (ap-southeast-1)</strong>. Zero raw call audio and zero call transcripts are synced to Neon.
+                <strong>Frontend Hosting (Vercel):</strong> Web applications and client static assets are hosted on Vercel Inc. across global edge locations with domestic edge presence in India (Mumbai and Chennai).
+              </p>
+              <p>
+                <strong>Container Backend Runtime (Render / Railway):</strong> The backend API, WebSocket session handlers, and in-memory detector state run inside isolated Linux containers managed on Render or Railway in the Singapore AWS region (ap-southeast-1).
+              </p>
+              <p>
+                <strong>Operational Database (Neon Serverless PostgreSQL):</strong> Telemetry, device pairing records, subscriptions, and cryptographic audit logs are hosted on Neon Serverless Postgres in Singapore (AWS ap-southeast-1). Zero raw call audio or full call transcripts are synced to Neon.
+              </p>
+              <p>
+                <strong>Speech Recognition &amp; Voice Synthesis (Gnani.ai):</strong> Live speakerphone acoustic streams are transcribed domestically in Bengaluru, Karnataka by Gnani Prisma STT.
+              </p>
+              <p>
+                <strong>Transactional Email &amp; Telegram:</strong> Outbound emails are dispatched via authenticated TLS SMTP relays with SPF/DKIM/DMARC alignment. Emergency push notifications use Telegram Bot API (opt-in only).
               </p>
               <p>
                 <strong>AI Gateway Default:</strong> By default, <strong>no AI gateway receives call transcripts</strong>. Any administrative AI assistance (e.g., summarizing support tickets) is strictly consent-gated and disabled by default.
