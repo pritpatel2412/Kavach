@@ -128,24 +128,56 @@ export default function AdminConsolePage() {
     }
   };
 
-  const navItems = [
-    { id: 'overview', label: 'Telemetry Overview', icon: 'chart-bold', group: 'Analytics' },
-    { id: 'waitlist', label: 'Waitlist CRM & Campaigns', icon: 'users-group-two-rounded-bold', group: 'Growth' },
-    { id: 'support', label: 'Support Inbox & SLAs', icon: 'shield-warning-bold', group: 'Operations' },
-    { id: 'coupons', label: 'Coupons & Referrals', icon: 'tag-price-bold', group: 'Growth' },
-    { id: 'exportCenter', label: 'Data Export Center', icon: 'download-square-outline', group: 'Operations' },
-    { id: 'email', label: 'Email Outbox & DNS', icon: 'letter-bold', group: 'Operations' },
-    { id: 'households', label: 'Households Directory', icon: 'users-group-two-rounded-bold', group: 'Operations' },
-    { id: 'devices', label: 'Tabletop Kiosks', icon: 'devices-outline', group: 'Operations' },
-    { id: 'alerts', label: 'Alerts & False Alarms', icon: 'shield-warning-bold', group: 'Operations' },
-    { id: 'credits', label: 'Credits & Balances', icon: 'wallet-bold', group: 'Billing' },
-    { id: 'plans', label: 'Plans & Pricing', icon: 'card-bold', group: 'Billing' },
-    { id: 'payments', label: 'GST Invoices', icon: 'card-bold', group: 'Billing' },
-    { id: 'usage', label: 'Cost & Latency', icon: 'server-square-bold', group: 'Analytics' },
-    { id: 'detector', label: 'Detector Engine', icon: 'radar-outline', group: 'Engineering' },
-    { id: 'dataRights', label: 'DPDP Data Rights', icon: 'trash-bin-trash-bold', group: 'Governance' },
-    { id: 'featureFlags', label: 'Feature Flags', icon: 'slider-minimalistic-horizontal-bold', group: 'Engineering' },
-    { id: 'auditLog', label: 'Audit Log (Immutable)', icon: 'history-bold', group: 'Governance' },
+  const [density, setDensity] = useState<'comfortable' | 'compact'>('comfortable');
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  const toggleGroup = (groupName: string) => {
+    setCollapsedGroups((prev) => ({ ...prev, [groupName]: !prev[groupName] }));
+  };
+
+  const navGroups = [
+    {
+      group: 'Operate',
+      items: [
+        { id: 'overview', label: 'Telemetry Overview', icon: 'chart-bold' },
+        { id: 'households', label: 'Realtime Sessions & Households', icon: 'users-group-two-rounded-bold' },
+        { id: 'devices', label: 'Device Health (Kiosks)', icon: 'devices-outline' },
+      ],
+    },
+    {
+      group: 'Grow',
+      items: [
+        { id: 'waitlist', label: 'Waitlist CRM & Campaigns', icon: 'users-group-two-rounded-bold' },
+        { id: 'coupons', label: 'Coupons & Referrals', icon: 'tag-price-bold' },
+      ],
+    },
+    {
+      group: 'Money',
+      items: [
+        { id: 'plans', label: 'Subscriptions (Plans)', icon: 'card-bold' },
+        { id: 'payments', label: 'Razorpay Ledger & GST', icon: 'card-bold' },
+        { id: 'credits', label: 'Credits & Balances', icon: 'wallet-bold' },
+      ],
+    },
+    {
+      group: 'Safety',
+      items: [
+        { id: 'alerts', label: 'P0 Scam Incidents & Alerts', icon: 'shield-warning-bold' },
+        { id: 'support', label: 'Support Tickets Inbox', icon: 'shield-warning-bold' },
+        { id: 'dataRights', label: 'Audio Purge & DPDP Rights', icon: 'trash-bin-trash-bold' },
+      ],
+    },
+    {
+      group: 'System',
+      items: [
+        { id: 'email', label: 'Email Outbox & DNS', icon: 'letter-bold' },
+        { id: 'exportCenter', label: 'Data Export Center', icon: 'download-square-outline' },
+        { id: 'detector', label: 'Detector Engine', icon: 'radar-outline' },
+        { id: 'featureFlags', label: 'Feature Flags', icon: 'slider-minimalistic-horizontal-bold' },
+        { id: 'auditLog', label: 'Immutable Audit Log', icon: 'history-bold' },
+        { id: 'usage', label: 'Cost & Latency', icon: 'server-square-bold' },
+      ],
+    },
   ];
 
   // Search items across entire platform for Ctrl+K
@@ -175,13 +207,13 @@ export default function AdminConsolePage() {
           <KavachLogo size={28} showWordmark={true} />
           <span className="text-muted/40">|</span>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-sm">
+            <span className="text-caption font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-sm">
               OPS CONSOLE
             </span>
-            <span className="text-[10px] font-mono text-muted px-2 py-0.5 rounded-sm bg-canvas border border-hairline">
+            <span className="text-[11px] font-bold text-muted px-2 py-0.5 rounded-sm bg-canvas border border-hairline">
               v1.5.0-prod
             </span>
-            <span className="text-[10px] font-mono text-green-strong px-2 py-0.5 rounded-sm bg-green-surface border border-green-light">
+            <span className="text-[11px] font-bold text-green-strong px-2 py-0.5 rounded-sm bg-green-surface border border-green-light">
               PORT 3002
             </span>
           </div>
@@ -190,23 +222,23 @@ export default function AdminConsolePage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setCommandPaletteOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-canvas hover:bg-hairline/60 border border-hairline text-xs font-mono text-muted hover:text-ink transition-all cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-canvas hover:bg-hairline/60 border border-hairline text-caption text-body hover:text-ink transition-all cursor-pointer font-medium"
           >
             <Icon name="magnifer-outline" size={14} />
             <span>Search users, tickets, coupons...</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-surface text-[10px] font-mono text-muted border border-hairline">
+            <kbd className="px-1.5 py-0.5 rounded bg-surface text-[10px] text-muted border border-hairline font-bold">
               Ctrl+K
             </kbd>
           </button>
 
-          <span className="text-xs font-mono text-muted hidden md:inline">
+          <span className="text-caption text-body hidden md:inline font-medium">
             Admin: <strong className="text-ink">ops@kavach.ai</strong>
           </span>
           <Button
             variant="outline-neutral"
             size="sm"
             onClick={() => router.push('/auth')}
-            className="text-xs"
+            className="text-caption"
           >
             Lock Console
           </Button>
@@ -215,7 +247,7 @@ export default function AdminConsolePage() {
 
       {/* Toast Notification */}
       {actionSuccess && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-md bg-surface border border-hairline text-ink text-xs font-mono shadow-level-2 flex items-center gap-2 border-l-4 border-l-primary animate-in fade-in slide-in-from-bottom-2">
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-md bg-surface border border-hairline text-ink text-caption shadow-level-2 flex items-center gap-2 border-l-4 border-l-primary animate-in fade-in slide-in-from-bottom-2">
           <Icon name="check-circle-bold" size={16} className="text-primary" />
           <span>{actionSuccess}</span>
         </div>
@@ -224,25 +256,85 @@ export default function AdminConsolePage() {
       {/* Main Admin Workspace Grid */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-5 lg:grid-cols-6 gap-6 px-4 sm:px-8 pt-6">
         {/* Sidebar Nav */}
-        <div className="md:col-span-1 space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-muted font-bold px-3 py-1">
-            Operations Modules
+        <aside className="md:col-span-1 space-y-4">
+          <div className="flex items-center justify-between px-2">
+            <span className="text-micro uppercase tracking-wider text-muted font-bold">
+              Modules
+            </span>
+            <div className="flex items-center gap-1 text-[11px] font-bold">
+              <button
+                type="button"
+                onClick={() => setDensity('comfortable')}
+                className={`px-1.5 py-0.5 rounded transition-colors ${
+                  density === 'comfortable'
+                    ? 'bg-canvas border border-hairline text-ink'
+                    : 'text-muted hover:text-body'
+                }`}
+                title="Comfortable Density"
+              >
+                Comfort
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => setDensity('compact')}
+                className={`px-1.5 py-0.5 rounded transition-colors ${
+                  density === 'compact'
+                    ? 'bg-canvas border border-hairline text-ink'
+                    : 'text-muted hover:text-body'
+                }`}
+                title="Compact Density"
+              >
+                Compact
+              </button>
+            </div>
           </div>
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveModule(item.id as any)}
-              className={`w-full flex items-center gap-2.5 px-3.5 py-2 rounded-full text-xs font-body transition-all text-left ${
-                activeModule === item.id
-                  ? 'bg-primary text-on-primary font-bold shadow-xs'
-                  : 'text-body hover:text-ink hover:bg-surface border border-transparent hover:border-hairline'
-              }`}
-            >
-              <Icon name={item.icon} size={16} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </div>
+
+          <div className="space-y-3">
+            {navGroups.map((group) => {
+              const isCollapsed = collapsedGroups[group.group];
+              const hasActiveChild = group.items.some((i) => i.id === activeModule);
+
+              return (
+                <div key={group.group} className="space-y-1">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.group)}
+                    className="w-full flex items-center justify-between px-2.5 py-1 text-micro font-bold text-muted uppercase tracking-wider hover:text-ink transition-colors cursor-pointer"
+                  >
+                    <span className={hasActiveChild ? 'text-ink font-bold' : ''}>{group.group}</span>
+                    <Icon
+                      name={isCollapsed ? 'alt-arrow-down-outline' : 'alt-arrow-up-outline'}
+                      size={12}
+                    />
+                  </button>
+
+                  {!isCollapsed && (
+                    <div className="space-y-0.5">
+                      {group.items.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setActiveModule(item.id as any)}
+                          className={`w-full flex items-center gap-2.5 px-3 rounded-full text-caption transition-all text-left font-medium ${
+                            density === 'compact' ? 'py-1 text-[12px]' : 'py-2 text-[13px]'
+                          } ${
+                            activeModule === item.id
+                              ? 'bg-primary text-white font-bold shadow-xs'
+                              : 'text-body hover:text-ink hover:bg-surface border border-transparent hover:border-hairline'
+                          }`}
+                        >
+                          <Icon name={item.icon} size={15} />
+                          <span className="truncate">{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </aside>
 
         {/* Main Content Area */}
         <div className="md:col-span-4 lg:col-span-5 space-y-6">
@@ -252,38 +344,39 @@ export default function AdminConsolePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-xl font-heading font-bold text-ink">Platform Operations Telemetry</h1>
-                  <p className="text-xs font-mono text-muted">Synthetic Evaluation &amp; Production Telemetry</p>
+                  <p className="text-caption text-body font-medium">Synthetic Evaluation &amp; Production Telemetry</p>
                 </div>
-                <span className="text-xs font-mono text-green-strong flex items-center gap-1.5">
+                <span className="text-caption font-bold text-ink flex items-center gap-2">
                   <StatusDot status="armed" label="All 14 Services Armed" />
                 </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-surface border border-hairline rounded-md p-5 space-y-1.5">
-                  <div className="text-xs font-mono text-muted uppercase">Active Households</div>
-                  <div className="text-2xl font-heading font-bold text-ink">1,428</div>
-                  <div className="text-[11px] text-green-strong font-medium">+42 onboarded this week</div>
+                <div className="bg-surface border border-hairline rounded-md p-5 space-y-1.5 shadow-xs">
+                  <div className="text-caption text-muted font-bold uppercase tracking-wider">Active Households</div>
+                  <div className="text-2xl font-heading font-bold text-ink tabular-nums">1,428</div>
+                  <div className="text-caption text-green-strong font-bold">+42 onboarded this week</div>
                 </div>
 
-                <div className="bg-surface border border-hairline rounded-md p-5 space-y-1.5">
-                  <div className="text-xs font-mono text-muted uppercase">Scam Calls Intercepted</div>
-                  <div className="text-2xl font-heading font-bold text-ink">314</div>
-                  <div className="text-[11px] text-green-strong font-medium">97.3% synthetic recall rate</div>
+                <div className="bg-surface border border-hairline rounded-md p-5 space-y-1.5 shadow-xs">
+                  <div className="text-caption text-muted font-bold uppercase tracking-wider">Scam Threats Flagged</div>
+                  <div className="text-2xl font-heading font-bold text-ink tabular-nums">314</div>
+                  <div className="text-caption text-green-strong font-bold">97.3% synthetic recall rate</div>
                 </div>
 
-                <div className="bg-surface border border-hairline rounded-md p-5 space-y-1.5">
-                  <div className="text-xs font-mono text-muted uppercase">Listening Minutes (Today)</div>
-                  <div className="text-2xl font-heading font-bold text-ink">8,420 m</div>
-                  <div className="text-[11px] text-muted">Gated: 64,200 silence chunks saved</div>
+                <div className="bg-surface border border-hairline rounded-md p-5 space-y-1.5 shadow-xs">
+                  <div className="text-caption text-muted font-bold uppercase tracking-wider">Listening Minutes (Today)</div>
+                  <div className="text-2xl font-heading font-bold text-ink tabular-nums">8,420 m</div>
+                  <div className="text-caption text-body">Gated: 64,200 silence chunks saved</div>
                 </div>
 
-                <div className="bg-surface border border-hairline rounded-md p-5 space-y-1.5">
-                  <div className="text-xs font-mono text-muted uppercase">STT Cloud Burn</div>
-                  <div className="text-2xl font-heading font-bold text-primary">₹1,260.40</div>
-                  <div className="text-[11px] text-muted">Well within ₹5,000 daily budget</div>
+                <div className="bg-surface border border-hairline rounded-md p-5 space-y-1.5 shadow-xs">
+                  <div className="text-caption text-muted font-bold uppercase tracking-wider">STT Cloud Burn</div>
+                  <div className="text-2xl font-heading font-bold text-primary tabular-nums">₹1,260.40</div>
+                  <div className="text-caption text-body">Well within ₹5,000 daily budget</div>
                 </div>
               </div>
+
 
               {/* Conversion Funnel */}
               <div className="bg-surface border border-hairline rounded-md p-6 space-y-4">
