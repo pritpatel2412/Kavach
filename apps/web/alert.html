@@ -441,7 +441,11 @@ async function startIntercom() {
     const { intercom_token } = await tokenRes.json();
 
     const proto = location.protocol === "https:" ? "wss" : "ws";
-    intercomWs = new WebSocket(`${proto}://${location.host}/ws/intercom?token=${encodeURIComponent(intercom_token)}`);
+    const defaultWs = `${proto}://${location.host}/ws/intercom`;
+    const baseWs = (typeof window !== "undefined" && window.__KAVACH_CONFIG__ && window.__KAVACH_CONFIG__.wsUrl)
+      ? window.__KAVACH_CONFIG__.wsUrl.replace("/ws/session", "/ws/intercom")
+      : defaultWs;
+    intercomWs = new WebSocket(`${baseWs}?token=${encodeURIComponent(intercom_token)}`);
     intercomWs.binaryType = "arraybuffer";
 
     await new Promise((resolve, reject) => {

@@ -17,6 +17,8 @@ export interface PlanTier {
   priceMonthly: number;
   priceYearly: number;
   currency: string;
+  monthlyPaise?: number;
+  yearlyPaise?: number;
   isPopular?: boolean;
   minutesPerMonth: number;
   emergencyReserveMinutes: number;
@@ -26,7 +28,10 @@ export interface PlanTier {
   ctaLabel: string;
 }
 
-export const PLANS: PlanTier[] = plansSlaData.plans as PlanTier[];
+export const PLANS: PlanTier[] = plansSlaData.plans.map(p => ({
+  currency: plansSlaData.currency,
+  ...p,
+})) as PlanTier[];
 
 
 export const PRICING_FAQS = [

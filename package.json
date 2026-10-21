@@ -2,6 +2,9 @@
   "name": "kavach-monorepo",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev:site": "pnpm --filter @kavach/site dev",
     "dev:app": "pnpm --filter @kavach/app dev",

@@ -350,8 +350,10 @@ async function start(replayName) {
   const replay = currentReplay;
   const params = new URLSearchParams({ lang, rate: "16000" });
   if (eid) params.set("elder_id", eid);
-  if (replay) params.set("replay", replay);
-  ws = new WebSocket(`${proto}://${location.host}/ws/session?${params}`);
+  const defaultWs = `${proto}://${location.host}/ws/session`;
+  const baseWs = (typeof window !== "undefined" && window.__KAVACH_CONFIG__ && window.__KAVACH_CONFIG__.wsUrl) || defaultWs;
+  const targetWs = baseWs.includes("?") ? `${baseWs}&${params}` : `${baseWs}?${params}`;
+  ws = new WebSocket(targetWs);
   ws.binaryType = "arraybuffer";
   ws.onmessage = (m) => typeof m.data === "string" && onEvent(JSON.parse(m.data));
   ws.onclose = () => {
