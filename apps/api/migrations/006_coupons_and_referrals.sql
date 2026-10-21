@@ -42,3 +42,7 @@ CREATE TABLE IF NOT EXISTS referrals (
 CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referral_code);
 CREATE INDEX IF NOT EXISTS idx_referrals_referee ON referrals(referee_household_id);
 
+INSERT INTO coupons (code, discount_type, discount_value, max_discount_paise, min_order_paise, max_redemptions, current_redemptions, max_per_user, new_customer_only, eligible_plans, is_active, expires_at, created_by, created_at)
+VALUES ('DEMO50', 'percent', 50, NULL, 0, 1000, 0, 1, 0, '["plus","family"]', 1, NULL, 'system', '2026-10-15T00:00:00Z')
+ON CONFLICT (code) DO NOTHING;
+

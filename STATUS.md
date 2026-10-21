@@ -18,12 +18,54 @@
 | Sprint X Blockers, Truth & Contest-Critical | 20 Oct | **Done** (X1-X9 complete: blind eval generalization, support portal D-007, waitlist confirmed & RFC 8058, GST pricing golden tests, passwordless auth & device pairing, D-001..D-009 defects closed, Neon cloud docs & consent-gated AI gateway, automated security gates, contest demo orchestration & runbook, 162 unit tests green) | A + B |
 | Sprint Y Make Every Claim True | 20 Oct | **Done** (Y1-Y6 complete: blind set marked burned, unsupported claims pruned, privacy truth & elder tap consent, single facts.json source, GST pricing math golden, D-001..D-009 regression evidence, 163 tests green, 0 credits) | A + B |
 | Sprint R One Coherent Product UI | 21 Oct | **Done** (R0-R8: Single DESIGN.md, UI_AUDIT.md with today's live screenshots, canonical @kavach/ui tokens & components, site single-tier nav, guardian app 4 calm cards & drawer disclosure, elder kiosk 48px AAA contrast & 2-step confirm sheet, admin 32px env strip & grouped sidebar, COPY_CHANGES.md, 164 unit tests green, all 4 apps compile clean, 0 credits) | A + B |
+| Sprint D Deploy: Vercel + Container + Neon | 21-22 Oct | **Done** (D0-D10: DEPLOY_PLAN, config hygiene, Dockerfile + render.yaml, Vercel configs & multi-zone rewrites, real API wiring, email playbook, security audit, ops runbook, demo sandbox, CI workflow, live smoke suite 11/11 passed, 184 tests green, 0 credits) | A + B |
 | 5 Launch (nominated post) | 28 Oct | Scaffolded / In preparation | A + B |
 | 6 Eval + hardening (+ optional LLM layer) | 28 Oct-2 Nov | S1 LLM second-opinion layer scaffolded + tested; eval harness active | B / A |
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
 | Buffer | 9-10 Nov | | |
 
-## Done in Sprint R ("One Coherent Product UI")
+## Done in Sprint D ("Deploy: Vercel frontends + container backend + Neon")
+- **D0. Architecture & Deployment Plan (`docs/deploy/DEPLOY_PLAN.md`):**
+  - Audited all screens across 4 frontend apps and 32 backend endpoints for live API readiness.
+  - Formulated single apex domain architecture (`https://kavach.ai`) using Vercel Multi-Zone Rewrites (`/app/*`, `/elder`, `/admin/*`, `/api/*`, `/demo/*`) and direct container origin routing for WebSockets (`/ws/*`).
+  - Documented strict single-instance backend constraint (`WEB_CONCURRENCY=1`, 1 replica) necessitated by in-memory real-time pipeline state (`active_sessions`, `intercom_audio`).
+- **D1. Config Hygiene & Fail-Fast Validation (`packages/api-contract`, `apps/api/app/config.py`):**
+  - Created single canonical source of truth `packages/api-contract/src/plans_sla.json` and eliminated drift across TypeScript and Python runtimes with automated regression tests.
+  - Added strict production startup validation in `config.py` verifying critical environment variables (`SESSION_SECRET`, `ADMIN_TOTP_KEY`, `NEON_DATABASE_URL`, `DATABASE_URL`) without leaking sensitive strings.
+- **D2. Backend Containerization & Cost Controls (`Dockerfile`, `docker-compose.yml`, `render.yaml`):**
+  - Built production multi-stage Dockerfile (Python 3.12-slim, non-root `kavach` user, uvicorn with proxy headers).
+  - Provided `docker-compose.yml` for local prod-like verification (Postgres 16 + API + Mailpit).
+  - Authored Infrastructure-as-Code `render.yaml` (Singapore region, starter plan, persistent disks, secret references).
+  - Upgraded database layer for Neon & PgBouncer compatibility (`prepare_threshold=None`, dictionary/index row access).
+  - Implemented async voice enrollment endpoints (`POST /api/voice/enroll-async`, `GET /api/voice/jobs/{id}`) and hard daily STT credit guards (`GLOBAL_STT_MINUTES_PER_DAY`, `FEATURE_LIVE_STT`).
+- **D3. Vercel Production Projects & Security Headers (`next.config.js` across all apps):**
+  - Configured Next.js builds with enterprise security headers (HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, strict CSP, and `X-Robots-Tag: noindex, nofollow` on app/admin).
+  - Added build-time webpack fail-fast guard preventing accidental leakage of secrets in `NEXT_PUBLIC_*` or test mock flags in production.
+  - Built static deployment artifact for 4th project `apps/web` with `vercel.json` and cache headers.
+- **D4. Live API Wiring & Authentic Empty States:**
+  - Wired marketing `/pricing` coupon validation, guardian app magic-link authentication (`/api/auth/guardian/magic-link`), session feedback submission (`/api/sessions/{id}/feedback`), and voice deletion (`DELETE /api/voice/demo`).
+  - Labelled checkout modal with "Test mode" badge and seeded incident ledger with honest "Sample data" badges.
+- **D5. Email Deploy Playbook & Cross-Engine SQL Safety (`docs/deploy/EMAIL_DEPLOY.md`):**
+  - Authored comprehensive DNS/deliverability playbook (SPF, DKIM, DMARC, Return-Path, Mailpit/Resend/SendGrid).
+  - Fixed SQL queries across `audit.py`, `routes_export.py`, and `routes_modules.py` replacing SQLite `rowid` dependencies with ANSI-compliant `ORDER BY id DESC` for seamless SQLite and Postgres portability.
+- **D6. Security Audit Before Public (`.gitignore`, `docs/deploy/`):**
+  - Audited full git commit history (`git log --all`): verified 0 secrets, 0 database files, 0 audio clips committed.
+  - Implemented strict credential masking on `/api/neon-health` returning only sanitized connection state.
+  - Updated statutory disclosures (`/subprocessors`, `/privacy`, `/consent-notice`) to reflect actual infrastructure providers (Vercel, Render/Railway, Neon, Telegram, Gnani).
+- **D7. Operations, Rollback & Status Telemetry (`docs/deploy/OPS.md`):**
+  - Wired `/status` marketing page to query `/health` asynchronously with graceful degraded fallbacks.
+  - Created operational runbooks for uptime monitoring, scheduled `pg_dump` backups, Neon point-in-time branch restores, and multi-tier rollback procedures.
+- **D8. Demo Sandbox (`apps/api/app/routes_demo_sandbox.py`):**
+  - Implemented `POST /api/demo/sandbox` generating ephemeral 2-hour TTL demo households pre-seeded with Kamala-ji and sample incidents for jury testing, with zero credit burn (mock STT only) and auto-purging.
+- **D9. GitHub Actions CI Pipeline (`.github/workflows/ci.yml`):**
+  - Configured automated CI pipeline with Gitleaks secret scanning, dual-database testing (SQLite & Postgres 16 service container), synthetic evaluation verification, and monorepo Next.js builds.
+- **D10. Deployment Runbook & Live Smoke Verification:**
+  - Authored `docs/deploy/DEPLOY_RUNBOOK.md` with step-by-step dashboard instructions for Render, Neon, Vercel, and apex domain configuration.
+  - Authored `docs/deploy/ENV_MATRIX.md` detailing every environment variable across all 5 services.
+  - Authored `docs/deploy/REAL_PHONE_TEST.md` for safe 1-call speakerphone evaluation.
+  - Created `scripts/smoke_live.py` and executed live verification: **11/11 smoke checks passed (100%)** (`docs/deploy/SMOKE_REPORT.md`).
+  - All 184 tests pass cleanly (`.venv\Scripts\python.exe -m pytest -q` passed in 142s, 0 failures, 0 credits burned).
+
 - **R0. System Audit & Comprehensive DESIGN.md Rewrite:**
   - Audited 42 frontend routes and 43 UI components across `apps/site`, `apps/app`, `apps/admin`, `apps/web`, and `packages/ui`.
   - Rewrote root `DESIGN.md` and `docs/design/DESIGN.md`, completely replacing residual German deal templates with Kavach's 4-stage Risk Scale (Calm, Caution L1, Alert L2, Emergency L3), elder kiosk accessibility rules ($\ge 48\text{px}$ status, $\ge 24\text{px}$ body, $\ge 56\text{px}$ touch targets, $\ge 7:1$ WCAG AAA contrast), admin console density tokens, and 120/180/240ms motion standards.
