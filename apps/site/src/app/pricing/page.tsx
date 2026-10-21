@@ -43,15 +43,48 @@ export default function PricingPage() {
     setValidatingCoupon(true);
     setCouponError('');
     try {
-      const res = await mockApi.validateCoupon(couponCode);
-      if (res.valid) {
-        setAppliedCoupon(res);
+      const res = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: couponCode.trim(),
+          plan_id: 'plus',
+          billing_cycle: billingCycle,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.valid) {
+          setAppliedCoupon({
+            code: data.code,
+            discountType: data.discount_type === 'percent' ? 'percent' : 'flat',
+            discountValue: data.discount_paise ? Math.round(data.discount_paise / 100) : 10,
+            valid: true,
+            message: data.message || 'Coupon applied successfully!',
+          });
+          return;
+        } else {
+          setCouponError(data.message || 'Invalid coupon code');
+          setAppliedCoupon(null);
+          return;
+        }
+      }
+      // Fallback to mock adapter if server returned error or offline
+      const mockRes = await mockApi.validateCoupon(couponCode);
+      if (mockRes.valid) {
+        setAppliedCoupon(mockRes);
       } else {
-        setCouponError(res.message);
+        setCouponError(mockRes.message);
         setAppliedCoupon(null);
       }
     } catch {
-      setCouponError('Failed to validate coupon');
+      const mockRes = await mockApi.validateCoupon(couponCode);
+      if (mockRes.valid) {
+        setAppliedCoupon(mockRes);
+      } else {
+        setCouponError(mockRes.message);
+        setAppliedCoupon(null);
+      }
     } finally {
       setValidatingCoupon(false);
     }

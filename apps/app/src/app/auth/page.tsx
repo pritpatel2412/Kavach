@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Button,
@@ -12,13 +12,41 @@ import { BRAND } from '@kavach/api-contract';
 
 export default function AuthPage() {
   const router = useRouter();
-  const [method, setMethod] = useState<'phone' | 'email' | 'passkey'>('phone');
+  const [method, setMethod] = useState<'phone' | 'email' | 'passkey'>('email');
   const [phone, setPhone] = useState('+91 98765 43210');
   const [email, setEmail] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [magicLinkError, setMagicLinkError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      if (token) {
+        setIsLoading(true);
+        fetch('/api/auth/guardian/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        })
+          .then(async (res) => {
+            if (res.ok) {
+              const data = await res.json();
+              localStorage.setItem('kavach_guardian_token', data.session_id);
+              if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
+              if (data.guardian?.email) localStorage.setItem('kavach_guardian_email', data.guardian.email);
+              router.push('/');
+            } else {
+              setIsLoading(false);
+            }
+          })
+          .catch(() => setIsLoading(false));
+      }
+    }
+  }, [router]);
 
   const handleSendOtp = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,13 +88,29 @@ export default function AuthPage() {
     setOtp(['1', '2', '3', '4', '5', '6']);
   };
 
-  const handleMagicLink = (e: React.FormEvent) => {
+  const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim()) return;
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    setMagicLinkError('');
+    try {
+      const res = await fetch('/api/auth/guardian/magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      });
+      if (res.ok) {
+        setMagicLinkSent(true);
+      } else {
+        const data = await res.json();
+        setMagicLinkError(data.detail?.message || 'Could not send magic link.');
+      }
+    } catch {
+      // Offline fallback
       setMagicLinkSent(true);
-    }, 600);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSimulateOpenMagicLink = () => {

@@ -118,7 +118,30 @@ export default function AdminConsolePage() {
     setTimeout(() => setActionSuccess(null), 3000);
   };
 
-  const handleSimulateCoupon = () => {
+  const handleSimulateCoupon = async () => {
+    try {
+      const res = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: simCode.trim(),
+          plan_id: 'plus',
+          billing_cycle: 'monthly',
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.valid) {
+          setSimResult(`VALID: ${data.code} applied (${data.discount_paise ? (data.discount_paise / 100).toFixed(2) : '10'} INR discount). ${data.message || ''}`);
+          return;
+        } else {
+          setSimResult(`INVALID: ${data.message || 'Code invalid or expired.'}`);
+          return;
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
     if (simCode.toUpperCase() === 'DEMO50') {
       setSimResult('VALID: 50% discount applies to Plus/Family. Discounted price: ₹74.50 (pre-tax: ₹63.14 + ₹11.36 GST). 60% cap respected.');
     } else if (simCode.toUpperCase() === 'DIWALI60') {
@@ -210,11 +233,11 @@ export default function AdminConsolePage() {
             <span className="text-caption font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-sm">
               OPS CONSOLE
             </span>
-            <span className="text-[11px] font-bold text-muted px-2 py-0.5 rounded-sm bg-canvas border border-hairline">
-              v1.5.0-prod
+            <span className="text-[11px] font-bold text-hot bg-hot/10 border border-hot/20 px-2 py-0.5 rounded-sm">
+              Preview
             </span>
-            <span className="text-[11px] font-bold text-green-strong px-2 py-0.5 rounded-sm bg-green-surface border border-green-light">
-              PORT 3002
+            <span className="text-[11px] font-bold text-muted px-2 py-0.5 rounded-sm bg-canvas border border-hairline">
+              v1.5.0
             </span>
           </div>
         </div>

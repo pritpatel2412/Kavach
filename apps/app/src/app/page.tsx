@@ -349,7 +349,10 @@ export default function GuardianDashboardPage() {
         {/* TAB 2: ALERTS FEED */}
         {activeTab === 'alerts' && (
           <div className="space-y-4 max-w-4xl">
-            <h2 className="text-heading font-bold text-ink">Incident Audit Ledger</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-heading font-bold text-ink">Incident Audit Ledger</h2>
+              <Badge variant="neutral">Sample data</Badge>
+            </div>
             <div className="space-y-4">
               {recentAlerts.map((alert) => (
                 <Card key={alert.id} padding="lg" className="space-y-3">

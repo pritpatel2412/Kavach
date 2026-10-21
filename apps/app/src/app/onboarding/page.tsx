@@ -387,7 +387,7 @@ export default function OnboardingPage() {
                   {pairingCode}
                 </div>
                 <p className="text-ui text-body max-w-sm mx-auto">
-                  On the tablet, navigate to <code className="text-green-strong font-mono font-bold">localhost:3001/elder</code>, enter this code, and have <strong>{elderName}</strong> tap the on-screen consent prompt (Notice version <code className="font-mono text-primary font-bold">2026-10-elder-v1</code>) to activate Tabletop Mode.
+                  On the tablet, navigate to <code className="text-green-strong font-mono font-bold">{BRAND.appUrl}/elder</code>, enter this code, and have <strong>{elderName}</strong> tap the on-screen consent prompt (Notice version <code className="font-mono text-primary font-bold">2026-10-elder-v1</code>) to activate Tabletop Mode.
                 </p>
               </div>
 

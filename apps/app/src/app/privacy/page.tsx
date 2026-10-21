@@ -16,8 +16,13 @@ export default function PrivacyRightsPage() {
   const [voiceDeleted, setVoiceDeleted] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const handleDeleteVoice = () => {
+  const handleDeleteVoice = async () => {
     setVoiceDeleted(true);
+    try {
+      await fetch('/api/voice/demo', { method: 'DELETE' });
+    } catch {
+      // Offline fallback
+    }
     setTimeout(() => {
       alert('Voice embedding vectors and pre-rendered emergency audio files permanently deleted from storage.');
     }, 200);

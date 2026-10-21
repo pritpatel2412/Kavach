@@ -28,8 +28,34 @@ export default function BillingPage() {
     { id: 'INV-2026-0901', date: '01 Sep 2026', amount: '₹149', plan: 'Kavach Plus (Monthly)', status: 'Paid via UPI' },
   ];
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!couponCode.trim()) return;
+    try {
+      const res = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: couponCode.trim(),
+          plan_id: selectedPlanId === 'free' ? 'plus' : selectedPlanId,
+          billing_cycle: 'monthly',
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.valid) {
+          setDiscountPercent(data.discount_paise ? 50 : 20);
+          setCouponStatus(`success: ${data.code} applied! ${data.message || 'Discount applied.'}`);
+          return;
+        } else {
+          setDiscountPercent(0);
+          setCouponStatus(`error: ${data.message || 'Invalid coupon code.'}`);
+          return;
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
     if (couponCode.trim().toUpperCase() === 'DEMO50') {
       setDiscountPercent(50);
       setCouponStatus('success: DEMO50 applied! 50% discount applied to your next renewal.');
@@ -266,7 +292,10 @@ export default function BillingPage() {
 
         {/* GST Invoices Table */}
         <div className="space-y-4">
-          <h2 className="text-heading font-bold text-ink">Billing History &amp; GST Invoices</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-heading font-bold text-ink">Billing History &amp; GST Invoices</h2>
+            <Badge variant="neutral">Sample data</Badge>
+          </div>
 
           <div className="space-y-2">
             {invoices.map((inv) => (
@@ -301,10 +330,14 @@ export default function BillingPage() {
       <Modal
         isOpen={paymentModalOpen}
         onClose={() => setPaymentModalOpen(false)}
-        title="Razorpay Secure Checkout (Simulated)"
-        description="Private beta payment gateway. No real credit card or UPI funds will be charged."
+        title="Secure Checkout · FakeProvider (Test Mode)"
+        description="Private beta payment gateway. Zero real money is charged (Test mode)."
       >
         <div className="space-y-4 pt-2 text-caption font-medium">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-micro font-bold text-muted uppercase tracking-wider">Gateway Status</span>
+            <Badge variant="accent">Test mode</Badge>
+          </div>
           <div className="p-4 bg-canvas rounded-md border border-hairline flex justify-between items-center">
             <div>
               <span className="font-bold text-ink block text-ui">Selected Subscription</span>

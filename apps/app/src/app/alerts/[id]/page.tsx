@@ -81,9 +81,21 @@ export default function AlertDetailPage() {
     setIsIntercomActive(false);
   };
 
-  const handleSendFeedback = (type: 'confirmed-scam' | 'false-alarm') => {
+  const handleSendFeedback = async (type: 'confirmed-scam' | 'false-alarm') => {
     setFeedbackType(type);
     setFeedbackSent(true);
+    try {
+      await fetch(`/api/sessions/${alertId}/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          verdict: type === 'confirmed-scam' ? 'confirmed_scam' : 'false_positive',
+          reason: type === 'false-alarm' ? falseAlarmReason : undefined,
+        }),
+      });
+    } catch {
+      // Offline fallback
+    }
   };
 
   return (
@@ -114,6 +126,7 @@ export default function AlertDetailPage() {
               <h1 className="text-heading font-heading font-bold text-ink">
                 Critical Incident: Digital Arrest Extortion Attempt
               </h1>
+              <Badge variant="neutral">Sample data</Badge>
             </div>
             <span className="text-caption font-mono text-muted">Today at 10:14 AM IST</span>
           </div>
