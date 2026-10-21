@@ -23,6 +23,7 @@ from .routes_voice import router as voice_router
 from .routes_waitlist import admin_waitlist_router, public_waitlist_router
 from .routes_guardian_auth import router as guardian_auth_router
 from .neon_service import neon_router
+from .routes_demo_sandbox import router as sandbox_router
 from .session import SessionRunner
 
 
@@ -102,6 +103,7 @@ app.include_router(admin_modules_router)
 app.include_router(public_content_router)
 app.include_router(guardian_auth_router)
 app.include_router(neon_router)
+app.include_router(sandbox_router)
 
 
 

@@ -10,6 +10,7 @@
 | 6 | 13 Oct | Evon not on critical path | Not on API platform; needs big GPU | Accepted |
 | 7 | 13 Oct | S5 phrases kept specific; fuzzy only >= 14 chars | Regression found by first eval run | Accepted |
 | 8 | 13 Oct | AGENTS.md is the source of truth; AGENT.md/CLAUDE.md/GEMINI.md point to it | Antigravity and others read AGENTS.md/GEMINI.md | Accepted |
+| 9 | 21 Oct | D8 Demo Sandbox: Ephemeral 2h TTL household (`POST /api/demo/sandbox`), client IP rate limited, strictly mock STT only (zero paid credit burn), no outbound email or Telegram dispatch. Static demo retained on `/demo`. | Enables evaluators/judges to try an interactive household without entering personal data, while strictly preventing credit exhaustion and spam. | Accepted [needs owner sign-off on deploy] |
 
 ## Spike outcomes (fill in)
 | Spike | Result | Consequence |
