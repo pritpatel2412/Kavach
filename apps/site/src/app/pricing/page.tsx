@@ -57,8 +57,7 @@ export default function PricingPage() {
         if (data.valid) {
           setAppliedCoupon({
             code: data.code,
-            discountType: data.discount_type === 'percent' ? 'percent' : 'flat',
-            discountValue: data.discount_paise ? Math.round(data.discount_paise / 100) : 10,
+            discountPercent: data.discount_type === 'percent' ? (data.discount_value || 50) : 10,
             valid: true,
             message: data.message || 'Coupon applied successfully!',
           });

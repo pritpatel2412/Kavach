@@ -3,10 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@kavach/ui', '@kavach/api-contract'],
   async rewrites() {
-    const apiOrigin = process.env.API_ORIGIN || process.env.NEXT_PUBLIC_API_URL || process.env.KAVACH_PUBLIC_URL || 'http://localhost:8000';
-    const appUrl = process.env.APP_URL || 'http://localhost:3001';
-    const adminUrl = process.env.ADMIN_URL || 'http://localhost:3002';
-    const demoUrl = process.env.DEMO_URL || `${apiOrigin}`;
+    const clean = (u) => (u ? u.trim().replace(/\/+$/, '') : '');
+    const apiOrigin = clean(process.env.API_ORIGIN || process.env.NEXT_PUBLIC_API_URL || process.env.KAVACH_PUBLIC_URL) || 'http://localhost:8000';
+    const appUrl = clean(process.env.APP_PROJECT_ORIGIN || process.env.APP_URL) || 'http://localhost:3001';
+    const adminUrl = clean(process.env.ADMIN_PROJECT_ORIGIN || process.env.ADMIN_URL) || 'http://localhost:3002';
+    const demoUrl = clean(process.env.DEMO_PROJECT_ORIGIN || process.env.DEMO_URL) || `${apiOrigin}`;
 
     const rules = [
       // Direct backend API proxy (same-origin, eliminates browser CORS)
