@@ -90,7 +90,7 @@ async def list_households(
             LEFT JOIN elders e ON e.guardian_id = g.id
             LEFT JOIN subscriptions s ON s.household_id = g.id
             GROUP BY g.id
-            ORDER BY g.rowid DESC LIMIT ? OFFSET ?;
+            ORDER BY g.created_at DESC, g.id DESC LIMIT ? OFFSET ?;
             """,
             (limit, offset),
         ).fetchall()

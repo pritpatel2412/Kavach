@@ -99,7 +99,7 @@ def test_audit_hash_chain_tamper_detection():
 
     # Tamper with the second row's payload directly in SQLite
     with db.db() as conn:
-        cursor = conn.execute("SELECT id FROM audit_log ORDER BY rowid ASC LIMIT 1 OFFSET 1;")
+        cursor = conn.execute("SELECT id FROM audit_log ORDER BY created_at ASC, id ASC LIMIT 1 OFFSET 1;")
         tamper_id = cursor.fetchone()[0]
         conn.execute("UPDATE audit_log SET payload_masked = '{\"tampered\": true}' WHERE id = ?;", (tamper_id,))
 

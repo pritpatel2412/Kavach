@@ -10,6 +10,7 @@ os.environ.setdefault("LLM_PROVIDER", "")
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
+    monkeypatch.delenv("DATABASE_URL", raising=False)
     monkeypatch.setenv("KAVACH_MOCK_STT", os.environ.get("KAVACH_MOCK_STT", "1"))
     monkeypatch.setenv("MOCK_SEGMENT_INTERVAL_S", "0.01")
     monkeypatch.setenv("KAVACH_DB", str(tmp_path / "kavach.db"))

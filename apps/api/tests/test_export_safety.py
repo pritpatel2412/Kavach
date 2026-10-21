@@ -204,7 +204,7 @@ def test_export_jobs_list_and_audit():
     # Verify audit_log entry
     with db.db() as conn:
         audit_row = conn.execute(
-            "SELECT action, entity_type, payload_masked FROM audit_log WHERE action = 'create_export' ORDER BY rowid DESC LIMIT 1;"
+            "SELECT action, entity_type, payload_masked FROM audit_log WHERE action = 'create_export' ORDER BY created_at DESC, id DESC LIMIT 1;"
         ).fetchone()
         assert audit_row is not None
         assert audit_row[0] == "create_export"

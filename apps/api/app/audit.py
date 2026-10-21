@@ -99,7 +99,7 @@ def record_audit_event(
     created_at = datetime.now(timezone.utc).isoformat()
 
     with db.db() as conn:
-        cursor = conn.execute("SELECT hash FROM audit_log ORDER BY rowid DESC LIMIT 1;")
+        cursor = conn.execute("SELECT hash FROM audit_log ORDER BY created_at DESC, id DESC LIMIT 1;")
         row = cursor.fetchone()
         prev_hash = row[0] if row else GENESIS_HASH
 
@@ -158,7 +158,7 @@ def verify_audit_chain() -> dict:
             """
             SELECT id, prev_hash, actor_email, action, entity_type, entity_id,
                    payload_masked, ip, user_agent, created_at, hash
-            FROM audit_log ORDER BY rowid ASC;
+            FROM audit_log ORDER BY created_at ASC, id ASC;
             """
         )
         rows = cursor.fetchall()
@@ -240,7 +240,7 @@ def list_audit_events(
         SELECT id, prev_hash, actor_email, action, entity_type, entity_id,
                payload_masked, ip, user_agent, created_at, hash
         FROM audit_log {where}
-        ORDER BY rowid DESC
+        ORDER BY created_at DESC, id DESC
         LIMIT ? OFFSET ?;
     """
     params.extend([limit, offset])

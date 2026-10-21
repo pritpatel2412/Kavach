@@ -101,7 +101,7 @@ def _fetch_module_data(module: str, filters: dict[str, Any] | None, reveal_pii: 
             return cols, records
 
         elif module == "audit_log":
-            rows = conn.execute("SELECT id, prev_hash, actor_email, action, entity_type, entity_id, payload_masked, hash, created_at FROM audit_log ORDER BY rowid DESC LIMIT 500;").fetchall()
+            rows = conn.execute("SELECT id, prev_hash, actor_email, action, entity_type, entity_id, payload_masked, hash, created_at FROM audit_log ORDER BY created_at DESC, id DESC LIMIT 500;").fetchall()
             cols = ["id", "prev_hash", "actor_email", "action", "entity_type", "entity_id", "payload_masked", "hash", "created_at"]
             records = []
             for r in rows:
