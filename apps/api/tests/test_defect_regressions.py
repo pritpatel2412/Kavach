@@ -110,8 +110,9 @@ def test_d009_opengraph_and_twitter_meta_tags():
 def test_rebrand_script_execution():
     """X6 Rebranding: scripts/rebrand.py must update environment variables without errors."""
     import subprocess
+    import sys
     cmd = [
-        str(ROOT / ".venv" / "Scripts" / "python.exe"),
+        sys.executable,
         str(ROOT / "scripts" / "rebrand.py"),
         "--name", "Kavach",
         "--domain", "kavach.ai",

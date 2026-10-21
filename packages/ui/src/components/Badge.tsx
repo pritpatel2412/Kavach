@@ -9,6 +9,7 @@ export type BadgeVariant =
   | 'premium'
   | 'primary'
   | 'warning'
+  | 'accent'
   | 'neutral-subtle'
   | 'filled'
   | 'hot'
@@ -31,6 +32,7 @@ export const Badge: React.FC<BadgeProps> = ({
 }) => {
   // Normalize legacy and alias variants
   let resolvedVariant = variant;
+  if (variant === 'accent') resolvedVariant = 'primary';
   if (variant === 'neutral-subtle' || variant === 'filled') resolvedVariant = 'neutral';
   if (variant === 'cold') resolvedVariant = 'calm';
   if (variant === 'hot') resolvedVariant = 'alert';

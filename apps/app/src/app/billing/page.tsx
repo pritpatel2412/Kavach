@@ -336,7 +336,7 @@ export default function BillingPage() {
         <div className="space-y-4 pt-2 text-caption font-medium">
           <div className="flex items-center justify-between pb-1">
             <span className="text-micro font-bold text-muted uppercase tracking-wider">Gateway Status</span>
-            <Badge variant="accent">Test mode</Badge>
+            <Badge variant="primary">Test mode</Badge>
           </div>
           <div className="p-4 bg-canvas rounded-md border border-hairline flex justify-between items-center">
             <div>

@@ -132,6 +132,9 @@ def test_false_alarm_review_and_detector_diff():
 
 def test_credits_ledger_and_cooling_period():
     """Verify credits adjustments require step-up and enforce 10-minute cooling period."""
+    from app.routes_modules import _last_credit_adjustment
+    _last_credit_adjustment.clear()
+
     client = TestClient(app)
     cookies, csrf_token, totp = _login_owner(client)
     for k, v in cookies.items():
