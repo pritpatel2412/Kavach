@@ -70,9 +70,9 @@ export default function StyleguidePage() {
             <div>
               <p className="text-ui font-bold text-ink mb-2">Variants (Default, Hover, Active):</p>
               <div className="flex flex-wrap items-center gap-3">
-                <Button variant="primary">button-primary ("Zum Deal")</Button>
-                <Button variant="outline-green">button-outline-green ("+ Beitrag")</Button>
-                <Button variant="outline-neutral">button-outline-neutral ("Menü")</Button>
+                <Button variant="primary">button-primary ("Take Action")</Button>
+                <Button variant="outline-green">button-outline-green ("+ Report Scam")</Button>
+                <Button variant="outline-neutral">button-outline-neutral ("Menu")</Button>
                 <Button variant="muted">button-muted</Button>
                 <Button variant="tag">button-tag</Button>
                 <Button variant="danger">button-danger</Button>
@@ -234,7 +234,7 @@ export default function StyleguidePage() {
                 White surface, hairline border, 8px radius, 16px padding, level-2 shadow on hover.
               </p>
             </div>
-            <TimestampPill>Gepostet vor 12m</TimestampPill>
+            <TimestampPill>Posted 12m ago</TimestampPill>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -250,7 +250,7 @@ export default function StyleguidePage() {
                 temperature={94}
                 merchant="CBI Extortion Scheme"
                 author="Community Alert #841"
-                timestamp="Gepostet vor 8m"
+                timestamp="Posted 8m ago"
                 title="Fake Arrest Warrant & Safe Account Demand: +91 98210 99841"
                 price="₹2,50,000"
                 originalPrice="Demand"
@@ -275,7 +275,7 @@ export default function StyleguidePage() {
                 temperature={67}
                 merchant="FedEx Customs Fraud"
                 author="Kavach Sensor"
-                timestamp="Gepostet vor 1h"
+                timestamp="Posted 1h ago"
                 title="Illegal Narcotics in Taiwan Parcel: IVR Robocall Phishing"
                 price="₹0"
                 discount="HIGH RISK"
