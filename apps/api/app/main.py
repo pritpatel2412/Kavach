@@ -63,18 +63,22 @@ app = FastAPI(title="Kavach API", version="0.3.0", lifespan=lifespan)
 
 # S3-F: Locked CORS origins (includes frontend origins, admin origin, and ALLOWED_ORIGINS)
 _s = get_settings()
-_allowed_env = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
+_allowed_env = [o.strip().rstrip("/") for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
+_app_origins = [o.strip().rstrip("/") for o in [os.getenv("APP_ORIGIN", ""), os.getenv("PUBLIC_APP_URL", ""), os.getenv("APP_PROJECT_ORIGIN", "")] if o.strip()]
 _allowed = list({
-    _s.public_url,
-    _s.public_site_url,
-    _s.admin_origin,
-    *_allowed_env,
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:3002",
-    "http://127.0.0.1:3002",
-    "http://localhost:3001",
-    "http://localhost:3000",
+    o for o in [
+        _s.public_url,
+        _s.public_site_url,
+        _s.admin_origin,
+        *_app_origins,
+        *_allowed_env,
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:3002",
+        "http://127.0.0.1:3002",
+        "http://localhost:3001",
+        "http://localhost:3000",
+    ] if o
 })
 app.add_middleware(
     CORSMiddleware,

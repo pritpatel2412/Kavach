@@ -102,7 +102,7 @@ def get_settings() -> Settings:
         web_dir=ROOT / "apps" / "web",
         fixtures_dir=ROOT / "fixtures",
         db_path=Path(os.getenv("KAVACH_DB", str(ROOT / "data" / "kavach.db"))),
-        public_url=os.getenv("KAVACH_PUBLIC_URL", "http://localhost:8000").rstrip("/"),
+        public_url=os.getenv("PUBLIC_URL", os.getenv("KAVACH_PUBLIC_URL", os.getenv("RENDER_EXTERNAL_URL", "http://localhost:8000"))).rstrip("/"),
         public_site_url=os.getenv("PUBLIC_SITE_URL", os.getenv("KAVACH_PUBLIC_SITE_URL", "http://localhost:3000")).rstrip("/"),
         liveness_threshold=float(os.getenv("LIVENESS_THRESHOLD", "75")),
         llm_provider=os.getenv("LLM_PROVIDER", "").strip(),
