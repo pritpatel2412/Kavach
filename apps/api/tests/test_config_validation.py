@@ -194,3 +194,39 @@ def test_validate_config_prod_valid_passes():
     )
     # Must pass without error
     validate_config(s)
+
+
+def test_validate_config_prod_allows_console_and_mock_when_explicitly_flagged(monkeypatch):
+    monkeypatch.setenv("ALLOW_CONSOLE_EMAIL", "1")
+    monkeypatch.setenv("ALLOW_PROD_MOCK", "1")
+    s = make_settings(
+        deploy_mode="production",
+        secret_key="a_very_secure_high_entropy_secret_123456",
+        database_url="postgresql://user:pass@ep-host.neon.tech/db?sslmode=require",
+        email_mode="console",
+        public_url="https://api.kavach.ai",
+        public_site_url="https://kavach.ai",
+        admin_origin="https://admin.kavach.ai",
+        mock_stt=True,
+        admin_enabled=True,
+        admin_allowed_emails=("ops@kavach.ai",),
+    )
+    # Must pass without error when flags are set
+    validate_config(s)
+
+
+def test_validate_config_staging_passes():
+    s = make_settings(
+        deploy_mode="staging",
+        secret_key="a_very_secure_high_entropy_secret_123456",
+        database_url="postgresql://user:pass@ep-host.neon.tech/db?sslmode=require",
+        email_mode="console",
+        public_url="https://api.kavach.ai",
+        public_site_url="https://kavach.ai",
+        admin_origin="https://admin.kavach.ai",
+        mock_stt=True,
+        admin_enabled=True,
+        admin_allowed_emails=("ops@kavach.ai",),
+    )
+    validate_config(s)
+

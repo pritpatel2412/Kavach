@@ -171,9 +171,9 @@ def validate_config(settings: Settings | None = None) -> None:
             )
 
         # 3. Email mode must be smtp
-        if settings.email_mode != "smtp":
+        if settings.email_mode != "smtp" and not _bool("ALLOW_CONSOLE_EMAIL", False):
             raise RuntimeError(
-                f"CONFIG HYGIENE ERROR [production]: EMAIL_MODE must be 'smtp' in production (got '{settings.email_mode}'). Console logging is forbidden."
+                f"CONFIG HYGIENE ERROR [production]: EMAIL_MODE must be 'smtp' in production (got '{settings.email_mode}'). Console logging is forbidden unless ALLOW_CONSOLE_EMAIL=1 is set."
             )
 
         # 4. URLs must not be localhost
@@ -188,9 +188,9 @@ def validate_config(settings: Settings | None = None) -> None:
                 )
 
         # 5. Mock STT must not be enabled
-        if settings.mock_stt:
+        if settings.mock_stt and not _bool("ALLOW_PROD_MOCK", False):
             raise RuntimeError(
-                "CONFIG HYGIENE ERROR [production]: KAVACH_MOCK_STT cannot be enabled in production."
+                "CONFIG HYGIENE ERROR [production]: KAVACH_MOCK_STT cannot be enabled in production unless ALLOW_PROD_MOCK=1 is set."
             )
 
         # 6. Admin protection
