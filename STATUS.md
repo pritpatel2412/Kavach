@@ -24,6 +24,32 @@
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
 | Buffer | 9-10 Nov | | |
 
+## Done in Sprint Auth & Live Admin Reflection ("Real Neon Auth & Real Admin Operations")
+- **Neon Auth Magic Link, Forgot Password & Password Reset:**
+  - Configured and activated `magicLink` plugin in `neon_auth.project_config` directly on Neon PostgreSQL.
+  - Verified working Better Auth endpoints on Neon Auth (`ep-misty-boat-a1ja6qe0`):
+    - `POST /sign-in/magic-link` with `{ email, callbackURL }` (returns `{"status": true}`, dispatches real email).
+    - `POST /request-password-reset` with `{ email, redirectTo }` (returns `{"status": true}`, dispatches reset email).
+    - `POST /reset-password` with `{ newPassword, token }` (validates cryptographic reset tokens and updates password).
+    - `POST /sign-in/email` and `POST /sign-up/email` (creates user in `neon_auth.user`, syncs session).
+    - `POST /sign-in/social` (real Google OAuth flow).
+  - Built dedicated `apps/app/src/app/auth/reset/page.tsx` for token capture and password reset handling.
+  - Updated `apps/app/src/app/auth/page.tsx` with dedicated tabs (Mobile OTP, Magic Link, Password, Passkey, Google SSO) and integrated Forgot Password modal.
+- **PostgreSQL Row-Adapter & Query Engine Root-Cause Fix (`apps/api/app/db.py`):**
+  - Resolved root cause where `DbRow` (inheriting from `dict`) yielded column name strings on iteration instead of values, causing `psycopg` to fail tuple unpacking (`ValueError: Invalid isoformat string: 'absolute_expiry'`).
+  - Implemented `__iter__` on `DbRow` returning `iter(self._vals)` to match standard `sqlite3.Row` semantics.
+- **Admin Auth Bearer Token Isolation (`apps/api/app/admin_auth.py`, `apps/api/app/auth.py`):**
+  - Fixed `get_current_admin` and `require_guardian` to safely check `isinstance(..., str)` on `Cookie` and `Header` dependencies, preventing FastAPI param objects from being adapted to SQL placeholders.
+  - Implemented Bearer token authorization bypassing browser cross-origin cookie dropping.
+- **PostgreSQL GROUP BY Compliance (`apps/api/app/routes_modules.py`):**
+  - Updated `list_households` and `list_devices` queries to include non-aggregated columns in `GROUP BY` and use `MAX()` aggregations, eliminating `psycopg.errors.GroupingError`.
+- **Live Admin Console Reflection (`apps/admin/src/app/page.tsx`):**
+  - Fixed ticket detail parsing (`data.ticket || data`).
+  - Added session authentication guard redirecting unauthenticated sessions to `/auth`.
+  - Mapped real database records for Support Tickets (including live tickets `KAV-000104` and `KAV-000105`), Waitlist leads, Households, Devices, and Overview KPIs.
+  - Verified full test suite: **154 / 154 tests passed (100% green, 0 credits burned)**.
+  - Verified production Next.js builds: `@kavach/app` and `@kavach/admin` compiled with code 0.
+
 ## Done in Sprint D ("Deploy: Vercel frontends + container backend + Neon")
 - **D0. Architecture & Deployment Plan (`docs/deploy/DEPLOY_PLAN.md`):**
   - Audited all screens across 4 frontend apps and 32 backend endpoints for live API readiness.
