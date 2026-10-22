@@ -10,8 +10,8 @@ interface AdminBannerProps {
 }
 
 export function AdminBanner({
-  env = 'LOCAL',
-  isDemoData = true,
+  env = typeof window !== 'undefined' && window.location.hostname !== 'localhost' ? 'PROD' : 'LOCAL',
+  isDemoData = false,
   onOpenCommandPalette,
 }: AdminBannerProps) {
   return (
@@ -55,7 +55,7 @@ export function AdminBanner({
             </kbd>
           </button>
         )}
-        <span className="text-micro text-muted font-bold">PORT 3002</span>
+        <span className="text-micro text-muted font-bold">OPERATIONS</span>
       </div>
     </div>
   );

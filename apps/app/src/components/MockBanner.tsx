@@ -3,6 +3,9 @@
 import React from 'react';
 
 export function MockBanner() {
+  if (process.env.NEXT_PUBLIC_MOCK !== '1') {
+    return null;
+  }
   return (
     <div className="bg-canvas text-body px-4 py-1.5 text-caption font-medium flex items-center justify-between z-50 sticky top-0 border-b border-hairline select-none">
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-4">

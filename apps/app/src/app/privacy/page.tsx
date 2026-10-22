@@ -9,7 +9,6 @@ import {
   KavachLogo,
   Badge,
 } from '@kavach/ui';
-import { MockBanner } from '../../components/MockBanner';
 
 export default function PrivacyRightsPage() {
   const router = useRouter();
@@ -57,8 +56,6 @@ export default function PrivacyRightsPage() {
 
   return (
     <div className="min-h-screen bg-canvas text-ink font-sans flex flex-col">
-      <MockBanner />
-
       {/* Header */}
       <header className="bg-surface border-b border-hairline px-4 sm:px-6 lg:px-8 py-3.5 sticky top-8 z-30">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

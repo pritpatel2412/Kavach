@@ -18,12 +18,13 @@ export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
 
   // Form State
-  const [householdName, setHouseholdName] = useState('Iyer Residence');
-  const [city, setCity] = useState('Pune, Maharashtra');
-  const [elderName, setElderName] = useState('Mrs. Kamala Iyer');
-  const [elderPhone, setElderPhone] = useState('+91 98230 11223');
-  const [elderLang, setElderLang] = useState('hindi');
+  const [householdName, setHouseholdName] = useState('');
+  const [city, setCity] = useState('');
+  const [elderName, setElderName] = useState('');
+  const [elderPhone, setElderPhone] = useState('');
+  const [elderLang, setElderLang] = useState('hi-IN');
   const [consentAcknowledged, setConsentAcknowledged] = useState(false);
+  const [createdElderId, setCreatedElderId] = useState<string | null>(null);
 
   // Voice Consent State
   const [livenessPhraseIndex, setLivenessPhraseIndex] = useState(0);
@@ -33,7 +34,7 @@ export default function OnboardingPage() {
   const [usePresetVoice, setUsePresetVoice] = useState(false);
 
   // Pairing code
-  const pairingCode = 'KAV-7892';
+  const [pairingCode, setPairingCode] = useState('KAV-7892');
 
   const steps = [
     { id: '1', title: 'Household' },
@@ -63,6 +64,50 @@ export default function OnboardingPage() {
     setTimeout(() => {
       setPreviewPlaying(false);
     }, 2500);
+  };
+
+  const handleSaveElder = async () => {
+    if (typeof window === 'undefined') return;
+    const token = localStorage.getItem('kavach_guardian_token');
+    if (!token || !elderName.trim()) {
+      setCurrentStep(3);
+      return;
+    }
+    try {
+      const res = await fetch('/api/elders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: elderName.trim(),
+          language: elderLang,
+          phone: elderPhone.trim() || undefined,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCreatedElderId(data.id);
+        const codeRes = await fetch('/api/devices/pairing-code', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ elder_id: data.id }),
+        });
+        if (codeRes.ok) {
+          const codeData = await codeRes.json();
+          if (codeData.code) {
+            setPairingCode(codeData.code);
+          }
+        }
+      }
+    } catch {
+      // offline fallback
+    }
+    setCurrentStep(3);
   };
 
   const handleCompleteOnboarding = () => {
@@ -181,7 +226,7 @@ export default function OnboardingPage() {
                 <Button variant="outline-neutral" size="md" onClick={() => setCurrentStep(1)}>
                   Back
                 </Button>
-                <Button variant="primary" size="md" onClick={() => setCurrentStep(3)} icon="arrow-right-linear">
+                <Button variant="primary" size="md" onClick={handleSaveElder} icon="arrow-right-linear">
                   Review Elder Consent
                 </Button>
               </div>

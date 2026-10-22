@@ -334,3 +334,22 @@ def test_device_pairing_code_elder_consent_and_isolation():
         assert del_a.status_code == 200
         assert del_a.json()["revoked"] is True
 
+
+def test_guardian_phone_login_creates_real_database_session():
+    """Verify phone OTP login registers guardian and issues real database session."""
+    with TestClient(app) as c:
+        phone_payload = {"phone": "+91 99999 12345", "otp": "123456", "name": "Verified Test Guardian"}
+        res = c.post("/api/auth/guardian/phone-login", json=phone_payload)
+        assert res.status_code == 200
+        data = res.json()
+        assert data["ok"] is True
+        assert data["session_id"].startswith("gsess_")
+        session_id = data["session_id"]
+
+        # Call /api/auth/guardian/me using the session token
+        me_res = c.get("/api/auth/guardian/me", headers={"Authorization": f"Bearer {session_id}"})
+        assert me_res.status_code == 200
+        me_data = me_res.json()
+        assert me_data["guardian"]["name"] == "Verified Test Guardian"
+
+

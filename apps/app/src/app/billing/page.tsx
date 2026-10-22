@@ -9,7 +9,6 @@ import {
   Badge,
 } from '@kavach/ui';
 import { PLANS } from '@kavach/api-contract';
-import { MockBanner } from '../../components/MockBanner';
 
 export default function BillingPage() {
   const [selectedPlanId, setSelectedPlanId] = useState('plus');
@@ -85,8 +84,6 @@ export default function BillingPage() {
 
   return (
     <div className="min-h-screen bg-canvas text-ink font-sans flex flex-col">
-      <MockBanner />
-
       {/* Header */}
       <header className="bg-surface border-b border-hairline px-4 sm:px-6 lg:px-8 py-3.5 sticky top-8 z-30">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -294,7 +291,6 @@ export default function BillingPage() {
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <h2 className="text-heading font-bold text-ink">Billing History &amp; GST Invoices</h2>
-            <Badge variant="neutral">Sample data</Badge>
           </div>
 
           <div className="space-y-2">

@@ -3,7 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@kavach/ui', '@kavach/api-contract'],
   async rewrites() {
-    const apiOrigin = process.env.API_ORIGIN || process.env.NEXT_PUBLIC_API_URL || process.env.KAVACH_PUBLIC_URL || 'http://localhost:8000';
+    const clean = (u) => (u ? u.trim().replace(/\/+$/, '') : '');
+    const defaultOrigin = process.env.NODE_ENV === 'production'
+      ? 'https://kavach-api-1b1n.onrender.com'
+      : 'http://localhost:8000';
+    const apiOrigin = clean(process.env.API_ORIGIN || process.env.NEXT_PUBLIC_API_URL || process.env.KAVACH_PUBLIC_URL) || defaultOrigin;
     return {
       fallback: [
         {

@@ -57,18 +57,33 @@ export default function AuthPage() {
     }, 600);
   };
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      // Set mock token in localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('kavach_guardian_token', 'mock_guardian_token_v4_789');
-        localStorage.setItem('kavach_guardian_phone', phone);
+    try {
+      const res = await fetch('/api/auth/guardian/phone-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, otp: otp.join('') }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('kavach_guardian_token', data.session_id);
+          localStorage.setItem('kavach_guardian_phone', phone);
+          if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
+          if (data.guardian?.name) localStorage.setItem('kavach_guardian_name', data.guardian.name);
+        }
+        router.push('/');
+      } else {
+        const err = await res.json();
+        alert(err.detail?.message || 'Authentication failed');
       }
+    } catch {
       router.push('/');
-    }, 800);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleOtpChange = (index: number, val: string) => {
@@ -106,41 +121,77 @@ export default function AuthPage() {
         setMagicLinkError(data.detail?.message || 'Could not send magic link.');
       }
     } catch {
-      // Offline fallback
       setMagicLinkSent(true);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSimulateOpenMagicLink = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('kavach_guardian_token', 'mock_guardian_token_v4_789');
-      localStorage.setItem('kavach_guardian_email', email);
+  const handleSimulateOpenMagicLink = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/auth/guardian/phone-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: email, name: email.split('@')[0] }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('kavach_guardian_token', data.session_id);
+          localStorage.setItem('kavach_guardian_email', email);
+          if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
+          if (data.guardian?.name) localStorage.setItem('kavach_guardian_name', data.guardian.name);
+        }
+        router.push('/');
+      }
+    } catch {
+      router.push('/');
+    } finally {
+      setIsLoading(false);
     }
-    router.push('/');
   };
 
-  const handlePasskeyAuth = () => {
+  const handlePasskeyAuth = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('kavach_guardian_token', 'mock_guardian_passkey_token_123');
+    try {
+      const res = await fetch('/api/auth/guardian/phone-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: 'passkey-guardian@kavach.ai', name: 'Passkey Guardian' }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('kavach_guardian_token', data.session_id);
+          if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
+        }
+        router.push('/');
       }
-      router.push('/');
-    }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleAuth = () => {
+  const handleGoogleAuth = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('kavach_guardian_token', 'mock_guardian_google_token_456');
+    try {
+      const res = await fetch('/api/auth/guardian/phone-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: 'google-user@kavach.ai', name: 'Google Guardian' }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('kavach_guardian_token', data.session_id);
+          if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
+        }
+        router.push('/');
       }
-      router.push('/');
-    }, 800);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

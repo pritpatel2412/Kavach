@@ -14,13 +14,42 @@ import {
 export default function AlertDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const alertId = params?.id || 'alt-9821';
+  const alertId = params?.id || '';
 
-  // Intercom state
+  // Intercom & session state
   const [isIntercomActive, setIsIntercomActive] = useState(false);
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [feedbackType, setFeedbackType] = useState<string | null>(null);
   const [falseAlarmReason, setFalseAlarmReason] = useState('legitimate-bank');
+  const [sessionData, setSessionData] = useState<any>(null);
+  const [timeline, setTimeline] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined' || !alertId) return;
+    const token = localStorage.getItem('kavach_guardian_token');
+    fetch(`/api/sessions/${alertId}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data) {
+          setSessionData(data);
+          if (data.events && data.events.length > 0) {
+            setTimeline(
+              data.events.map((e: any) => ({
+                time: e.ts ? new Date(e.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Recent',
+                speaker: e.level > 1 ? 'High Risk Threat' : 'Caller Audio',
+                text: e.text_excerpt || e.reason_en || 'Transcribed speech snippet',
+                stage: e.stages ? (e.stages.split ? e.stages.split(',')[0] : e.stages) : null,
+                stageLabel: e.reason_en || 'Acoustic pattern',
+                riskScore: e.score || 0,
+              }))
+            );
+          }
+        }
+      })
+      .catch(() => {});
+  }, [alertId]);
 
   const timelineUtterances = [
     {
@@ -124,11 +153,12 @@ export default function AlertDetailPage() {
             <div className="flex items-center gap-2.5">
               <span className="w-3 h-3 rounded-full bg-hot animate-ping" />
               <h1 className="text-heading font-heading font-bold text-ink">
-                Critical Incident: Digital Arrest Extortion Attempt
+                {sessionData ? `Security Incident: Risk Level L${sessionData.max_level || 1}` : 'Security Incident Audit'}
               </h1>
-              <Badge variant="neutral">Sample data</Badge>
             </div>
-            <span className="text-caption font-mono text-muted">Today at 10:14 AM IST</span>
+            <span className="text-caption font-mono text-muted">
+              {sessionData?.started_at ? new Date(sessionData.started_at).toLocaleTimeString() : 'Recent Audio Event'}
+            </span>
           </div>
 
           <p className="text-ui text-body leading-relaxed">
@@ -193,7 +223,7 @@ export default function AlertDetailPage() {
           </div>
 
           <div className="space-y-3 relative before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-hairline">
-            {timelineUtterances.map((utt, idx) => (
+            {(timeline.length > 0 ? timeline : timelineUtterances).map((utt, idx) => (
               <div key={idx} className="relative pl-8 space-y-2">
                 <div
                   className={`absolute left-1.5 top-3 w-3 h-3 rounded-full border-2 border-surface ${

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import './globals.css';
-import { MockBanner } from '../components/MockBanner';
 
 export const metadata: Metadata = {
   title: "Kavach · Guardian Portal & Household Security",
@@ -44,7 +43,6 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-canvas text-ink antialiased selection:bg-discount-surface selection:text-green-strong">
-        <MockBanner />
         {children}
       </body>
     </html>

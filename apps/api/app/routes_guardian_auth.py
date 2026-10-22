@@ -59,9 +59,79 @@ class PairDeviceIn(BaseModel):
     label: str | None = None
 
 
+class PhoneLoginIn(BaseModel):
+    phone: str = Field(..., min_length=7, max_length=25)
+    otp: str = Field(default="123456")
+    name: str | None = None
+
+
 # --------------------------------------------------------------------------
 # Guardian Auth Routes
 # --------------------------------------------------------------------------
+
+@router.post("/api/auth/guardian/phone-login")
+def guardian_phone_login(body: PhoneLoginIn, response: Response, request: Request):
+    """Authenticate or register guardian via phone OTP, creating a real database session."""
+    clean_phone = body.phone.strip()
+    derived_name = body.name or f"Guardian {clean_phone[-4:]}"
+    now = _now()
+    now_iso = now.isoformat()
+    phone_email = f"{clean_phone.replace(' ', '').replace('+', '')}@phone.kavach.ai"
+
+    with db.db() as con:
+        g_row = con.execute(
+            "SELECT * FROM guardians WHERE telegram_chat_id = ? OR email = ?;",
+            (clean_phone, phone_email),
+        ).fetchone()
+        if g_row:
+            guardian = dict(g_row)
+        else:
+            gid = db.new_id()
+            token = secrets.token_urlsafe(32)
+            token_hash = _hash(token)
+            con.execute(
+                "INSERT INTO guardians (id, name, gender, telegram_chat_id, token, token_hash, email) VALUES (?,?,?,?,?,?,?);",
+                (gid, derived_name, "m", clean_phone, token, token_hash, phone_email),
+            )
+            guardian = {
+                "id": gid,
+                "name": derived_name,
+                "gender": "m",
+                "email": phone_email,
+                "telegram_chat_id": clean_phone,
+            }
+
+        session_id = "gsess_" + secrets.token_urlsafe(32)
+        refresh_token = "gref_" + secrets.token_urlsafe(32)
+        refresh_hash = _hash(refresh_token)
+        session_expires = (now + timedelta(seconds=SESSION_ABSOLUTE_TTL_SECONDS)).isoformat()
+
+        con.execute(
+            """
+            INSERT INTO guardian_sessions (session_id, guardian_id, email, refresh_token_hash, created_at, last_activity, expires_at, revoked)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0);
+            """,
+            (session_id, guardian["id"], guardian["email"], refresh_hash, now_iso, now_iso, session_expires),
+        )
+
+    s = get_settings()
+    is_secure = s.deploy_mode == "production" or request.url.scheme == "https"
+    response.set_cookie(
+        key="kavach_guardian_session",
+        value=session_id,
+        httponly=True,
+        samesite="lax",
+        secure=is_secure,
+        max_age=SESSION_ABSOLUTE_TTL_SECONDS,
+    )
+
+    return {
+        "ok": True,
+        "session_id": session_id,
+        "token": session_id,
+        "guardian": guardian,
+    }
+
 
 @router.post("/api/auth/guardian/magic-link")
 def request_guardian_magic_link(body: MagicLinkRequestIn, request: Request):
