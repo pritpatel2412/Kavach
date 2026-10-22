@@ -169,7 +169,8 @@ export default function AdminConsolePage() {
       });
       if (res.ok) {
         const data = await res.json();
-        setSelectedTicketDetail(data.ticket);
+        const ticketObj = data.ticket || data;
+        setSelectedTicketDetail(ticketObj);
         setTicketMessages(data.messages || []);
       }
     } catch (e) {
@@ -240,12 +241,19 @@ export default function AdminConsolePage() {
   };
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('kavach_admin_token');
+      if (!token) {
+        router.push('/auth');
+        return;
+      }
+    }
     fetchRealTickets();
     fetchRealWaitlist();
     fetchRealHouseholds();
     fetchRealDevices();
     fetchRealOverview();
-  }, []);
+  }, [router]);
 
   const handleSendTicketReply = async () => {
     if (!replyText.trim() || !selectedTicketDetail) return;
@@ -1242,13 +1250,13 @@ export default function AdminConsolePage() {
               <div className="space-y-3">
                 {(realHouseholds.length > 0
                   ? realHouseholds.map((hh: any) => ({
-                      id: hh.id,
-                      name: hh.name || `Household ${hh.id.slice(0, 6)}`,
+                      id: hh.household_id || hh.id,
+                      name: hh.name || `Household ${(hh.household_id || hh.id).slice(0, 8)}`,
                       city: 'India',
                       elder: hh.elders_count ? `${hh.elders_count} Elder(s) protected` : 'Protected Elder',
                       phone: hh.telegram_chat_id || 'N/A',
                       plan: hh.plan_id ? `${hh.plan_id.toUpperCase()} Plan` : 'Free Tier',
-                      status: hh.sub_status === 'active' ? 'Armed' : 'Standby',
+                      status: hh.subscription_status === 'active' || hh.sub_status === 'active' ? 'Armed' : 'Standby',
                     }))
                   : [
                       { id: 'HH-8921', name: 'Iyer Residence', city: 'Pune', elder: 'Mrs. K••••• Iyer', phone: '+91 98230 •••••', plan: 'Plus (₹149)', status: 'Armed' },
@@ -1293,13 +1301,13 @@ export default function AdminConsolePage() {
               <div className="space-y-3">
                 {(realDevices.length > 0
                   ? realDevices.map((dev: any) => ({
-                      id: dev.id,
-                      tablet: dev.device_name || dev.device_type || 'Tabletop Kiosk',
-                      household: dev.guardian_id ? `Guardian: ${dev.guardian_id.slice(0, 8)}` : 'Paired Device',
-                      heartbeat: dev.last_heartbeat ? `${new Date(dev.last_heartbeat).toLocaleTimeString('en-IN')}` : 'Active',
+                      id: dev.device_id || dev.id,
+                      tablet: dev.elder_name ? `${dev.elder_name}'s Device (${dev.language})` : (dev.device_name || dev.device_type || 'Tabletop Kiosk'),
+                      household: dev.guardian_name ? `Guardian: ${dev.guardian_name}` : (dev.household_id ? `Household: ${dev.household_id.slice(0, 8)}` : 'Paired Device'),
+                      heartbeat: dev.last_active ? `${new Date(dev.last_active).toLocaleTimeString('en-IN')}` : (dev.last_heartbeat ? `${new Date(dev.last_heartbeat).toLocaleTimeString('en-IN')}` : 'Active'),
                       battery: '100% plugged',
                       audioWorklet: 'Active 16kHz',
-                      status: 'Online',
+                      status: dev.status === 'online' ? 'Online' : 'Standby',
                     }))
                   : [
                       { id: 'DEV-101', tablet: 'Samsung Tab A8', household: 'Iyer Residence', heartbeat: '2s ago', battery: '100% plugged', audioWorklet: 'Active 16kHz', status: 'Online' },

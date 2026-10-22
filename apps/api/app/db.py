@@ -111,7 +111,7 @@ def db_path() -> Path:
 
 
 class DbRow(dict):
-    """Row adapter supporting both dictionary key lookup and integer index lookup."""
+    """Row adapter supporting dictionary key lookup, integer index lookup, and value unpacking like sqlite3.Row."""
     def __init__(self, cols, vals):
         super().__init__(zip(cols, vals))
         self._vals = tuple(vals)
@@ -120,6 +120,12 @@ class DbRow(dict):
         if isinstance(k, int):
             return self._vals[k]
         return super().__getitem__(k)
+
+    def __iter__(self):
+        return iter(self._vals)
+
+    def values(self):
+        return self._vals
 
 
 def _kavach_row_factory(cursor):

@@ -398,9 +398,16 @@ def get_current_admin(
     if not s.admin_enabled:
         raise HTTPException(status_code=404, detail="Admin console is disabled.")
 
-    token = kavach_admin_session
-    if not token and authorization and authorization.startswith("Bearer "):
+    token: str | None = None
+    if isinstance(kavach_admin_session, str) and kavach_admin_session.strip():
+        token = kavach_admin_session.strip()
+    elif request and hasattr(request, "cookies") and request.cookies.get(COOKIE_NAME):
+        token = request.cookies.get(COOKIE_NAME)
+
+    if not token and authorization and isinstance(authorization, str) and authorization.startswith("Bearer "):
         token = authorization.split("Bearer ", 1)[1].strip()
+    elif not token and request and hasattr(request, "headers") and request.headers.get("authorization", "").startswith("Bearer "):
+        token = request.headers.get("authorization").split("Bearer ", 1)[1].strip()
 
     if not token:
         raise HTTPException(status_code=401, detail={"error": "unauthorized", "message": "Admin session or Authorization: Bearer <token> required."})
@@ -435,9 +442,17 @@ def get_current_admin(
     # CSRF protection on mutating requests (POST, PUT, DELETE, PATCH)
     if request.method in ("POST", "PUT", "DELETE", "PATCH"):
         # Explicit Bearer token authorization is immune to browser cross-site request forgery
-        is_bearer = bool(authorization and authorization.startswith("Bearer "))
+        is_bearer = bool(
+            (authorization and isinstance(authorization, str) and authorization.startswith("Bearer "))
+            or (request and hasattr(request, "headers") and request.headers.get("authorization", "").startswith("Bearer "))
+        )
         if not is_bearer:
-            if not x_csrf_token or not hmac.compare_digest(x_csrf_token, csrf_token):
+            csrf_val: str | None = None
+            if isinstance(x_csrf_token, str) and x_csrf_token.strip():
+                csrf_val = x_csrf_token.strip()
+            elif request and hasattr(request, "headers"):
+                csrf_val = request.headers.get("x-csrf-token") or request.headers.get("X-CSRF-Token")
+            if not csrf_val or not hmac.compare_digest(csrf_val, csrf_token):
                 raise HTTPException(status_code=403, detail={"error": "csrf_failed", "message": "Invalid or missing X-CSRF-Token header."})
 
     # Update last activity timestamp

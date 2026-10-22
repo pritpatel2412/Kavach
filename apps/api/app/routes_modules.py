@@ -85,11 +85,11 @@ async def list_households(
             """
             SELECT g.id, g.name, g.telegram_chat_id,
                    COUNT(DISTINCT e.id) as elders_count,
-                   s.plan_id, s.status as sub_status
+                   MAX(s.plan_id) as plan_id, MAX(s.status) as sub_status
             FROM guardians g
             LEFT JOIN elders e ON e.guardian_id = g.id
             LEFT JOIN subscriptions s ON s.household_id = g.id
-            GROUP BY g.id
+            GROUP BY g.id, g.name, g.telegram_chat_id
             ORDER BY g.id DESC LIMIT ? OFFSET ?;
             """,
             (limit, offset),
@@ -206,7 +206,7 @@ async def list_devices(
             FROM elders e
             JOIN guardians g ON e.guardian_id = g.id
             LEFT JOIN sessions s ON s.elder_id = e.id
-            GROUP BY e.id
+            GROUP BY e.id, e.name, e.language, e.guardian_id, g.name
             ORDER BY last_seen DESC;
             """
         ).fetchall()

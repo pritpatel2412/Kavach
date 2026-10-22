@@ -11,9 +11,9 @@ def require_guardian(
     kavach_guardian_session: str | None = Cookie(None),
 ) -> dict:
     raw_token = None
-    if authorization and authorization.startswith("Bearer "):
+    if authorization and isinstance(authorization, str) and authorization.startswith("Bearer "):
         raw_token = authorization.split("Bearer ", 1)[1].strip()
-    elif kavach_guardian_session:
+    elif kavach_guardian_session and isinstance(kavach_guardian_session, str) and kavach_guardian_session.strip():
         raw_token = kavach_guardian_session.strip()
 
     if not raw_token:
