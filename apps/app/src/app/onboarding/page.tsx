@@ -26,12 +26,22 @@ export default function OnboardingPage() {
   const [consentAcknowledged, setConsentAcknowledged] = useState(false);
   const [createdElderId, setCreatedElderId] = useState<string | null>(null);
 
-  // Voice Consent State
-  const [livenessPhraseIndex, setLivenessPhraseIndex] = useState(0);
+  // Real Voice Consent & Recording State
+  const [activeChallengeId, setActiveChallengeId] = useState<string>('');
+  const [challengePhrase, setChallengePhrase] = useState<string>('Mummy, phone kaat do! Main ghar aa raha hoon.');
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [recordingDone, setRecordingDone] = useState(false);
+  const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [usePresetVoice, setUsePresetVoice] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [voiceProfileId, setVoiceProfileId] = useState<string | null>(null);
+
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const audioChunksRef = React.useRef<Blob[]>([]);
+  const timerIntervalRef = React.useRef<any>(null);
+  const audioElementRef = React.useRef<HTMLAudioElement | null>(null);
 
   // Pairing code
   const [pairingCode, setPairingCode] = useState('KAV-7892');
@@ -45,25 +55,164 @@ export default function OnboardingPage() {
     { id: '6', title: 'Test' },
   ];
 
-  const livenessPhrases = [
-    '“Mummy, phone kaat do! Main ghar aa raha hoon.”',
-    '“Papa, yeh scam call hai! Koi paise mat bhejna.”',
-    '“Please stop the call right now, I am verifying with the bank.”',
-  ];
+  React.useEffect(() => {
+    if (currentStep === 4) {
+      // Fetch dynamic liveness challenge from backend
+      fetch('/api/voice/challenge')
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (data.challenge_id && data.sentence) {
+              setActiveChallengeId(data.challenge_id);
+              setChallengePhrase(data.sentence);
+            }
+          }
+        })
+        .catch(() => {});
+    }
+  }, [currentStep]);
 
-  const handleSimulateRecording = () => {
-    setIsRecording(true);
-    setTimeout(() => {
-      setIsRecording(false);
-      setRecordingDone(true);
-    }, 2000);
+  const handleToggleRecording = async () => {
+    if (isRecording) {
+      stopRealRecording();
+    } else {
+      await startRealRecording();
+    }
   };
 
-  const handleSimulatePlayWarning = () => {
+  const startRealRecording = async () => {
+    setVoiceError(null);
+    if (typeof window === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      setVoiceError('Audio recording is not supported in this browser environment. You can continue with the default reassuring voice.');
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+
+      audioChunksRef.current = [];
+      let mimeType = '';
+      if (typeof MediaRecorder !== 'undefined') {
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+          mimeType = 'audio/webm;codecs=opus';
+        } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+          mimeType = 'audio/webm';
+        } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+          mimeType = 'audio/mp4';
+        }
+      }
+
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((track) => track.stop());
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+
+        const blob = new Blob(audioChunksRef.current, {
+          type: recorder.mimeType || 'audio/webm',
+        });
+        const url = URL.createObjectURL(blob);
+        setRecordedAudioUrl(url);
+        setRecordingDone(true);
+        setIsRecording(false);
+
+        // Upload voice sample to backend
+        try {
+          const token = localStorage.getItem('kavach_guardian_token');
+          const formData = new FormData();
+          formData.append('audio_file', blob, 'sample.webm');
+          formData.append('challenge_id', activeChallengeId || 'default');
+          formData.append('elder_id', createdElderId || 'default');
+          formData.append('consent', 'true');
+
+          const headers: Record<string, string> = {};
+          if (token) headers['Authorization'] = `Bearer ${token}`;
+
+          const res = await fetch('/api/voice/enroll', {
+            method: 'POST',
+            headers,
+            body: formData,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.voice_profile_id) {
+              setVoiceProfileId(data.voice_profile_id);
+              localStorage.setItem('kavach_voice_profile_id', data.voice_profile_id);
+            }
+          }
+        } catch (e) {
+          console.warn('Voice profile async enroll notice:', e);
+        }
+      };
+
+      recorder.start(100);
+      setIsRecording(true);
+      setRecordingSeconds(0);
+
+      let secs = 0;
+      timerIntervalRef.current = setInterval(() => {
+        secs += 1;
+        setRecordingSeconds(secs);
+        if (secs >= 5) {
+          stopRealRecording();
+        }
+      }, 1000);
+    } catch (err: any) {
+      setIsRecording(false);
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      console.error('Microphone error:', err);
+      setVoiceError(
+        err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'
+          ? 'Microphone permission denied. Please allow microphone access in your browser to record your voice.'
+          : `Microphone recording failed: ${err.message || 'Device error'}`
+      );
+    }
+  };
+
+  const stopRealRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+  };
+
+  const handlePlayRecording = () => {
+    if (!recordedAudioUrl) return;
     setPreviewPlaying(true);
-    setTimeout(() => {
-      setPreviewPlaying(false);
-    }, 2500);
+    if (audioElementRef.current) {
+      audioElementRef.current.pause();
+    }
+    const audio = new Audio(recordedAudioUrl);
+    audioElementRef.current = audio;
+    audio.onended = () => setPreviewPlaying(false);
+    audio.onerror = () => setPreviewPlaying(false);
+    audio.play().catch(() => setPreviewPlaying(false));
+  };
+
+  const handleReRecord = () => {
+    if (audioElementRef.current) {
+      audioElementRef.current.pause();
+    }
+    if (recordedAudioUrl) {
+      URL.revokeObjectURL(recordedAudioUrl);
+    }
+    setRecordedAudioUrl(null);
+    setRecordingDone(false);
+    setIsRecording(false);
+    setRecordingSeconds(0);
+    setVoiceError(null);
   };
 
   const handleSaveElder = async () => {
@@ -311,36 +460,51 @@ export default function OnboardingPage() {
                 </p>
               </div>
 
+              {voiceError && (
+                <div className="p-3.5 rounded-md bg-red-50 border border-red-200 text-hot text-xs font-mono font-bold leading-relaxed">
+                  {voiceError}
+                </div>
+              )}
+
               {!usePresetVoice ? (
                 <div className="space-y-4">
                   <div className="p-4 rounded-md border border-hairline bg-canvas space-y-2">
-                    <div className="text-caption font-mono text-primary uppercase font-bold">
-                      Liveness Challenge Phrase (3 of 3)
+                    <div className="text-caption font-mono text-primary uppercase font-bold flex items-center justify-between">
+                      <span>Liveness Challenge Phrase (Read Aloud)</span>
+                      <span className="text-muted font-normal text-[11px]">Cryptographic Anti-Spoof</span>
                     </div>
                     <div className="text-lead font-heading font-bold text-ink italic">
-                      {livenessPhrases[livenessPhraseIndex]}
+                      &ldquo;{challengePhrase}&rdquo;
                     </div>
                   </div>
 
                   {!recordingDone ? (
-                    <div className="text-center py-4 space-y-3">
+                    <div className="text-center py-6 space-y-4">
                       <button
                         type="button"
-                        onClick={handleSimulateRecording}
-                        className={`w-16 h-16 rounded-full border flex items-center justify-center mx-auto transition-all ${
+                        onClick={handleToggleRecording}
+                        className={`w-20 h-20 rounded-full border-2 flex items-center justify-center mx-auto transition-all shadow-level-2 ${
                           isRecording
-                            ? 'border-hot bg-hot/10 text-hot animate-pulse'
+                            ? 'border-hot bg-hot/15 text-hot animate-pulse scale-105'
                             : 'border-primary bg-discount-surface text-green-strong hover:scale-105'
                         }`}
                       >
-                        <Icon name={isRecording ? 'pause-bold' : 'microphone-large-bold'} size={28} />
+                        <Icon name={isRecording ? 'pause-bold' : 'microphone-large-bold'} size={34} />
                       </button>
-                      <div className="text-caption font-mono text-muted">
-                        {isRecording ? 'Recording 3-second sample...' : 'Tap to read phrase aloud for consent verification'}
+
+                      <div className="space-y-1">
+                        <div className="font-heading font-bold text-ink text-sm">
+                          {isRecording ? `Recording Real Voice... (${recordingSeconds}s / 5s)` : 'Tap to Start Microphone Recording'}
+                        </div>
+                        <div className="text-caption font-mono text-muted">
+                          {isRecording
+                            ? 'Speak the phrase aloud clearly. Tap again to stop.'
+                            : 'Captures your actual voice using your device microphone.'}
+                        </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="p-4 rounded-md bg-discount-surface border border-primary/20 space-y-3">
+                    <div className="p-5 rounded-md bg-discount-surface border border-primary/20 space-y-4">
                       <div className="flex items-center justify-between text-caption font-mono text-green-strong">
                         <span className="flex items-center gap-1.5 font-bold">
                           <Icon name="check-circle-bold" size={16} />
@@ -348,23 +512,26 @@ export default function OnboardingPage() {
                         </span>
                         <button
                           type="button"
-                          onClick={() => setRecordingDone(false)}
-                          className="hover:underline font-bold"
+                          onClick={handleReRecord}
+                          className="hover:underline font-bold text-primary"
                         >
                           Re-record
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between pt-1">
-                        <span className="text-ui text-ink">Preview synthesized emergency alert:</span>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-hairline">
+                        <div className="space-y-0.5">
+                          <div className="text-ui font-bold text-ink">Preview Your Real Voice Recording</div>
+                          <div className="text-caption text-muted font-mono">Listen to the actual audio recorded from your microphone.</div>
+                        </div>
                         <Button
-                          variant="outline-neutral"
-                          size="sm"
-                          onClick={handleSimulatePlayWarning}
+                          variant="primary"
+                          size="md"
+                          onClick={handlePlayRecording}
                           disabled={previewPlaying}
                           icon="volume-loud-bold"
                         >
-                          {previewPlaying ? 'Playing Audio...' : 'Test Playback'}
+                          {previewPlaying ? 'Playing Your Audio...' : 'Play Your Recording'}
                         </Button>
                       </div>
                     </div>

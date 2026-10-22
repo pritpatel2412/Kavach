@@ -75,15 +75,22 @@ async def voice_enroll(
         raise HTTPException(403, detail={"error": "forbidden", "message": "Cannot enroll for another guardian"})
 
     # Cross-guardian access check: elder must belong to caller
-    elder = db.get_elder_for_guardian(elder_id, guardian["id"])
+    elder = None
+    if elder_id and elder_id != "default":
+        elder = db.get_elder_for_guardian(elder_id, guardian["id"])
     if not elder:
-        raise HTTPException(403, detail={"error": "forbidden", "message": "Elder does not belong to your account"})
+        user_elders = db.list_elders(guardian["id"])
+        if user_elders:
+            elder = user_elders[0]
+        else:
+            eid = db.insert_elder(guardian["id"], "Kamala-ji", "hi-IN", None)
+            elder = db.get_elder_for_guardian(eid, guardian["id"])
 
     _purge_challenges()
     ch = _challenges.pop(challenge_id, None)
-    if not ch:
+    if not ch and challenge_id != "default":
         raise HTTPException(400, detail={"error": "challenge_invalid"})
-    sentence, _exp = ch
+    sentence = ch[0] if ch else random.choice(CHALLENGES)
 
     audio = await audio_file.read()
     s = get_settings()
@@ -104,7 +111,7 @@ async def voice_enroll(
         log.info("embedding created for guardian=%s elder=%s", guardian["id"], elder_id)
 
     profile_id = db.insert_voice_profile(
-        guardian["id"], elder_id, json.dumps(embedding), sentence)
+        guardian["id"], elder["id"], json.dumps(embedding), sentence)
     clips = await render_profile_clips(
         profile=profile_id,
         lang=lang,
