@@ -23,6 +23,7 @@ def setup_sweep_env(tmp_path, monkeypatch):
 def test_anonymous_route_sweep_denial():
     """Assert that EVERY /admin-api endpoint (except public auth intake) strictly denies anonymous access."""
     public_auth_paths = {
+        "/admin-api/auth/login",
         "/admin-api/auth/magic-link",
         "/admin-api/auth/verify-magic-link",
         "/admin-api/auth/verify-totp",

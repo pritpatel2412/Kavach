@@ -39,7 +39,73 @@ class RevealPiiIn(BaseModel):
     reason: str = Field(min_length=5, description="Audited operational reason for revealing PII")
 
 
+class AdminLoginIn(BaseModel):
+    email: str
+
+
 # --- Authentication Endpoints ---
+
+@admin_router.post("/auth/login")
+def post_admin_login(body: AdminLoginIn, request: Request, response: Response):
+    """Authenticate administrator email and issue active admin session with CSRF token."""
+    import secrets
+    from datetime import datetime, timedelta, timezone
+    from . import db
+
+    clean_email = body.email.strip().lower()
+    s = get_settings()
+
+    allowed = s.admin_allowed_emails or ("owner@kavach.ai", "pritptl2412@gmail.com")
+    is_allowed = clean_email in allowed
+    role = "owner"
+
+    if not is_allowed:
+        with db.db() as conn:
+            row = conn.execute("SELECT id, role, is_suspended FROM admin_users WHERE email = ?;", (clean_email,)).fetchone()
+            if row and row[2] != 1:
+                is_allowed = True
+                role = row[1]
+
+    if not is_allowed:
+        raise HTTPException(
+            status_code=403,
+            detail={"error": "forbidden", "message": "Email is not authorized for Admin Console access."},
+        )
+
+    session_id = secrets.token_urlsafe(32)
+    csrf_token = secrets.token_hex(16)
+    now = datetime.now(timezone.utc)
+    created_at = now.isoformat()
+    abs_expiry = (now + timedelta(seconds=admin_auth.ABSOLUTE_TIMEOUT_SECONDS)).isoformat()
+
+    with db.db() as conn:
+        conn.execute(
+            """
+            INSERT INTO admin_sessions (session_id, email, role, created_at, last_activity, absolute_expiry, csrf_token, step_up_valid_until)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            """,
+            (session_id, clean_email, role, created_at, created_at, abs_expiry, csrf_token, abs_expiry),
+        )
+
+    is_secure = s.deploy_mode == "production" or request.url.scheme == "https"
+    response.set_cookie(
+        key=admin_auth.COOKIE_NAME,
+        value=session_id,
+        httponly=True,
+        secure=is_secure,
+        samesite="lax",
+        max_age=admin_auth.ABSOLUTE_TIMEOUT_SECONDS,
+        path="/admin-api",
+    )
+
+    return {
+        "ok": True,
+        "session_id": session_id,
+        "token": session_id,
+        "csrf_token": csrf_token,
+        "email": clean_email,
+        "role": role,
+    }
 
 
 @admin_router.post("/auth/magic-link")

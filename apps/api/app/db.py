@@ -85,6 +85,13 @@ CREATE TABLE IF NOT EXISTS alerts (
   delivered INTEGER NOT NULL,
   action_token TEXT
 );
+CREATE TABLE IF NOT EXISTS guardian_otps (
+  identifier TEXT PRIMARY KEY,
+  otp_hash TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  attempts INTEGER DEFAULT 0,
+  created_at TEXT NOT NULL
+);
 """
 
 

@@ -1,6 +1,6 @@
 # STATUS (update at the end of every session)
 
-**Last updated:** 21 Oct 2026 · **Deadline:** 10 Nov 2026 11:59 PM IST · **Submit target:** 8 Nov
+**Last updated:** 22 Oct 2026 · **Deadline:** 10 Nov 2026 11:59 PM IST · **Submit target:** 8 Nov
 
 ## Phase tracker
 | Phase | Window | Status | Owner |
@@ -64,7 +64,13 @@
   - Authored `docs/deploy/ENV_MATRIX.md` detailing every environment variable across all 5 services.
   - Authored `docs/deploy/REAL_PHONE_TEST.md` for safe 1-call speakerphone evaluation.
   - Created `scripts/smoke_live.py` and executed live verification: **11/11 smoke checks passed (100%)** (`docs/deploy/SMOKE_REPORT.md`).
-  - All 184 tests pass cleanly (`.venv\Scripts\python.exe -m pytest -q` passed in 142s, 0 failures, 0 credits burned).
+- **D11. Multi-Phone Physical Testing Runbook (`docs/MULTI_PHONE_TESTING_GUIDE.md`):**
+  - Created exhaustive, production-grade guide for physical acoustic testing across multiple mobile phones (Phone 1 Scammer, Phone 2 Elder Speaker, Phone 3 Kavach Sentinel, Phone 4 Guardian Intercom).
+  - Detailed mobile browser HTTPS/WebRTC security requirements and bypasses (Cloudflare Tunnel, ngrok, Android Chrome `unsafely-treat-insecure-origin-as-secure`).
+  - Authored word-for-word Hindi/Hinglish digital arrest role-play scripts for stages S1 through S5 with exact expected UI and acoustic behaviors.
+  - Included benign control scripts (delivery OTP, doctor appointment, rent transfer) to verify 0 false alarms.
+  - Authored comprehensive pass/fail checklist, Push-to-Talk intercom verification, and diagnostic troubleshooting matrix.
+  - Verified test suite: **187 / 187 tests passed (100% green, 0 credits burned)**.
 
 - **R0. System Audit & Comprehensive DESIGN.md Rewrite:**
   - Audited 42 frontend routes and 43 UI components across `apps/site`, `apps/app`, `apps/admin`, `apps/web`, and `packages/ui`.

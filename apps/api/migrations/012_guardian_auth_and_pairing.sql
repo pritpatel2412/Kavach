@@ -44,3 +44,11 @@ CREATE TABLE IF NOT EXISTS paired_devices (
   FOREIGN KEY (guardian_id) REFERENCES guardians(id) ON DELETE CASCADE,
   FOREIGN KEY (elder_id) REFERENCES elders(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS guardian_otps (
+  identifier TEXT PRIMARY KEY,
+  otp_hash TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  attempts INTEGER DEFAULT 0,
+  created_at TEXT NOT NULL
+);

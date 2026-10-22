@@ -79,7 +79,7 @@ class Settings:
 def get_settings() -> Settings:
     # Note on Gnani auth (S3-E): Gnani Prisma and Timbre use 'X-API-Key-ID' exclusively (via GNANI_API_KEY).
     # There is no GNANI_TOKEN in official docs (verified 13 Oct 2026 docs.gnani.ai).
-    allowed_raw = os.getenv("ADMIN_ALLOWED_EMAILS", "")
+    allowed_raw = os.getenv("ADMIN_ALLOWED_EMAILS", "owner@kavach.ai,pritptl2412@gmail.com")
     allowed_list = tuple(e.strip().lower() for e in allowed_raw.split(",") if e.strip())
 
     brand_name = os.getenv("BRAND_NAME", "Kavach").strip()

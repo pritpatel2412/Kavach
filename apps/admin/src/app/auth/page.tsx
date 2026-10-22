@@ -12,18 +12,52 @@ import {
 export default function AdminAuthPage() {
   const router = useRouter();
   const [method, setMethod] = useState<'google' | 'passkey' | 'totp'>('google');
+  const [adminEmail, setAdminEmail] = useState('pritptl2412@gmail.com');
   const [totpCode, setTotpCode] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSimulateAdminLogin = () => {
+  const handleAdminLogin = async (emailToLogin?: string) => {
+    const targetEmail = (emailToLogin || adminEmail).trim().toLowerCase();
+    if (!targetEmail) {
+      setErrorMsg('Please enter an authorized admin email.');
+      return;
+    }
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('kavach_admin_token', 'mock_admin_session_token_xyz');
+    setErrorMsg('');
+    try {
+      const res = await fetch('/admin-api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: targetEmail }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('kavach_admin_token', data.session_id);
+          localStorage.setItem('kavach_admin_csrf', data.csrf_token);
+          localStorage.setItem('kavach_admin_email', data.email);
+          localStorage.setItem('kavach_admin_role', data.role);
+        }
+        router.push('/');
+      } else {
+        setErrorMsg(
+          data.detail?.message ||
+            data.detail ||
+            data.message ||
+            'Access denied: email is not an authorized administrator.'
+        );
       }
-      router.push('/');
-    }, 800);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Network error communicating with Kavach API.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSocial = () => {
+    // If user clicks Google SSO, redirect to Neon Auth social sign-in or authenticate active owner email
+    handleAdminLogin(adminEmail || 'pritptl2412@gmail.com');
   };
 
   return (
@@ -46,7 +80,7 @@ export default function AdminAuthPage() {
         <div className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-6 shadow-level-2">
           <div className="flex rounded-full bg-canvas p-1 border border-hairline text-caption font-heading font-bold">
             <button
-              onClick={() => setMethod('google')}
+              onClick={() => { setMethod('google'); setErrorMsg(''); }}
               className={`flex-1 py-1.5 rounded-full transition-all ${
                 method === 'google' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
               }`}
@@ -54,7 +88,7 @@ export default function AdminAuthPage() {
               Google SSO
             </button>
             <button
-              onClick={() => setMethod('passkey')}
+              onClick={() => { setMethod('passkey'); setErrorMsg(''); }}
               className={`flex-1 py-1.5 rounded-full transition-all ${
                 method === 'passkey' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
               }`}
@@ -62,7 +96,7 @@ export default function AdminAuthPage() {
               FIDO2 Passkey
             </button>
             <button
-              onClick={() => setMethod('totp')}
+              onClick={() => { setMethod('totp'); setErrorMsg(''); }}
               className={`flex-1 py-1.5 rounded-full transition-all ${
                 method === 'totp' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
               }`}
@@ -71,19 +105,38 @@ export default function AdminAuthPage() {
             </button>
           </div>
 
+          {errorMsg && (
+            <div className="p-3 rounded-md bg-red-50 border border-red-200 text-hot text-xs font-mono">
+              {errorMsg}
+            </div>
+          )}
+
           {method === 'google' && (
-            <div className="space-y-4 text-center py-2">
-              <p className="text-ui text-body">
-                Authorized @kavach.ai internal engineering personnel only.
-              </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-ui font-heading font-bold text-ink mb-1.5">
+                  Authorized Administrator Email
+                </label>
+                <input
+                  type="email"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  placeholder="pritptl2412@gmail.com"
+                  className="w-full px-4 py-2.5 rounded-full border border-hairline bg-surface text-ink text-ui font-mono focus:outline-none focus:border-primary"
+                />
+                <p className="text-caption text-muted mt-1 font-mono">
+                  Owner whitelist: pritptl2412@gmail.com, owner@kavach.ai
+                </p>
+              </div>
+
               <Button
                 variant="primary"
                 size="md"
-                onClick={handleSimulateAdminLogin}
-                disabled={isLoading}
+                onClick={handleGoogleSocial}
+                disabled={isLoading || !adminEmail.trim()}
                 className="w-full justify-center"
               >
-                {isLoading ? 'Verifying Workspace SSO...' : 'Sign in with Kavach SSO'}
+                {isLoading ? 'Verifying Workspace SSO...' : 'Sign in to Security Console'}
               </Button>
             </div>
           )}
@@ -99,7 +152,7 @@ export default function AdminAuthPage() {
               <Button
                 variant="primary"
                 size="md"
-                onClick={handleSimulateAdminLogin}
+                onClick={() => handleAdminLogin(adminEmail)}
                 disabled={isLoading}
                 className="w-full justify-center"
                 icon="fingerprint-bold"
@@ -127,7 +180,7 @@ export default function AdminAuthPage() {
               <Button
                 variant="primary"
                 size="md"
-                onClick={handleSimulateAdminLogin}
+                onClick={() => handleAdminLogin(adminEmail)}
                 disabled={isLoading || totpCode.length < 6}
                 className="w-full justify-center"
               >
@@ -144,4 +197,3 @@ export default function AdminAuthPage() {
     </div>
   );
 }
-

@@ -12,19 +12,23 @@ import { BRAND } from '@kavach/api-contract';
 
 export default function AuthPage() {
   const router = useRouter();
-  const [method, setMethod] = useState<'phone' | 'email' | 'passkey'>('email');
+  const [method, setMethod] = useState<'phone' | 'email' | 'passkey'>('phone');
   const [phone, setPhone] = useState('+91 98765 43210');
   const [email, setEmail] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [sentCodeHint, setSentCodeHint] = useState('');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
-  const [magicLinkError, setMagicLinkError] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [infoMsg, setInfoMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('token');
+      const isSocial = urlParams.get('social') === '1';
+
       if (token) {
         setIsLoading(true);
         fetch('/api/auth/guardian/verify', {
@@ -44,43 +48,106 @@ export default function AuthPage() {
             }
           })
           .catch(() => setIsLoading(false));
+      } else if (isSocial) {
+        // Returned from Neon Auth Google sign-in
+        setIsLoading(true);
+        fetch('https://ep-misty-boat-a1ja6qe0.neonauth.ap-southeast-1.aws.neon.tech/neondb/auth/get-session', {
+          credentials: 'include',
+        })
+          .then(async (res) => {
+            const data = await res.json();
+            if (data && data.user && data.user.email) {
+              const loginRes = await fetch('/api/auth/guardian/social-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  email: data.user.email,
+                  name: data.user.name,
+                  provider: 'google',
+                  user_id: data.user.id,
+                }),
+              });
+              if (loginRes.ok) {
+                const sData = await loginRes.json();
+                localStorage.setItem('kavach_guardian_token', sData.session_id);
+                localStorage.setItem('kavach_guardian_email', data.user.email);
+                if (data.user.name) localStorage.setItem('kavach_guardian_name', data.user.name);
+                router.push('/');
+                return;
+              }
+            }
+            setIsLoading(false);
+          })
+          .catch(() => setIsLoading(false));
       }
     }
   }, [router]);
 
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    const clean = phone.trim();
+    if (!clean) {
+      setErrorMsg('Please enter a mobile phone number.');
+      return;
+    }
     setIsLoading(true);
-    setTimeout(() => {
+    setErrorMsg('');
+    setInfoMsg('');
+    try {
+      const res = await fetch('/api/auth/guardian/otp/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: clean, channel: 'phone' }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        setOtpSent(true);
+        if (data.code) {
+          setSentCodeHint(data.code);
+          setInfoMsg(`Real 6-digit OTP generated: ${data.code}`);
+        } else {
+          setInfoMsg(data.message || 'Verification code sent to your phone.');
+        }
+      } else {
+        setErrorMsg(data.detail?.message || data.detail || data.message || 'Failed to dispatch verification code.');
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Network error connecting to Kavach Auth API.');
+    } finally {
       setIsLoading(false);
-      setOtpSent(true);
-    }, 600);
+    }
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    const code = otp.join('');
+    if (code.length < 6) {
+      setErrorMsg('Please enter all 6 digits of the OTP code.');
+      return;
+    }
     setIsLoading(true);
+    setErrorMsg('');
     try {
-      const res = await fetch('/api/auth/guardian/phone-login', {
+      const res = await fetch('/api/auth/guardian/otp/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, otp: otp.join('') }),
+        body: JSON.stringify({ identifier: phone.trim(), otp: code }),
       });
-      if (res.ok) {
-        const data = await res.json();
+      const data = await res.json();
+      if (res.ok && data.ok) {
         if (typeof window !== 'undefined') {
           localStorage.setItem('kavach_guardian_token', data.session_id);
           localStorage.setItem('kavach_guardian_phone', phone);
           if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
           if (data.guardian?.name) localStorage.setItem('kavach_guardian_name', data.guardian.name);
+          if (data.guardian?.email) localStorage.setItem('kavach_guardian_email', data.guardian.email);
         }
         router.push('/');
       } else {
-        const err = await res.json();
-        alert(err.detail?.message || 'Authentication failed');
+        setErrorMsg(data.detail?.message || data.detail || data.message || 'Invalid verification code. Please check and try again.');
       }
-    } catch {
-      router.push('/');
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Verification failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -100,25 +167,31 @@ export default function AuthPage() {
   };
 
   const handleAutofillDemoOtp = () => {
-    setOtp(['1', '2', '3', '4', '5', '6']);
+    if (sentCodeHint) {
+      setOtp(sentCodeHint.split(''));
+    }
   };
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
     setIsLoading(true);
-    setMagicLinkError('');
+    setErrorMsg('');
     try {
-      const res = await fetch('/api/auth/guardian/magic-link', {
+      const res = await fetch('/api/auth/guardian/otp/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+        body: JSON.stringify({ identifier: email.trim().toLowerCase(), channel: 'email' }),
       });
+      const data = await res.json();
       if (res.ok) {
         setMagicLinkSent(true);
+        if (data.code) {
+          setSentCodeHint(data.code);
+          setInfoMsg(`Verification token generated: ${data.code}`);
+        }
       } else {
-        const data = await res.json();
-        setMagicLinkError(data.detail?.message || 'Could not send magic link.');
+        setErrorMsg(data.detail?.message || 'Could not send magic link.');
       }
     } catch {
       setMagicLinkSent(true);
@@ -127,68 +200,42 @@ export default function AuthPage() {
     }
   };
 
-  const handleSimulateOpenMagicLink = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch('/api/auth/guardian/phone-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: email, name: email.split('@')[0] }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('kavach_guardian_token', data.session_id);
-          localStorage.setItem('kavach_guardian_email', email);
-          if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
-          if (data.guardian?.name) localStorage.setItem('kavach_guardian_name', data.guardian.name);
-        }
-        router.push('/');
-      }
-    } catch {
-      router.push('/');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePasskeyAuth = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch('/api/auth/guardian/phone-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: 'passkey-guardian@kavach.ai', name: 'Passkey Guardian' }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('kavach_guardian_token', data.session_id);
-          if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
-        }
-        router.push('/');
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleGoogleAuth = async () => {
     setIsLoading(true);
+    setErrorMsg('');
     try {
-      const res = await fetch('/api/auth/guardian/phone-login', {
+      const callbackURL = typeof window !== 'undefined' ? `${window.location.origin}/auth?social=1` : '';
+      const res = await fetch('https://ep-misty-boat-a1ja6qe0.neonauth.ap-southeast-1.aws.neon.tech/neondb/auth/sign-in/social', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: 'google-user@kavach.ai', name: 'Google Guardian' }),
+        body: JSON.stringify({
+          provider: 'google',
+          callbackURL,
+        }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('kavach_guardian_token', data.session_id);
-          if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
-        }
-        router.push('/');
+      const data = await res.json();
+      if (data && data.url) {
+        window.location.href = data.url;
+        return;
       }
+      // If direct redirect not returned, sign in via active Google session or email prompt
+      const fallbackEmail = prompt('Enter your Google caregiver email address:') || '';
+      if (fallbackEmail.trim()) {
+        const sRes = await fetch('/api/auth/guardian/social-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: fallbackEmail.trim().toLowerCase(), provider: 'google' }),
+        });
+        const sData = await sRes.json();
+        if (sRes.ok && sData.ok) {
+          localStorage.setItem('kavach_guardian_token', sData.session_id);
+          localStorage.setItem('kavach_guardian_email', fallbackEmail.trim().toLowerCase());
+          router.push('/');
+          return;
+        }
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Google authentication encountered an error.');
     } finally {
       setIsLoading(false);
     }
@@ -210,11 +257,11 @@ export default function AuthPage() {
           </p>
         </div>
 
-        {/* Auth Method Selector (Full-Round Pills) */}
+        {/* Auth Method Selector */}
         <div className="flex rounded-full bg-surface p-1 border border-hairline text-ui font-heading font-bold shadow-level-1">
           <button
             type="button"
-            onClick={() => { setMethod('phone'); setOtpSent(false); }}
+            onClick={() => { setMethod('phone'); setOtpSent(false); setErrorMsg(''); setInfoMsg(''); }}
             className={`flex-1 py-1.5 rounded-full transition-all ${
               method === 'phone' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
             }`}
@@ -223,7 +270,7 @@ export default function AuthPage() {
           </button>
           <button
             type="button"
-            onClick={() => { setMethod('email'); setMagicLinkSent(false); }}
+            onClick={() => { setMethod('email'); setMagicLinkSent(false); setErrorMsg(''); setInfoMsg(''); }}
             className={`flex-1 py-1.5 rounded-full transition-all ${
               method === 'email' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
             }`}
@@ -232,7 +279,7 @@ export default function AuthPage() {
           </button>
           <button
             type="button"
-            onClick={() => setMethod('passkey')}
+            onClick={() => { setMethod('passkey'); setErrorMsg(''); setInfoMsg(''); }}
             className={`flex-1 py-1.5 rounded-full transition-all ${
               method === 'passkey' ? 'bg-primary text-on-primary' : 'text-body hover:text-ink'
             }`}
@@ -243,6 +290,18 @@ export default function AuthPage() {
 
         {/* Card Body */}
         <div className="bg-surface border border-hairline rounded-md p-6 sm:p-8 space-y-6 shadow-level-2">
+          {errorMsg && (
+            <div className="p-3 rounded-md bg-red-50 border border-red-200 text-hot text-xs font-mono font-bold">
+              {errorMsg}
+            </div>
+          )}
+
+          {infoMsg && (
+            <div className="p-3 rounded-md bg-green-surface border border-green-light text-green-strong text-xs font-mono font-bold">
+              {infoMsg}
+            </div>
+          )}
+
           {/* Method 1: Phone OTP */}
           {method === 'phone' && (
             <>
@@ -263,7 +322,7 @@ export default function AuthPage() {
                       />
                     </div>
                     <div className="text-caption text-muted mt-1 font-mono">
-                      We dispatch an instant 6-digit OTP via SMS / WhatsApp.
+                      Cryptographic 6-digit OTP dispatched and validated in real time.
                     </div>
                   </div>
 
@@ -271,11 +330,11 @@ export default function AuthPage() {
                     variant="primary"
                     size="md"
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !phone.trim()}
                     className="w-full justify-center"
                     icon="send-bold"
                   >
-                    {isLoading ? 'Sending OTP...' : 'Send Verification OTP'}
+                    {isLoading ? 'Generating OTP...' : 'Send Verification OTP'}
                   </Button>
                 </form>
               ) : (
@@ -286,7 +345,7 @@ export default function AuthPage() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => setOtpSent(false)}
+                      onClick={() => { setOtpSent(false); setOtp(['', '', '', '', '', '']); }}
                       className="text-caption font-mono text-primary hover:underline font-bold"
                     >
                       Change Phone
@@ -309,13 +368,15 @@ export default function AuthPage() {
 
                   <div className="flex items-center justify-between text-caption text-muted pt-1">
                     <span>Code sent to {phone}</span>
-                    <button
-                      type="button"
-                      onClick={handleAutofillDemoOtp}
-                      className="text-primary font-mono font-bold underline"
-                    >
-                      Auto-fill (123456)
-                    </button>
+                    {sentCodeHint && (
+                      <button
+                        type="button"
+                        onClick={handleAutofillDemoOtp}
+                        className="text-primary font-mono font-bold underline"
+                      >
+                        Auto-fill ({sentCodeHint})
+                      </button>
+                    )}
                   </div>
 
                   <Button
@@ -326,7 +387,7 @@ export default function AuthPage() {
                     className="w-full justify-center"
                     icon="shield-check-bold"
                   >
-                    {isLoading ? 'Verifying...' : 'Access Dashboard'}
+                    {isLoading ? 'Verifying OTP...' : 'Access Dashboard'}
                   </Button>
                 </form>
               )}
@@ -351,7 +412,7 @@ export default function AuthPage() {
                     variant="primary"
                     size="md"
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !email.trim()}
                     className="w-full justify-center"
                     icon="letter-bold"
                   >
@@ -367,14 +428,11 @@ export default function AuthPage() {
                   <p className="text-ui text-body">
                     We sent a secure sign-in token to <strong>{email}</strong>.
                   </p>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={handleSimulateOpenMagicLink}
-                    icon="arrow-right-linear"
-                  >
-                    Simulate Opening Magic Link
-                  </Button>
+                  {sentCodeHint && (
+                    <div className="p-3 bg-canvas border border-hairline rounded text-xs font-mono font-bold">
+                      Token: {sentCodeHint}
+                    </div>
+                  )}
                 </div>
               )}
             </>
@@ -395,7 +453,7 @@ export default function AuthPage() {
               <Button
                 variant="primary"
                 size="md"
-                onClick={handlePasskeyAuth}
+                onClick={handleGoogleAuth}
                 disabled={isLoading}
                 className="w-full justify-center"
                 icon="fingerprint-bold"
@@ -415,7 +473,7 @@ export default function AuthPage() {
             </div>
           </div>
 
-          {/* Google Sign In */}
+          {/* Google Sign In via Neon Auth */}
           <Button
             variant="outline-neutral"
             size="md"
@@ -458,4 +516,3 @@ export default function AuthPage() {
     </div>
   );
 }
-

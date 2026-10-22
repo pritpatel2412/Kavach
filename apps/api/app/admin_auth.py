@@ -52,7 +52,16 @@ def check_admin_security(request: Request, response: Response) -> None:
     # Check origin for cross-origin admin requests
     origin = request.headers.get("origin")
     if origin:
-        allowed = {s.admin_origin, "http://localhost:3002", "http://127.0.0.1:3002", "http://localhost:3001"}
+        allowed = {
+            s.admin_origin,
+            "https://kavach-admin.vercel.app",
+            "https://kavach-site.vercel.app",
+            "https://kavach-appp.vercel.app",
+            "http://localhost:3002",
+            "http://127.0.0.1:3002",
+            "http://localhost:3001",
+            "http://localhost:3000",
+        }
         if origin not in allowed:
             log.warning("Admin API cross-origin request rejected from %s", origin)
             raise HTTPException(status_code=403, detail="Cross-origin admin requests rejected.")
@@ -381,6 +390,7 @@ def invalidate_admin_session(session_id: str) -> None:
 def get_current_admin(
     request: Request,
     kavach_admin_session: str | None = Cookie(None, alias=COOKIE_NAME),
+    authorization: str | None = Header(None),
     x_csrf_token: str | None = Header(None, alias="X-CSRF-Token"),
 ) -> dict:
     """FastAPI dependency to authenticate admin session, verify CSRF, and check timeouts."""
@@ -388,8 +398,12 @@ def get_current_admin(
     if not s.admin_enabled:
         raise HTTPException(status_code=404, detail="Admin console is disabled.")
 
-    if not kavach_admin_session:
-        raise HTTPException(status_code=401, detail={"error": "unauthorized", "message": "Admin session cookie required."})
+    token = kavach_admin_session
+    if not token and authorization and authorization.startswith("Bearer "):
+        token = authorization.split("Bearer ", 1)[1].strip()
+
+    if not token:
+        raise HTTPException(status_code=401, detail={"error": "unauthorized", "message": "Admin session or Authorization: Bearer <token> required."})
 
     now = datetime.now(timezone.utc)
     with db.db() as conn:
@@ -398,7 +412,7 @@ def get_current_admin(
             SELECT session_id, email, role, created_at, last_activity, absolute_expiry, csrf_token, step_up_valid_until
             FROM admin_sessions WHERE session_id = ?;
             """,
-            (kavach_admin_session,),
+            (token,),
         )
         row = cursor.fetchone()
 
@@ -420,8 +434,11 @@ def get_current_admin(
 
     # CSRF protection on mutating requests (POST, PUT, DELETE, PATCH)
     if request.method in ("POST", "PUT", "DELETE", "PATCH"):
-        if not x_csrf_token or not hmac.compare_digest(x_csrf_token, csrf_token):
-            raise HTTPException(status_code=403, detail={"error": "csrf_failed", "message": "Invalid or missing X-CSRF-Token header."})
+        # Explicit Bearer token authorization is immune to browser cross-site request forgery
+        is_bearer = bool(authorization and authorization.startswith("Bearer "))
+        if not is_bearer:
+            if not x_csrf_token or not hmac.compare_digest(x_csrf_token, csrf_token):
+                raise HTTPException(status_code=403, detail={"error": "csrf_failed", "message": "Invalid or missing X-CSRF-Token header."})
 
     # Update last activity timestamp
     now_iso = now.isoformat()

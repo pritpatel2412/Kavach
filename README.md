@@ -27,6 +27,8 @@ make eval           # evaluate detector across WER levels and ambient audio
 
 > **Important Browser Requirement (HTTPS / Localhost):**
 > Modern web browsers (Chrome, Safari, Edge, Firefox) strictly enforce secure context restrictions: microphone access (`navigator.mediaDevices.getUserMedia`) and the Screen Wake Lock API (`navigator.wakeLock`) are only permitted on `http://localhost`, `http://127.0.0.1`, or via HTTPS. When deploying to a local mobile device over Wi-Fi, run behind a reverse proxy with TLS (e.g. Caddy, mkcert, or ngrok).
+>
+> 📱 **Multi-Phone Real-World Testing:** See the complete [Multi-Phone End-to-End Testing Guide](docs/MULTI_PHONE_TESTING_GUIDE.md) for physical device placement, HTTPS tunnels, scam scripts, intercom tests, and pass/fail criteria.
 
 ### 3. End-to-End Walkthrough
 1. **Guardian Voice Onboarding (`/guardian.html`)**:
