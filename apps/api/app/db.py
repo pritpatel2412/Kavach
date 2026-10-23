@@ -263,6 +263,32 @@ def get_guardian_by_token(token: str) -> dict[str, Any] | None:
         except Exception:
             pass
 
+        # Check Neon Auth active session (neon_auth.session joined with neon_auth.user)
+        try:
+            neon_row = con.execute(
+                """
+                SELECT u.email, u.name FROM neon_auth.session s
+                JOIN neon_auth.user u ON s."userId" = u.id
+                WHERE s.token = ? AND s."expiresAt" > NOW();
+                """,
+                (token,),
+            ).fetchone()
+            if neon_row:
+                nr = _row(neon_row)
+                email = nr["email"].strip().lower()
+                g_match = con.execute("SELECT * FROM guardians WHERE email = ?;", (email,)).fetchone()
+                if g_match:
+                    return _row(g_match)
+                # Create guardian for Neon Auth authenticated user
+                gid = new_id()
+                con.execute(
+                    "INSERT INTO guardians (id, name, gender, token, token_hash, email) VALUES (?,?,?,?,?,?);",
+                    (gid, nr.get("name") or email.split("@")[0], "m", token, hashlib.sha256(token.encode("utf-8")).hexdigest(), email),
+                )
+                return get_guardian(gid)
+        except Exception:
+            pass
+
         # Check legacy token or token_hash in guardians table
         th = hashlib.sha256(token.encode("utf-8")).hexdigest()
         return _row(con.execute("SELECT * FROM guardians WHERE token_hash=? OR token=?", (th, token)).fetchone())

@@ -56,7 +56,7 @@ export default function AuthPage() {
               localStorage.setItem('kavach_guardian_token', data.session_id);
               if (data.guardian?.id) localStorage.setItem('kavach_guardian_id', data.guardian.id);
               if (data.guardian?.email) localStorage.setItem('kavach_guardian_email', data.guardian.email);
-              router.push('/');
+              window.location.href = '/';
             } else {
               setIsLoading(false);
             }
@@ -65,10 +65,31 @@ export default function AuthPage() {
       } else if (isSocial || isMagic) {
         // Returned from Neon Auth Google or Magic Link sign-in
         setIsLoading(true);
-        fetch('https://ep-misty-boat-a1ja6qe0.neonauth.ap-southeast-1.aws.neon.tech/neondb/auth/get-session', {
-          credentials: 'include',
-        })
-          .then(async (res) => {
+
+        const syncSession = async () => {
+          // 1. First sync directly with Kavach API which reads Postgres neon_auth tables
+          try {
+            const neonRes = await fetch(`/api/auth/guardian/neon-session${token ? `?token=${encodeURIComponent(token)}` : ''}`);
+            if (neonRes.ok) {
+              const sData = await neonRes.json();
+              if (sData.ok && sData.session_id) {
+                localStorage.setItem('kavach_guardian_token', sData.session_id);
+                if (sData.guardian?.id) localStorage.setItem('kavach_guardian_id', sData.guardian.id);
+                if (sData.guardian?.email) localStorage.setItem('kavach_guardian_email', sData.guardian.email);
+                if (sData.guardian?.name) localStorage.setItem('kavach_guardian_name', sData.guardian.name);
+                window.location.href = '/';
+                return;
+              }
+            }
+          } catch (e) {
+            console.warn('Backend neon-session sync failed', e);
+          }
+
+          // 2. Fallback: try direct cross-origin get-session
+          try {
+            const res = await fetch('https://ep-misty-boat-a1ja6qe0.neonauth.ap-southeast-1.aws.neon.tech/neondb/auth/get-session', {
+              credentials: 'include',
+            });
             const data = await res.json();
             if (data && data.user && data.user.email) {
               const loginRes = await fetch('/api/auth/guardian/social-login', {
@@ -86,13 +107,19 @@ export default function AuthPage() {
                 localStorage.setItem('kavach_guardian_token', sData.session_id);
                 localStorage.setItem('kavach_guardian_email', data.user.email);
                 if (data.user.name) localStorage.setItem('kavach_guardian_name', data.user.name);
-                router.push('/');
+                window.location.href = '/';
                 return;
               }
             }
-            setIsLoading(false);
-          })
-          .catch(() => setIsLoading(false));
+          } catch (e) {
+            console.warn('Direct get-session failed', e);
+          }
+
+          setIsLoading(false);
+          setErrorMsg('Google session could not be completed automatically. Please re-enter your email to continue.');
+        };
+
+        syncSession();
       }
     }
   }, [router]);
@@ -340,6 +367,7 @@ export default function AuthPage() {
       const callbackURL = typeof window !== 'undefined' ? `${window.location.origin}/auth?social=1` : '';
       const res = await fetch('https://ep-misty-boat-a1ja6qe0.neonauth.ap-southeast-1.aws.neon.tech/neondb/auth/sign-in/social', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Origin': typeof window !== 'undefined' ? window.location.origin : 'https://kavach-appp.vercel.app',
@@ -366,7 +394,7 @@ export default function AuthPage() {
         if (sRes.ok && sData.ok) {
           localStorage.setItem('kavach_guardian_token', sData.session_id);
           localStorage.setItem('kavach_guardian_email', fallbackEmail.trim().toLowerCase());
-          router.push('/');
+          window.location.href = '/';
           return;
         }
       }

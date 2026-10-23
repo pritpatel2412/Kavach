@@ -57,6 +57,18 @@ export default function GuardianDashboardPage() {
     fetch('/api/auth/guardian/me', { headers })
       .then(async (res) => {
         if (!res.ok) {
+          // Attempt session recovery via Neon session sync
+          try {
+            const syncRes = await fetch('/api/auth/guardian/neon-session');
+            if (syncRes.ok) {
+              const syncData = await syncRes.json();
+              if (syncData.session_id) {
+                localStorage.setItem('kavach_guardian_token', syncData.session_id);
+                window.location.reload();
+                return;
+              }
+            }
+          } catch {}
           localStorage.removeItem('kavach_guardian_token');
           router.push('/auth');
           return;

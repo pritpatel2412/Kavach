@@ -78,6 +78,8 @@ async def voice_enroll(
     elder = None
     if elder_id and elder_id != "default":
         elder = db.get_elder_for_guardian(elder_id, guardian["id"])
+        if not elder:
+            raise HTTPException(403, detail={"error": "forbidden", "message": "Elder does not belong to your account"})
     if not elder:
         user_elders = db.list_elders(guardian["id"])
         if user_elders:

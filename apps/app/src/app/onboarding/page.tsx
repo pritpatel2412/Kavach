@@ -37,11 +37,14 @@ export default function OnboardingPage() {
   const [usePresetVoice, setUsePresetVoice] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [voiceProfileId, setVoiceProfileId] = useState<string | null>(null);
+  const [audioLevel, setAudioLevel] = useState<number>(0);
 
   const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
   const audioChunksRef = React.useRef<Blob[]>([]);
   const timerIntervalRef = React.useRef<any>(null);
   const audioElementRef = React.useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = React.useRef<AudioContext | null>(null);
+  const animFrameRef = React.useRef<number | null>(null);
 
   // Pairing code
   const [pairingCode, setPairingCode] = useState('KAV-7892');
@@ -96,6 +99,38 @@ export default function OnboardingPage() {
         },
       });
 
+      // Hook up live AudioContext Analyser for real-time VU meter
+      try {
+        const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtxClass) {
+          const actx = new AudioCtxClass();
+          audioContextRef.current = actx;
+          const source = actx.createMediaStreamSource(stream);
+          const analyser = actx.createAnalyser();
+          analyser.fftSize = 256;
+          source.connect(analyser);
+
+          const bufferLength = analyser.frequencyBinCount;
+          const dataArray = new Uint8Array(bufferLength);
+
+          const updateMeter = () => {
+            if (!audioContextRef.current) return;
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < bufferLength; i++) {
+              sum += dataArray[i];
+            }
+            const average = sum / bufferLength;
+            const level = Math.min(100, Math.round((average / 128) * 100));
+            setAudioLevel(level);
+            animFrameRef.current = requestAnimationFrame(updateMeter);
+          };
+          updateMeter();
+        }
+      } catch (audioCtxErr) {
+        console.warn('Analyser setup non-fatal notice:', audioCtxErr);
+      }
+
       audioChunksRef.current = [];
       let mimeType = '';
       if (typeof MediaRecorder !== 'undefined') {
@@ -120,6 +155,12 @@ export default function OnboardingPage() {
       recorder.onstop = async () => {
         stream.getTracks().forEach((track) => track.stop());
         if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+        if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+        if (audioContextRef.current) {
+          audioContextRef.current.close().catch(() => {});
+          audioContextRef.current = null;
+        }
+        setAudioLevel(0);
 
         const blob = new Blob(audioChunksRef.current, {
           type: recorder.mimeType || 'audio/webm',
@@ -173,6 +214,12 @@ export default function OnboardingPage() {
     } catch (err: any) {
       setIsRecording(false);
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {});
+        audioContextRef.current = null;
+      }
+      setAudioLevel(0);
       console.error('Microphone error:', err);
       setVoiceError(
         err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'
@@ -186,6 +233,12 @@ export default function OnboardingPage() {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop();
     }
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    setAudioLevel(0);
   };
 
   const handlePlayRecording = () => {
@@ -492,10 +545,23 @@ export default function OnboardingPage() {
                         <Icon name={isRecording ? 'pause-bold' : 'microphone-large-bold'} size={34} />
                       </button>
 
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         <div className="font-heading font-bold text-ink text-sm">
                           {isRecording ? `Recording Real Voice... (${recordingSeconds}s / 5s)` : 'Tap to Start Microphone Recording'}
                         </div>
+                        {isRecording && (
+                          <div className="space-y-1">
+                            <div className="w-56 mx-auto h-2 bg-canvas border border-hairline rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-primary transition-all duration-75 rounded-full"
+                                style={{ width: `${Math.max(6, audioLevel)}%` }}
+                              />
+                            </div>
+                            <div className="text-[10px] font-mono text-muted">
+                              {audioLevel > 15 ? '🟢 Voice Detected (Capturing Micro-Phonemes)' : '⚪ Listening for Speech... (Speak Clearly)'}
+                            </div>
+                          </div>
+                        )}
                         <div className="text-caption font-mono text-muted">
                           {isRecording
                             ? 'Speak the phrase aloud clearly. Tap again to stop.'

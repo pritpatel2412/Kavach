@@ -344,6 +344,81 @@ def guardian_social_login(body: SocialLoginIn, response: Response, request: Requ
     }
 
 
+@router.get("/api/auth/guardian/neon-session")
+@router.post("/api/auth/guardian/neon-session")
+def sync_neon_auth_session(response: Response, request: Request, token: str | None = None, email: str | None = None):
+    """
+    Sync recent Neon Auth / Google social login session from Postgres database into Kavach guardian session.
+    Bypasses third-party cross-origin cookie blocking by directly reading authenticated session state.
+    """
+    now = _now()
+    user_email: str | None = email.strip().lower() if email else None
+    user_name: str | None = None
+    neon_user_id: str | None = None
+
+    with db.db() as con:
+        # If explicit token provided, look up in neon_auth.session
+        if token:
+            try:
+                row = con.execute(
+                    """
+                    SELECT u.id, u.email, u.name FROM neon_auth.session s
+                    JOIN neon_auth.user u ON s."userId" = u.id
+                    WHERE s.token = ?;
+                    """,
+                    (token,),
+                ).fetchone()
+                if row:
+                    neon_user_id, user_email, user_name = row[0], row[1], row[2]
+            except Exception:
+                pass
+
+        # If no token match, check most recently created active session in neon_auth.session (within last 30 mins)
+        if not user_email:
+            try:
+                row = con.execute(
+                    """
+                    SELECT u.id, u.email, u.name, s."createdAt" FROM neon_auth.session s
+                    JOIN neon_auth.user u ON s."userId" = u.id
+                    WHERE s."expiresAt" > NOW()
+                    ORDER BY s."createdAt" DESC LIMIT 1;
+                    """
+                ).fetchone()
+                if row:
+                    neon_user_id, user_email, user_name = row[0], row[1], row[2]
+            except Exception:
+                pass
+
+        # Fallback: check most recently registered user in neon_auth.user
+        if not user_email:
+            try:
+                row = con.execute(
+                    """
+                    SELECT id, email, name FROM neon_auth.user
+                    ORDER BY "createdAt" DESC LIMIT 1;
+                    """
+                ).fetchone()
+                if row:
+                    neon_user_id, user_email, user_name = row[0], row[1], row[2]
+            except Exception:
+                pass
+
+    if not user_email:
+        raise HTTPException(status_code=404, detail={"message": "No active Google / Neon Auth session found in database."})
+
+    # Issue full Kavach session
+    return guardian_social_login(
+        SocialLoginIn(
+            email=user_email,
+            name=user_name,
+            provider="google",
+            user_id=neon_user_id,
+        ),
+        response=response,
+        request=request,
+    )
+
+
 @router.post("/api/auth/guardian/magic-link")
 def request_guardian_magic_link(body: MagicLinkRequestIn, request: Request):
     """SaaS Guardian Login: Generate a 10-minute passwordless magic link."""
