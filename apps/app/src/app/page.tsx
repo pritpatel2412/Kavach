@@ -182,7 +182,7 @@ export default function GuardianDashboardPage() {
   const primaryDevice = devicesList[0] || null;
 
   const household = {
-    name: guardian?.name ? `${guardian.name}'s Residence` : 'Protected Residence',
+    name: guardian?.name ? `${guardian.name.replace(' (Demo Caregiver)', '')}'s Residence` : 'Protected Residence',
     city: 'Family Protection Active',
     plan: 'Kavach Plus (Active)',
     elderDisplayName: primaryElder?.name || 'No Elder Registered Yet',
@@ -219,37 +219,37 @@ export default function GuardianDashboardPage() {
   return (
     <div className="min-h-screen bg-canvas text-ink font-sans flex flex-col">
       {/* 2. Guardian App Header */}
-      <header className="bg-surface border-b border-hairline px-4 sm:px-6 lg:px-8 py-3.5 sticky top-8 z-30">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <a href="/" className="focus:outline-none">
+      <header className="bg-surface/95 backdrop-blur-md border-b border-hairline px-4 sm:px-6 lg:px-8 py-3 sticky top-0 z-40 shadow-level-1">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0 flex-wrap">
+            <a href="/" className="focus:outline-none flex-shrink-0">
               <KavachLogo size={28} showWordmark={true} />
             </a>
             <span className="hidden sm:inline-block text-muted">/</span>
-            <div className="flex items-center gap-2">
-              <span className="text-ui font-bold text-ink">{household.name}</span>
-              <span className="text-caption text-muted px-2 py-0.5 rounded-full bg-canvas border border-hairline">
+            <div className="flex items-center gap-2 min-w-0 flex-wrap">
+              <span className="text-ui font-bold text-ink whitespace-nowrap">{household.name}</span>
+              <span className="text-caption text-muted px-2 py-0.5 rounded-full bg-canvas border border-hairline whitespace-nowrap">
                 {household.city}
               </span>
               {(guardian?.email === 'demo@kavach.ai' || guardian?.id === 'g_demo_kavach_caregiver') && (
-                <Badge variant="primary" className="text-micro font-mono font-bold">
-                  Demo Mode · Mock Threat Stream
+                <Badge variant="primary" className="text-micro font-mono font-bold whitespace-nowrap">
+                  Demo Mode
                 </Badge>
               )}
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline-neutral" size="sm" href="/elder">
+          <div className="flex items-center gap-2 flex-shrink-0 flex-wrap sm:flex-nowrap">
+            <Button variant="outline-neutral" size="sm" href="/elder" className="whitespace-nowrap">
               Tabletop Kiosk
             </Button>
-            <Button variant="outline-neutral" size="sm" href="/billing">
+            <Button variant="outline-neutral" size="sm" href="/billing" className="whitespace-nowrap">
               Billing &amp; Usage
             </Button>
-            <Button variant="outline-neutral" size="sm" href="/privacy">
+            <Button variant="outline-neutral" size="sm" href="/privacy" className="whitespace-nowrap">
               Privacy Rights
             </Button>
-            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+            <Button variant="ghost" size="sm" onClick={handleSignOut} className="whitespace-nowrap text-muted hover:text-ink">
               Sign Out
             </Button>
           </div>
