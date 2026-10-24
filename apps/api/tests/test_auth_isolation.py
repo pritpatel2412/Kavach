@@ -310,16 +310,36 @@ def test_device_pairing_code_elder_consent_and_isolation():
         assert p_data["ok"] is True
         assert p_data["device_token"].startswith("kav_dev_")
         assert p_data["elder_consent_ts"] is not None
+        assert p_data.get("elder_name") == "Elder A"
         device_id = p_data["device_id"]
+        dev_tok = p_data["device_token"]
+
+        # 4b. Heartbeat updates device live status
+        hb_res = c.post("/api/devices/heartbeat", json={"device_id": device_id, "device_token": dev_tok})
+        assert hb_res.status_code == 200
+        assert hb_res.json()["ok"] is True
+
+        # 4c. Kiosk status query returns elder name and active state
+        st_res = c.get(f"/api/devices/{device_id}/status")
+        assert st_res.status_code == 200
+        assert st_res.json()["elder_name"] == "Elder A"
+        assert st_res.json()["revoked"] is False
+
+        # 4d. Bad token heartbeat returns 401
+        bad_hb = c.post("/api/devices/heartbeat", json={"device_id": device_id, "device_token": "kav_dev_invalid_bad_token"})
+        assert bad_hb.status_code == 401
 
         # 5. Pairing code replay fails
         replay_res = c.post("/api/devices/pair", json={"code": code, "elder_consent": True})
         assert replay_res.status_code == 400
         assert replay_res.json()["detail"]["error"] == "code_used"
 
-        # 6. Guardian A lists devices, sees paired device
+        # 6. Guardian A lists devices, sees paired device with live status
         devs_a = c.get("/api/devices", headers=ga_hdr).json()["devices"]
-        assert any(d["id"] == device_id and d["elder_id"] == ea_id for d in devs_a)
+        matched_a = next((d for d in devs_a if d["id"] == device_id), None)
+        assert matched_a is not None
+        assert matched_a["elder_id"] == ea_id
+        assert matched_a["status"] == "online"
 
         # 7. Guardian B listing devices does NOT see Guardian A's device
         devs_b = c.get("/api/devices", headers=gb_hdr).json()["devices"]
@@ -333,6 +353,11 @@ def test_device_pairing_code_elder_consent_and_isolation():
         del_a = c.delete(f"/api/devices/{device_id}", headers=ga_hdr)
         assert del_a.status_code == 200
         assert del_a.json()["revoked"] is True
+
+        # 10. Revoked device heartbeat responds with revoked flag
+        rev_hb = c.post("/api/devices/heartbeat", json={"device_id": device_id, "device_token": dev_tok})
+        assert rev_hb.status_code == 200
+        assert rev_hb.json()["revoked"] is True
 
 
 def test_guardian_phone_login_creates_real_database_session():

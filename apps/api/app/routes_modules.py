@@ -198,42 +198,97 @@ async def restore_household(
 async def list_devices(
     session: dict = Depends(admin_auth.require_permission("view_telemetry")),
 ) -> dict[str, Any]:
-    with db.db() as conn:
-        rows = conn.execute(
-            """
-            SELECT e.id, e.name, e.language, e.guardian_id, g.name,
-                   MAX(s.started_at) as last_seen, COUNT(s.id) as sessions_count
-            FROM elders e
-            JOIN guardians g ON e.guardian_id = g.id
-            LEFT JOIN sessions s ON s.elder_id = e.id
-            GROUP BY e.id, e.name, e.language, e.guardian_id, g.name
-            ORDER BY last_seen DESC;
-            """
-        ).fetchall()
-
-    is_step_up = session.get("step_up_active", False)
     devices = []
+    is_step_up = session.get("step_up_active", False)
     now = datetime.now(timezone.utc)
-    for r in rows:
-        last_s = r[5]
-        is_online = False
-        if last_s:
-            try:
-                diff_hours = (now - datetime.fromisoformat(last_s)).total_seconds() / 3600
-                is_online = diff_hours <= 24
-            except Exception:
-                is_online = False
 
-        devices.append({
-            "device_id": r[0],
-            "elder_name": r[1] if is_step_up else audit.mask_name(r[1]),
-            "language": r[2],
-            "household_id": r[3],
-            "guardian_name": r[4] if is_step_up else audit.mask_name(r[4]),
-            "last_active": last_s,
-            "status": "online" if is_online else "offline",
-            "total_calls_guarded": r[6],
-        })
+    with db.db() as conn:
+        paired_rows = []
+        try:
+            paired_rows = conn.execute(
+                """
+                SELECT d.id, d.label, d.elder_id, e.name as elder_name, e.language,
+                       d.guardian_id, g.name as guardian_name, d.paired_at, d.elder_consent_ts,
+                       d.revoked, d.last_heartbeat, COUNT(s.id) as sessions_count
+                FROM paired_devices d
+                JOIN elders e ON d.elder_id = e.id
+                JOIN guardians g ON d.guardian_id = g.id
+                LEFT JOIN sessions s ON s.elder_id = e.id
+                WHERE d.revoked = 0
+                GROUP BY d.id, d.label, d.elder_id, e.name, e.language, d.guardian_id, g.name, d.paired_at, d.elder_consent_ts, d.revoked, d.last_heartbeat
+                ORDER BY d.paired_at DESC;
+                """
+            ).fetchall()
+        except Exception:
+            paired_rows = []
+
+        if paired_rows:
+            for r in paired_rows:
+                last_hb = r[10] or r[7]
+                is_online = False
+                if last_hb:
+                    try:
+                        diff_sec = (now - datetime.fromisoformat(last_hb)).total_seconds()
+                        is_online = diff_sec <= 300
+                    except Exception:
+                        is_online = False
+                else:
+                    is_online = True
+
+                devices.append({
+                    "device_id": r[0],
+                    "device_type": r[1] or "Tabletop Kiosk",
+                    "device_name": r[1] or "Tabletop Kiosk",
+                    "label": r[1] or "Tabletop Kiosk",
+                    "elder_id": r[2],
+                    "elder_name": r[3] if is_step_up else audit.mask_name(r[3]),
+                    "language": r[4],
+                    "household_id": r[5],
+                    "guardian_name": r[6] if is_step_up else audit.mask_name(r[6]),
+                    "paired_at": r[7],
+                    "elder_consent_ts": r[8],
+                    "last_active": last_hb,
+                    "last_heartbeat": last_hb,
+                    "status": "online" if is_online else "standby",
+                    "total_calls_guarded": r[11],
+                })
+        else:
+            rows = conn.execute(
+                """
+                SELECT e.id, e.name, e.language, e.guardian_id, g.name,
+                       MAX(s.started_at) as last_seen, COUNT(s.id) as sessions_count
+                FROM elders e
+                JOIN guardians g ON e.guardian_id = g.id
+                LEFT JOIN sessions s ON s.elder_id = e.id
+                GROUP BY e.id, e.name, e.language, e.guardian_id, g.name
+                ORDER BY last_seen DESC;
+                """
+            ).fetchall()
+
+            for r in rows:
+                last_s = r[5]
+                is_online = False
+                if last_s:
+                    try:
+                        diff_hours = (now - datetime.fromisoformat(last_s)).total_seconds() / 3600
+                        is_online = diff_hours <= 24
+                    except Exception:
+                        is_online = False
+
+                devices.append({
+                    "device_id": r[0],
+                    "device_type": "Tabletop Kiosk",
+                    "device_name": "Tabletop Kiosk",
+                    "label": "Tabletop Kiosk",
+                    "elder_name": r[1] if is_step_up else audit.mask_name(r[1]),
+                    "language": r[2],
+                    "household_id": r[3],
+                    "guardian_name": r[4] if is_step_up else audit.mask_name(r[4]),
+                    "last_active": last_s,
+                    "last_heartbeat": last_s,
+                    "status": "online" if is_online else "offline",
+                    "total_calls_guarded": r[6],
+                })
 
     return {"devices": devices, "total": len(devices)}
 
@@ -245,9 +300,11 @@ async def revoke_device(
     session: dict = Depends(admin_auth.require_permission("manage_devices")),
 ):
     with db.db() as conn:
-        res = conn.execute("DELETE FROM elders WHERE id = ?;", (device_id,))
+        res = conn.execute("UPDATE paired_devices SET revoked = 1 WHERE id = ?;", (device_id,))
         if res.rowcount == 0:
-            raise HTTPException(status_code=404, detail="Device/Elder not found.")
+            res = conn.execute("DELETE FROM elders WHERE id = ?;", (device_id,))
+            if res.rowcount == 0:
+                raise HTTPException(status_code=404, detail="Device/Elder not found.")
 
     audit.record_audit_event(
         actor_email=session["email"],

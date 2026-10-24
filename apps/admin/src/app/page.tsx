@@ -230,12 +230,29 @@ export default function AdminConsolePage() {
       });
       if (res.ok) {
         const data = await res.json();
-        if (data.devices && data.devices.length > 0) {
+        if (data.devices) {
           setRealDevices(data.devices);
         }
       }
     } catch (e) {
       console.error('Error fetching devices', e);
+    }
+  };
+
+  const handleRevokeAdminDevice = async (deviceId: string) => {
+    if (!confirm(`Are you sure you want to revoke authorization for device ${deviceId}?`)) return;
+    try {
+      const res = await fetch(`/admin-api/devices/${deviceId}/revoke`, {
+        method: 'POST',
+        headers: getAdminHeaders(),
+      });
+      if (res.ok) {
+        setActionSuccess(`Device ${deviceId} successfully revoked.`);
+        setTimeout(() => setActionSuccess(null), 3000);
+        fetchRealDevices();
+      }
+    } catch (e) {
+      console.error('Error revoking device', e);
     }
   };
 
@@ -1663,33 +1680,63 @@ export default function AdminConsolePage() {
           {/* MODULE 8: DEVICES */}
           {activeModule === 'devices' && (
             <div className="space-y-4">
-              <h1 className="text-xl font-heading font-bold text-ink">Registered Tabletop Kiosks</h1>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h1 className="text-xl font-heading font-bold text-ink">Registered Tabletop Kiosks &amp; Mobile Listeners</h1>
+                  <p className="text-xs font-mono text-muted">Acoustic Audio Worklet Heartbeats · DPDP Consent Verified</p>
+                </div>
+                <Button
+                  variant="outline-neutral"
+                  size="sm"
+                  onClick={fetchRealDevices}
+                >
+                  Refresh Devices
+                </Button>
+              </div>
+
               <div className="space-y-3">
                 {(realDevices.length > 0
                   ? realDevices.map((dev: any) => ({
                       id: dev.device_id || dev.id,
-                      tablet: dev.elder_name ? `${dev.elder_name}'s Device (${dev.language})` : (dev.device_name || dev.device_type || 'Tabletop Kiosk'),
+                      tablet: dev.label || dev.device_name || (dev.elder_name ? `${dev.elder_name}'s Device` : 'Tabletop Kiosk'),
+                      elder: dev.elder_name ? `${dev.elder_name} (${dev.language || 'hi-IN'})` : 'Protected Senior',
                       household: dev.guardian_name ? `Guardian: ${dev.guardian_name}` : (dev.household_id ? `Household: ${dev.household_id.slice(0, 8)}` : 'Paired Device'),
-                      heartbeat: dev.last_active ? `${new Date(dev.last_active).toLocaleTimeString('en-IN')}` : (dev.last_heartbeat ? `${new Date(dev.last_heartbeat).toLocaleTimeString('en-IN')}` : 'Active'),
+                      heartbeat: dev.last_heartbeat ? `${new Date(dev.last_heartbeat).toLocaleTimeString('en-IN')}` : (dev.last_active ? `${new Date(dev.last_active).toLocaleTimeString('en-IN')}` : 'Active'),
+                      consent: dev.elder_consent_ts ? `DPDP Consent: ${new Date(dev.elder_consent_ts).toLocaleDateString('en-IN')}` : 'Notice 2026-10-elder-v1',
                       battery: '100% plugged',
                       audioWorklet: 'Active 16kHz',
                       status: dev.status === 'online' ? 'Online' : 'Standby',
                     }))
                   : [
-                      { id: 'DEV-101', tablet: 'Samsung Tab A8', household: 'Iyer Residence', heartbeat: '2s ago', battery: '100% plugged', audioWorklet: 'Active 16kHz', status: 'Online' },
-                      { id: 'DEV-102', tablet: 'Lenovo M10', household: 'Sharma Household', heartbeat: '5s ago', battery: '92% plugged', audioWorklet: 'Active 16kHz', status: 'Online' },
-                      { id: 'DEV-103', tablet: 'iPad 8th Gen', household: 'Patel Villa', heartbeat: '14s ago', battery: '85% battery', audioWorklet: 'Active 16kHz', status: 'Online' },
+                      { id: 'DEV-101', tablet: 'Samsung Tab A8', elder: 'Kamala-ji (hi-IN)', household: 'Iyer Residence', heartbeat: '2s ago', consent: 'Notice 2026-10-elder-v1', battery: '100% plugged', audioWorklet: 'Active 16kHz', status: 'Online' },
+                      { id: 'DEV-102', tablet: 'Lenovo M10', elder: 'Ramesh-ji (hi-IN)', household: 'Sharma Household', heartbeat: '5s ago', consent: 'Notice 2026-10-elder-v1', battery: '92% plugged', audioWorklet: 'Active 16kHz', status: 'Online' },
+                      { id: 'DEV-103', tablet: 'iPad 8th Gen', elder: 'Hansaben (gu-IN)', household: 'Patel Villa', heartbeat: '14s ago', consent: 'Notice 2026-10-elder-v1', battery: '85% battery', audioWorklet: 'Active 16kHz', status: 'Online' },
                     ]
                 ).map((dev) => (
                   <div key={dev.id} className="bg-surface border border-hairline rounded-md p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono hover:border-hairline/80">
-                    <div>
-                      <div className="font-bold text-ink text-sm">{dev.tablet} ({dev.id})</div>
-                      <div className="text-muted text-[11px]">{dev.household} · Heartbeat: {dev.heartbeat}</div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-ink text-sm">{dev.tablet}</span>
+                        <span className="text-muted">({dev.id})</span>
+                        <span className="px-2 py-0.5 rounded-sm bg-green-surface text-green-strong text-[10px] font-bold border border-green-light">
+                          {dev.elder}
+                        </span>
+                      </div>
+                      <div className="text-muted text-[11px]">
+                        {dev.household} · Heartbeat: {dev.heartbeat} · {dev.consent}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-4 text-[11px]">
+                    <div className="flex items-center gap-3 text-[11px]">
                       <span className="text-body">{dev.battery}</span>
                       <span className="text-green-strong font-bold">{dev.audioWorklet}</span>
-                      <StatusDot status="armed" label="Online" />
+                      <StatusDot status={dev.status === 'Online' ? 'armed' : 'offline'} label={dev.status} />
+                      <button
+                        type="button"
+                        onClick={() => handleRevokeAdminDevice(dev.id)}
+                        className="px-2.5 py-1 rounded bg-red-50 text-hot border border-red-200 font-bold text-[11px] hover:opacity-80 cursor-pointer ml-1"
+                      >
+                        Revoke
+                      </button>
                     </div>
                   </div>
                 ))}

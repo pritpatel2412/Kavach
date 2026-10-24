@@ -10,6 +10,7 @@ import {
   StageChips,
   Badge,
   Drawer,
+  Modal,
   KavachLogo,
 } from '@kavach/ui';
 import { BRAND } from '@kavach/api-contract';
@@ -29,6 +30,13 @@ export default function GuardianDashboardPage() {
     monthMinutesCap: 150,
     emergencyReserve: 30,
   });
+
+  // Device Pairing State
+  const [pairingModalOpen, setPairingModalOpen] = useState(false);
+  const [selectedElderForPair, setSelectedElderForPair] = useState<string>('');
+  const [generatedPairingCode, setGeneratedPairingCode] = useState<string>('');
+  const [pairingCodeLoading, setPairingCodeLoading] = useState(false);
+  const [pairingSuccessDetected, setPairingSuccessDetected] = useState<string | null>(null);
 
   const [selectedIncident, setSelectedIncident] = useState<{
     id: string;
@@ -177,6 +185,90 @@ export default function GuardianDashboardPage() {
     }
     router.push('/auth');
   };
+
+  const openPairingModal = async () => {
+    if (eldersList.length === 0) {
+      router.push('/onboarding');
+      return;
+    }
+    const targetElder = eldersList[0];
+    setSelectedElderForPair(targetElder.id);
+    setPairingModalOpen(true);
+    await generateDevicePairingCode(targetElder.id);
+  };
+
+  const generateDevicePairingCode = async (elderId: string) => {
+    const token = localStorage.getItem('kavach_guardian_token');
+    if (!token || !elderId) return;
+    setPairingCodeLoading(true);
+    setPairingSuccessDetected(null);
+    try {
+      const res = await fetch('/api/devices/pairing-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ elder_id: elderId }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setGeneratedPairingCode(data.code || '');
+      }
+    } catch (e) {
+      console.error('Failed to generate pairing code', e);
+    } finally {
+      setPairingCodeLoading(false);
+    }
+  };
+
+  const handleRevokeDevice = async (deviceId: string) => {
+    if (!confirm('Are you sure you want to revoke authorization for this tabletop tablet?')) return;
+    const token = localStorage.getItem('kavach_guardian_token');
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/devices/${deviceId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        setDevicesList((prev) => prev.filter((d) => d.id !== deviceId));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    if (!pairingModalOpen) return;
+    const initialCount = devicesList.length;
+
+    const pollInterval = setInterval(async () => {
+      const token = localStorage.getItem('kavach_guardian_token');
+      if (!token) return;
+      try {
+        const res = await fetch('/api/devices', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const list = data.devices || [];
+          setDevicesList(list);
+          if (list.length > initialCount) {
+            setPairingSuccessDetected('Tablet linked and actively guarding!');
+            setTimeout(() => {
+              setPairingModalOpen(false);
+              setPairingSuccessDetected(null);
+            }, 2500);
+          }
+        }
+      } catch {}
+    }, 3000);
+
+    return () => clearInterval(pollInterval);
+  }, [pairingModalOpen, devicesList.length]);
 
   const primaryElder = eldersList[0] || null;
   const primaryDevice = devicesList[0] || null;
@@ -332,7 +424,7 @@ export default function GuardianDashboardPage() {
           <Button
             variant="primary"
             size="sm"
-            href="/onboarding"
+            onClick={openPairingModal}
             icon="add-circle-bold"
           >
             Pair Elder Tablet
@@ -530,6 +622,21 @@ export default function GuardianDashboardPage() {
         {/* TAB 3: DEVICES */}
         {activeTab === 'devices' && (
           <div className="space-y-4 max-w-4xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-hairline pb-3">
+              <div>
+                <h2 className="text-heading font-bold text-ink">Tabletop Kiosks &amp; Mobile Listeners</h2>
+                <p className="text-caption text-muted font-medium">Real-Time Passive Speakerphone Acoustic Telemetry</p>
+              </div>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={openPairingModal}
+                icon="add-circle-bold"
+              >
+                Pair New Device
+              </Button>
+            </div>
+
             {devicesList.length === 0 ? (
               <Card padding="lg" className="text-center py-12 space-y-3">
                 <div className="w-12 h-12 rounded-full bg-surface border border-hairline flex items-center justify-center mx-auto text-primary">
@@ -541,7 +648,7 @@ export default function GuardianDashboardPage() {
                   Protect your elders by linking a tabletop tablet. Pair a device using the button above to begin passive speakerphone scam monitoring.
                 </p>
                 <div className="pt-2">
-                  <Button variant="primary" size="sm" href="/onboarding">
+                  <Button variant="primary" size="sm" onClick={openPairingModal} icon="add-circle-bold">
                     Pair Tabletop Kiosk
                   </Button>
                 </div>
@@ -557,7 +664,10 @@ export default function GuardianDashboardPage() {
                       </div>
                       <div>
                         <div className="font-bold text-ink text-ui">{dev.label || 'Living Room Kiosk'}</div>
-                        <div className="text-caption text-muted">Elder: <span className="font-bold text-ink">{dev.elder_name || 'Protected Elder'}</span></div>
+                        <div className="text-caption text-muted">
+                          Elder: <span className="font-bold text-ink">{dev.elder_name || 'Protected Elder'}</span>
+                          {dev.paired_at && <span> · Paired {new Date(dev.paired_at).toLocaleDateString('en-IN')}</span>}
+                        </div>
                       </div>
                     </div>
                     <Badge variant={dev.revoked ? 'alert' : 'calm'}>{dev.revoked ? 'Revoked' : 'Paired & Active'}</Badge>
@@ -574,12 +684,28 @@ export default function GuardianDashboardPage() {
                     </div>
                     <div>
                       <div className="text-muted font-bold uppercase text-micro">Heartbeat Status</div>
-                      <div className="text-green-strong font-bold mt-0.5">&lt; 5s Live</div>
+                      <div className={`font-bold mt-0.5 flex items-center gap-1.5 ${dev.status === 'online' ? 'text-green-strong' : 'text-muted'}`}>
+                        <span className={`w-2 h-2 rounded-full ${dev.status === 'online' ? 'bg-primary animate-pulse' : 'bg-muted'}`} />
+                        <span>{dev.status === 'online' ? '< 5s Live' : 'Standby / Idle'}</span>
+                      </div>
                     </div>
                     <div>
                       <div className="text-muted font-bold uppercase text-micro">Audio Worklet</div>
                       <div className="text-ink mt-0.5 font-bold">16 kHz PCM16</div>
                     </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-hairline text-caption">
+                    <div className="text-micro text-muted font-mono">
+                      Device ID: {dev.id} · Consent: DPDP 2026-10-elder-v1
+                    </div>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleRevokeDevice(dev.id)}
+                    >
+                      Revoke Device
+                    </Button>
                   </div>
                 </Card>
               ))
@@ -647,6 +773,81 @@ export default function GuardianDashboardPage() {
           </div>
         )}
       </Drawer>
+
+      {/* 5. Pair New Device Modal */}
+      <Modal
+        isOpen={pairingModalOpen}
+        onClose={() => setPairingModalOpen(false)}
+        title="Pair Tabletop Tablet or Mobile"
+        description="Connect a secondary tablet or phone placed on the senior's table."
+      >
+        <div className="space-y-5 pt-2 text-ui font-body">
+          {eldersList.length > 1 && (
+            <div className="space-y-1.5">
+              <label className="block text-caption font-bold text-muted uppercase">Select Elder</label>
+              <select
+                value={selectedElderForPair}
+                onChange={(e) => {
+                  setSelectedElderForPair(e.target.value);
+                  generateDevicePairingCode(e.target.value);
+                }}
+                className="w-full px-3 py-2 rounded-md bg-canvas border border-hairline text-ink font-bold focus:outline-none focus:border-primary"
+              >
+                {eldersList.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.name} ({e.language || 'hi-IN'})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="p-6 rounded-md bg-canvas border border-hairline text-center space-y-3">
+            <div className="text-caption font-mono text-muted uppercase tracking-wider font-bold">
+              Single-Use 6-Character Pairing Code (15-min TTL)
+            </div>
+            {pairingCodeLoading ? (
+              <div className="text-2xl font-mono text-muted py-3 animate-pulse">Generating Code...</div>
+            ) : (
+              <div className="text-4xl sm:text-5xl font-mono font-bold tracking-[0.2em] text-primary py-2 select-all">
+                {generatedPairingCode || '------'}
+              </div>
+            )}
+            <p className="text-caption text-body max-w-sm mx-auto leading-relaxed">
+              Open <code className="text-green-strong font-mono font-bold">{typeof window !== 'undefined' ? `${window.location.origin}/elder` : '/elder'}</code> on the elder tablet, enter this code, and check the consent box to activate.
+            </p>
+          </div>
+
+          {pairingSuccessDetected && (
+            <div className="p-4 rounded-md bg-green-surface border border-green-light text-green-strong font-bold text-sm text-center flex items-center justify-center gap-2">
+              {/* @ts-expect-error solar icon */}
+              <iconify-icon icon="solar:check-circle-bold" width="20" height="20" />
+              <span>{pairingSuccessDetected}</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-2 border-t border-hairline">
+            <a
+              href="/elder"
+              target="_blank"
+              rel="noreferrer"
+              className="text-caption text-primary hover:underline font-bold flex items-center gap-1.5"
+            >
+              <span>Open Tablet Kiosk View</span>
+              {/* @ts-expect-error solar icon */}
+              <iconify-icon icon="solar:arrow-right-up-linear" width="14" height="14" />
+            </a>
+
+            <Button
+              variant="outline-neutral"
+              size="md"
+              onClick={() => setPairingModalOpen(false)}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -24,6 +24,39 @@
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
 | Buffer | 9-10 Nov | | |
 
+## Done in Real Tabletop Device Pairing, Elder Consent, Heartbeat Telemetry & Admin Console Sync
+- **Production-Ready Elder Tabletop Kiosk (`apps/app/src/app/elder/page.tsx`):**
+  - Replaced the static demo kiosk with a real persistent state machine: checks `kavach_device_token` and `kavach_device_id` in `localStorage`.
+  - Added Setup & Pairing screen when unpaired:
+    - Multilingual interface supporting Hindi, English, and Gujarati.
+    - Large high-contrast 6-character Pairing Code input with auto-capitalization and validation.
+    - Device location/label customizer (e.g., "Living Room Tablet", "Bedroom Phone").
+    - Explicit Senior Citizen DPDP Consent card and checkbox (Notice `2026-10-elder-v1` compliant).
+    - Calls `POST /api/devices/pair`, records consent timestamp, stores high-entropy device token and device ID in `localStorage`.
+    - 1-Click Demo Mode bypass option retained for jury evaluation and video recording.
+  - Active Protection Mode when paired:
+    - Displays dynamic device label and elder name (e.g., `Living Room Tablet · Kamala-ji`).
+    - Periodic 25-second heartbeat loop hitting `POST /api/devices/heartbeat` with device ID and token.
+    - Added Tabletop Device Information modal showing Device ID, location, DPDP Notice version, and an "Unpair & Reset Device" action.
+    - Maintained live audio test controls and simulated scam call siren alerts.
+- **Guardian Dashboard Device Management (`apps/app/src/app/page.tsx`):**
+  - Added in-dashboard "Pair New Device" modal with elder selector, dynamic 6-character pairing code generator (15-min TTL), and direct kiosk link (`/elder`).
+  - Added 3-second polling interval while pairing modal is open that automatically detects successful tablet connection, displays confirmation, and refreshes the device list.
+  - Enhanced device cards with real device label, protected elder name, pairing timestamp, live heartbeat status (`< 5s Live` with pulsing green dot), and a "Revoke Device" button calling `DELETE /api/devices/{device_id}`.
+- **Backend Device Pairing, Heartbeat & Public Status APIs (`apps/api/app/routes_guardian_auth.py`, `apps/api/migrations/013_device_heartbeat.sql`):**
+  - Migration `013_device_heartbeat.sql` added `last_heartbeat TEXT` column to `paired_devices`.
+  - Updated `POST /api/devices/pair` to fetch and return `elder_name` and record initial heartbeat.
+  - Added `POST /api/devices/heartbeat` validating hashed device tokens, returning `revoked: true` if revoked by guardian, and updating `last_heartbeat`.
+  - Added public `GET /api/devices/{device_id}/status` for tablet kiosk connection checking.
+  - Updated `GET /api/devices` to return live heartbeat and status (`online` if heartbeat within 90s, else `standby`).
+- **Admin Console Devices & Telemetry Sync (`apps/admin/src/app/page.tsx`, `apps/api/app/routes_modules.py`):**
+  - Updated `GET /admin-api/devices` to query `paired_devices` joined with `elders` and `guardians` with fallback to `elders` table.
+  - Updated `POST /admin-api/devices/{device_id}/revoke` to set `revoked = 1` in `paired_devices`.
+  - Admin Console Registered Tabletop Kiosks module now displays real paired devices with elder moniker, language, guardian household, DPDP consent date, audio worklet status, live heartbeat, StatusDot, and admin revocation actions.
+- **Verification & Builds:**
+  - Full test suite: **187 / 187 tests passed (100% green, 0 credits burned)**.
+  - Next.js production builds: `@kavach/app` and `@kavach/admin` compiled with code 0.
+
 ## Done in Demo Credentials & AI Agent Access in Guardian App
 - **Demo Credentials & AI Agent Access Kit (`apps/app/src/app/auth/page.tsx`):**
   - Created prominent CoinCompass-themed Demo Credentials banner on the Guardian Portal login page.

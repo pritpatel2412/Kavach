@@ -60,6 +60,12 @@ class PairDeviceIn(BaseModel):
     label: str | None = None
 
 
+class DeviceHeartbeatIn(BaseModel):
+    device_id: str = Field(..., min_length=4)
+    device_token: str = Field(..., min_length=10)
+    status: str | None = "armed"
+
+
 class OtpSendIn(BaseModel):
     identifier: str = Field(..., min_length=4, max_length=100)
     channel: str = Field(default="phone")
@@ -844,19 +850,33 @@ def pair_device_with_code(body: PairDeviceIn):
         consent_ts = now_iso
         label = body.label.strip() if body.label else "Kavach Kiosk Listener"
 
-        con.execute(
-            """
-            INSERT INTO paired_devices (id, guardian_id, elder_id, token_hash, label, elder_consent_ts, paired_at, revoked)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 0);
-            """,
-            (device_id, guardian_id, elder_id, dev_token_hash, label, consent_ts, now_iso),
-        )
+        # Fetch elder name for kiosk display
+        elder_row = con.execute("SELECT name FROM elders WHERE id = ?;", (elder_id,)).fetchone()
+        elder_name = elder_row[0] if elder_row else "Elder"
+
+        try:
+            con.execute(
+                """
+                INSERT INTO paired_devices (id, guardian_id, elder_id, token_hash, label, elder_consent_ts, paired_at, last_heartbeat, revoked)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0);
+                """,
+                (device_id, guardian_id, elder_id, dev_token_hash, label, consent_ts, now_iso, now_iso),
+            )
+        except Exception:
+            con.execute(
+                """
+                INSERT INTO paired_devices (id, guardian_id, elder_id, token_hash, label, elder_consent_ts, paired_at, revoked)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 0);
+                """,
+                (device_id, guardian_id, elder_id, dev_token_hash, label, consent_ts, now_iso),
+            )
 
     return {
         "ok": True,
         "device_id": device_id,
         "device_token": raw_dev_token,
         "elder_id": elder_id,
+        "elder_name": elder_name,
         "guardian_id": guardian_id,
         "elder_consent_ts": consent_ts,
         "notice_version": body.notice_version,
@@ -864,36 +884,109 @@ def pair_device_with_code(body: PairDeviceIn):
     }
 
 
+@router.post("/api/devices/heartbeat")
+def device_ping_heartbeat(body: DeviceHeartbeatIn):
+    """Tabletop/Mobile kiosk ping to maintain live guardian telemetry and heartbeat status."""
+    dev_token_hash = _hash(body.device_token.strip())
+    now_iso = _now().isoformat()
+    with db.db() as con:
+        row = con.execute(
+            "SELECT id, revoked, elder_id, label FROM paired_devices WHERE id = ? AND token_hash = ?;",
+            (body.device_id.strip(), dev_token_hash),
+        ).fetchone()
+        if not row:
+            raise HTTPException(status_code=401, detail={"error": "device_unauthorized", "message": "Invalid device credentials."})
+        if row[1] == 1:
+            return {"ok": False, "revoked": True, "message": "Device authorization revoked by household guardian."}
+        try:
+            con.execute("UPDATE paired_devices SET last_heartbeat = ? WHERE id = ?;", (now_iso, body.device_id.strip()))
+        except Exception:
+            pass
+    return {"ok": True, "revoked": False, "device_id": body.device_id, "timestamp": now_iso}
+
+
+@router.get("/api/devices/{device_id}/status")
+def get_paired_device_public_status(device_id: str):
+    """Check device pairing registration state for kiosk tablet."""
+    with db.db() as con:
+        row = con.execute(
+            """
+            SELECT d.id, d.revoked, d.label, e.name as elder_name, d.paired_at
+            FROM paired_devices d
+            JOIN elders e ON d.elder_id = e.id
+            WHERE d.id = ?;
+            """,
+            (device_id,),
+        ).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail={"error": "device_not_found"})
+        return {
+            "ok": True,
+            "device_id": row[0],
+            "revoked": bool(row[1]),
+            "label": row[2],
+            "elder_name": row[3],
+            "paired_at": row[4],
+        }
+
+
 @router.get("/api/devices")
 def list_paired_devices(guardian: dict = Depends(require_guardian)):
     """List all paired devices for the authenticated guardian's elders."""
     gid = guardian["id"]
+    now = _now()
     with db.db() as con:
-        rows = con.execute(
-            """
-            SELECT d.id, d.elder_id, e.name as elder_name, d.label, d.elder_consent_ts, d.paired_at, d.revoked
-            FROM paired_devices d
-            JOIN elders e ON d.elder_id = e.id
-            WHERE d.guardian_id = ? AND d.revoked = 0
-            ORDER BY d.paired_at DESC;
-            """,
-            (gid,),
-        ).fetchall()
+        try:
+            rows = con.execute(
+                """
+                SELECT d.id, d.elder_id, e.name as elder_name, d.label, d.elder_consent_ts, d.paired_at, d.revoked, d.last_heartbeat
+                FROM paired_devices d
+                JOIN elders e ON d.elder_id = e.id
+                WHERE d.guardian_id = ? AND d.revoked = 0
+                ORDER BY d.paired_at DESC;
+                """,
+                (gid,),
+            ).fetchall()
+        except Exception:
+            rows = con.execute(
+                """
+                SELECT d.id, d.elder_id, e.name as elder_name, d.label, d.elder_consent_ts, d.paired_at, d.revoked, NULL as last_heartbeat
+                FROM paired_devices d
+                JOIN elders e ON d.elder_id = e.id
+                WHERE d.guardian_id = ? AND d.revoked = 0
+                ORDER BY d.paired_at DESC;
+                """,
+                (gid,),
+            ).fetchall()
+
+    devices = []
+    for r in rows:
+        last_hb = r[7] if len(r) > 7 else None
+        is_live = False
+        if last_hb:
+            try:
+                diff_s = (now - datetime.fromisoformat(last_hb)).total_seconds()
+                is_live = diff_s <= 90
+            except Exception:
+                is_live = False
+        else:
+            is_live = True
+
+        devices.append({
+            "id": r[0],
+            "elder_id": r[1],
+            "elder_name": r[2],
+            "label": r[3],
+            "elder_consent_ts": r[4],
+            "paired_at": r[5],
+            "revoked": bool(r[6]),
+            "last_heartbeat": last_hb or r[5],
+            "status": "online" if is_live else "standby",
+        })
 
     return {
         "ok": True,
-        "devices": [
-            {
-                "id": r[0],
-                "elder_id": r[1],
-                "elder_name": r[2],
-                "label": r[3],
-                "elder_consent_ts": r[4],
-                "paired_at": r[5],
-                "revoked": bool(r[6]),
-            }
-            for r in rows
-        ],
+        "devices": devices,
     }
 
 
@@ -913,3 +1006,4 @@ def revoke_paired_device(device_id: str, guardian: dict = Depends(require_guardi
             )
 
     return {"ok": True, "device_id": device_id, "revoked": True}
+
