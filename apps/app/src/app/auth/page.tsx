@@ -7,6 +7,7 @@ import {
   Input,
   Icon,
   KavachLogo,
+  Badge,
 } from '@kavach/ui';
 import { BRAND } from '@kavach/api-contract';
 
@@ -36,12 +37,46 @@ export default function AuthPage() {
   const [infoMsg, setInfoMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    setErrorMsg('');
+    setInfoMsg('');
+    try {
+      const res = await fetch('/api/auth/guardian/demo-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('kavach_guardian_token', data.session_id);
+          localStorage.setItem('kavach_guardian_id', data.guardian?.id || 'g_demo_kavach_caregiver');
+          localStorage.setItem('kavach_guardian_email', data.guardian?.email || 'demo@kavach.ai');
+          localStorage.setItem('kavach_guardian_name', data.guardian?.name || 'Vikram Iyer (Demo Caregiver)');
+        }
+        router.push('/');
+      } else {
+        setErrorMsg(data.detail?.message || data.message || 'Demo access failed. Please try again.');
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Network error connecting to demo sign in.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('token');
       const isSocial = urlParams.get('social') === '1';
       const isMagic = urlParams.get('magic') === '1';
+      const isDemo = urlParams.get('demo') === '1' || urlParams.get('sandbox') === '1' || urlParams.get('mock') === '1';
+
+      if (isDemo) {
+        handleDemoLogin();
+        return;
+      }
 
       if (token) {
         setIsLoading(true);
@@ -166,6 +201,11 @@ export default function AuthPage() {
       setErrorMsg('Please enter all 6 digits of the OTP code.');
       return;
     }
+
+    const cleanPhone = phone.trim();
+    if (cleanPhone.includes('9876543210') || cleanPhone.includes('98765 43210') || code === '123456') {
+      return handleDemoLogin();
+    }
     setIsLoading(true);
     setErrorMsg('');
     try {
@@ -259,6 +299,11 @@ export default function AuthPage() {
       setErrorMsg('Please enter both email and password.');
       return;
     }
+
+    if (cleanEmail === 'demo@kavach.ai' || cleanEmail === 'caregiver@kavach.ai' || password === 'DemoCaregiver2026!') {
+      return handleDemoLogin();
+    }
+
     setIsLoading(true);
     setErrorMsg('');
     setInfoMsg('');
@@ -419,6 +464,79 @@ export default function AuthPage() {
           <p className="text-ui text-body">
             Strictly passwordless security for Indian family caregivers.
           </p>
+        </div>
+
+        {/* Demo Credentials & AI Agent Access Card */}
+        <div className="bg-surface border-2 border-primary/50 rounded-xl p-5 space-y-3.5 shadow-level-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
+              <h2 className="text-caption font-heading font-bold uppercase tracking-wider text-ink">
+                Demo Credentials &amp; AI Agent Kit
+              </h2>
+            </div>
+            <Badge variant="primary" className="text-micro font-mono font-bold">
+              Jury &amp; Video Mode
+            </Badge>
+          </div>
+
+          <p className="text-caption text-body leading-relaxed">
+            One-click access to the live Guardian Dashboard pre-seeded with <strong>Kamala-ji’s</strong> household, paired tabletop kiosk, and active threat feed.
+          </p>
+
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleDemoLogin}
+            disabled={isLoading}
+            className="w-full justify-center font-heading font-bold shadow-md hover:scale-[1.01] transition-transform"
+            icon="play-circle-bold"
+          >
+            {isLoading ? 'Accessing Demo Household...' : '🎬 One-Click Demo Sign In (Kamala-ji)'}
+          </Button>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-hairline text-caption font-mono">
+            <div
+              onClick={() => {
+                setMethod('phone');
+                setPhone('+91 98765 43210');
+                setOtp(['1', '2', '3', '4', '5', '6']);
+                setOtpSent(true);
+                setErrorMsg('');
+                setInfoMsg('Demo phone credentials pre-filled (OTP: 123456)');
+              }}
+              className="p-2.5 rounded-md bg-canvas border border-hairline hover:border-primary cursor-pointer transition-colors space-y-1"
+            >
+              <div className="flex items-center justify-between text-micro text-muted uppercase font-bold">
+                <span>Phone OTP Demo</span>
+                <span className="text-primary hover:underline">Auto Fill</span>
+              </div>
+              <div className="font-bold text-ink text-xs">+91 98765 43210</div>
+              <div className="text-muted text-micro">Code: <span className="text-primary font-bold">123456</span></div>
+            </div>
+
+            <div
+              onClick={() => {
+                setMethod('password');
+                setEmail('demo@kavach.ai');
+                setPassword('DemoCaregiver2026!');
+                setErrorMsg('');
+                setInfoMsg('Demo email & password credentials pre-filled');
+              }}
+              className="p-2.5 rounded-md bg-canvas border border-hairline hover:border-primary cursor-pointer transition-colors space-y-1"
+            >
+              <div className="flex items-center justify-between text-micro text-muted uppercase font-bold">
+                <span>Password Demo</span>
+                <span className="text-primary hover:underline">Auto Fill</span>
+              </div>
+              <div className="font-bold text-ink text-xs truncate">demo@kavach.ai</div>
+              <div className="text-muted text-micro">Pass: <span className="text-primary font-bold">DemoCaregiver2026!</span></div>
+            </div>
+          </div>
+
+          <div className="text-micro font-mono text-muted text-center pt-0.5">
+            Direct Auto-Login URL: <code className="bg-canvas px-1.5 py-0.5 rounded text-ink border border-hairline font-bold">/auth?demo=1</code>
+          </div>
         </div>
 
         {/* Auth Method Selector */}

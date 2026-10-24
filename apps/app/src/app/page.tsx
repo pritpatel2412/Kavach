@@ -43,36 +43,74 @@ export default function GuardianDashboardPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const token = localStorage.getItem('kavach_guardian_token');
-    if (!token) {
-      router.push('/auth');
-      return;
-    }
 
-    const headers: Record<string, string> = {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDemoParam = urlParams.get('demo') === '1' || urlParams.get('sandbox') === '1' || urlParams.get('mock') === '1';
+    const demoToken = urlParams.get('demo_token') || urlParams.get('token');
 
-    fetch('/api/auth/guardian/me', { headers })
-      .then(async (res) => {
-        if (!res.ok) {
-          // Attempt session recovery via Neon session sync
-          try {
-            const syncRes = await fetch('/api/auth/guardian/neon-session');
-            if (syncRes.ok) {
-              const syncData = await syncRes.json();
-              if (syncData.session_id) {
-                localStorage.setItem('kavach_guardian_token', syncData.session_id);
-                window.location.reload();
-                return;
-              }
+    const initAuth = async () => {
+      let token = localStorage.getItem('kavach_guardian_token');
+
+      if (!token && (isDemoParam || demoToken)) {
+        try {
+          const demoRes = await fetch('/api/auth/guardian/demo-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          if (demoRes.ok) {
+            const demoData = await demoRes.json();
+            token = demoData.session_id;
+            localStorage.setItem('kavach_guardian_token', demoData.session_id);
+            if (demoData.guardian?.id) localStorage.setItem('kavach_guardian_id', demoData.guardian.id);
+            if (demoData.guardian?.email) localStorage.setItem('kavach_guardian_email', demoData.guardian.email);
+            if (demoData.guardian?.name) localStorage.setItem('kavach_guardian_name', demoData.guardian.name);
+          }
+        } catch {}
+      }
+
+      if (!token) {
+        router.push('/auth');
+        return;
+      }
+
+      const headers: Record<string, string> = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+
+      fetch('/api/auth/guardian/me', { headers })
+        .then(async (res) => {
+          if (!res.ok) {
+            if (isDemoParam) {
+              try {
+                const demoRes = await fetch('/api/auth/guardian/demo-login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                });
+                if (demoRes.ok) {
+                  const demoData = await demoRes.json();
+                  localStorage.setItem('kavach_guardian_token', demoData.session_id);
+                  window.location.reload();
+                  return;
+                }
+              } catch {}
             }
-          } catch {}
-          localStorage.removeItem('kavach_guardian_token');
-          router.push('/auth');
-          return;
-        }
+            // Attempt session recovery via Neon session sync
+            try {
+              const syncRes = await fetch('/api/auth/guardian/neon-session');
+              if (syncRes.ok) {
+                const syncData = await syncRes.json();
+                if (syncData.session_id) {
+                  localStorage.setItem('kavach_guardian_token', syncData.session_id);
+                  window.location.reload();
+                  return;
+                }
+              }
+            } catch {}
+            localStorage.removeItem('kavach_guardian_token');
+            router.push('/auth');
+            return;
+          }
         const data = await res.json();
         setGuardian(data.guardian);
 
@@ -126,6 +164,8 @@ export default function GuardianDashboardPage() {
         localStorage.removeItem('kavach_guardian_token');
         router.push('/auth');
       });
+    };
+    initAuth();
   }, [router]);
 
   const handleSignOut = () => {
@@ -191,6 +231,11 @@ export default function GuardianDashboardPage() {
               <span className="text-caption text-muted px-2 py-0.5 rounded-full bg-canvas border border-hairline">
                 {household.city}
               </span>
+              {(guardian?.email === 'demo@kavach.ai' || guardian?.id === 'g_demo_kavach_caregiver') && (
+                <Badge variant="primary" className="text-micro font-mono font-bold">
+                  Demo Mode · Mock Threat Stream
+                </Badge>
+              )}
             </div>
           </div>
 

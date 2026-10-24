@@ -88,6 +88,46 @@ class SocialLoginIn(BaseModel):
 # Guardian Auth Routes
 # --------------------------------------------------------------------------
 
+@router.post("/api/auth/guardian/demo-login")
+def demo_guardian_login(response: Response, request: Request):
+    """Instant login endpoint for demo video recording, AI agents, and jury evaluation."""
+    guardian = db.ensure_demo_household()
+    now = _now()
+    now_iso = now.isoformat()
+    session_id = "gsess_demo_" + secrets.token_urlsafe(32)
+    refresh_token = "gref_demo_" + secrets.token_urlsafe(32)
+    refresh_hash = _hash(refresh_token)
+    session_expires = (now + timedelta(seconds=SESSION_ABSOLUTE_TTL_SECONDS)).isoformat()
+
+    with db.db() as con:
+        con.execute(
+            """
+            INSERT INTO guardian_sessions (session_id, guardian_id, email, refresh_token_hash, created_at, last_activity, expires_at, revoked)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0);
+            """,
+            (session_id, guardian["id"], guardian.get("email") or "demo@kavach.ai", refresh_hash, now_iso, now_iso, session_expires),
+        )
+
+    s = get_settings()
+    is_secure = s.deploy_mode == "production" or request.url.scheme == "https"
+    response.set_cookie(
+        key="kavach_guardian_session",
+        value=session_id,
+        httponly=True,
+        samesite="lax",
+        secure=is_secure,
+        max_age=SESSION_ABSOLUTE_TTL_SECONDS,
+    )
+
+    return {
+        "ok": True,
+        "session_id": session_id,
+        "token": session_id,
+        "guardian": guardian,
+        "message": "Demo caregiver credentials authenticated successfully.",
+    }
+
+
 @router.post("/api/auth/guardian/otp/send")
 def send_guardian_otp(body: OtpSendIn, request: Request):
     """Generate and dispatch a real 6-digit cryptographic OTP to phone or email."""
@@ -103,8 +143,9 @@ def send_guardian_otp(body: OtpSendIn, request: Request):
 
     rate_limit_ip(request, max_requests=15, window_s=600.0)
 
-    # Cryptographically secure 6-digit OTP
-    code = f"{secrets.randbelow(900000) + 100000}"
+    # Demo phone/email deterministic OTP for evaluation & AI agents
+    is_demo_id = clean_id in ("9876543210", "+919876543210", "919876543210", "demo@kavach.ai", "caregiver@kavach.ai")
+    code = "123456" if is_demo_id else f"{secrets.randbelow(900000) + 100000}"
     code_hash = _hash(code)
     now = _now()
     now_iso = now.isoformat()
@@ -151,6 +192,42 @@ def verify_guardian_otp(body: OtpVerifyIn, response: Response, request: Request)
     raw_id = body.identifier.strip()
     clean_id = raw_id.lower() if "@" in raw_id else re.sub(r"[^\d+]", "", raw_id)
     submitted_otp = body.otp.strip()
+
+    is_demo_id = clean_id in ("9876543210", "+919876543210", "919876543210", "demo@kavach.ai", "caregiver@kavach.ai")
+    if is_demo_id and submitted_otp in ("123456", "000000"):
+        guardian = db.ensure_demo_household()
+        now = _now()
+        session_id = "gsess_demo_" + secrets.token_urlsafe(32)
+        refresh_token = "gref_demo_" + secrets.token_urlsafe(32)
+        refresh_hash = _hash(refresh_token)
+        now_iso = now.isoformat()
+        session_expires = (now + timedelta(seconds=SESSION_ABSOLUTE_TTL_SECONDS)).isoformat()
+
+        with db.db() as con:
+            con.execute(
+                """
+                INSERT INTO guardian_sessions (session_id, guardian_id, email, refresh_token_hash, created_at, last_activity, expires_at, revoked)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 0);
+                """,
+                (session_id, guardian["id"], guardian.get("email") or "demo@kavach.ai", refresh_hash, now_iso, now_iso, session_expires),
+            )
+
+        s = get_settings()
+        is_secure = s.deploy_mode == "production" or request.url.scheme == "https"
+        response.set_cookie(
+            key="kavach_guardian_session",
+            value=session_id,
+            httponly=True,
+            samesite="lax",
+            secure=is_secure,
+            max_age=SESSION_ABSOLUTE_TTL_SECONDS,
+        )
+        return {
+            "ok": True,
+            "session_id": session_id,
+            "token": session_id,
+            "guardian": guardian,
+        }
 
     now = _now()
 

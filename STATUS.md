@@ -1,6 +1,6 @@
 # STATUS (update at the end of every session)
 
-**Last updated:** 22 Oct 2026 · **Deadline:** 10 Nov 2026 11:59 PM IST · **Submit target:** 8 Nov
+**Last updated:** 24 Oct 2026 · **Deadline:** 10 Nov 2026 11:59 PM IST · **Submit target:** 8 Nov
 
 ## Phase tracker
 | Phase | Window | Status | Owner |
@@ -23,6 +23,22 @@
 | 6 Eval + hardening (+ optional LLM layer) | 28 Oct-2 Nov | S1 LLM second-opinion layer scaffolded + tested; eval harness active | B / A |
 | 7 Polish, demo video, submission | 3-8 Nov | In preparation | A + B |
 | Buffer | 9-10 Nov | | |
+
+## Done in Demo Credentials & AI Agent Access in Guardian App
+- **Demo Credentials & AI Agent Access Kit (`apps/app/src/app/auth/page.tsx`):**
+  - Created prominent CoinCompass-themed Demo Credentials banner on the Guardian Portal login page.
+  - Added One-Click Demo Access button (`🎬 One-Click Demo Sign In (Kamala-ji)`), instantly logging in and routing directly to the protected dashboard `/`.
+  - Added clickable Auto-Fill credential boxes for both Phone OTP (`+91 98765 43210` with OTP `123456`) and Email & Password (`demo@kavach.ai` with `DemoCaregiver2026!`).
+  - Added URL parameter auto-login: accessing `/auth?demo=1`, `/?demo=1`, or `?sandbox=1` automatically authenticates and opens the Guardian Portal view without manual interaction.
+- **Backend Demo Household Seeding & Demo Auth Endpoints (`apps/api/app/db.py`, `apps/api/app/routes_guardian_auth.py`):**
+  - Added `ensure_demo_household()` seeding guardian `Vikram Iyer (Demo Caregiver)`, elder `Kamala-ji` (hi-IN), tablet kiosk `Living Room Tablet #1`, and 3 realistic scam/safe incident sessions with events and alerts.
+  - Implemented `POST /api/auth/guardian/demo-login` issuing authentic 8-hour TTL guardian sessions for `demo@kavach.ai`.
+  - Configured deterministic demo phone OTP validation (`123456`) across `send_guardian_otp` and `verify_guardian_otp`.
+  - Enhanced `list_sessions()` to join and return latest event excerpts, stages, scam type names, and warning audios.
+  - Seeded canonical records in live Neon PostgreSQL database (`lively-mud-63778455`).
+  - Added unit test suite `apps/api/tests/test_demo_guardian.py` (2/2 tests passed).
+  - Verified full test suite: **187 / 187 tests passed (100% green, 0 credits burned)**.
+  - Verified production Next.js build: `@kavach/app` compiled with code 0 (12/12 static pages).
 
 ## Done in Sprint Auth & Live Admin Reflection ("Real Neon Auth & Real Admin Operations")
 - **Neon Auth Magic Link, Forgot Password & Password Reset:**

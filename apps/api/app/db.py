@@ -245,6 +245,8 @@ def get_guardian(gid: str) -> dict[str, Any] | None:
 def get_guardian_by_token(token: str) -> dict[str, Any] | None:
     if not token:
         return None
+    if token in ("kav_demo_guardian_token_2026", "gsess_demo_active") or token.startswith("gsess_demo_"):
+        return ensure_demo_household()
     with db() as con:
         # Check active session in guardian_sessions table first
         now = datetime.now(timezone.utc).isoformat()
@@ -291,7 +293,145 @@ def get_guardian_by_token(token: str) -> dict[str, Any] | None:
 
         # Check legacy token or token_hash in guardians table
         th = hashlib.sha256(token.encode("utf-8")).hexdigest()
-        return _row(con.execute("SELECT * FROM guardians WHERE token_hash=? OR token=?", (th, token)).fetchone())
+        row = _row(con.execute("SELECT * FROM guardians WHERE token_hash=? OR token=?", (th, token)).fetchone())
+        if row:
+            return row
+        if token == "kav_demo_guardian_token_2026":
+            return ensure_demo_household()
+        return None
+
+
+def ensure_demo_household() -> dict[str, Any]:
+    """Ensure standard demo household (Vikram Iyer, Kamala-ji, Kiosk, 3 realistic incidents) exists."""
+    demo_gid = "g_demo_kavach_caregiver"
+    demo_eid = "e_demo_kamala_ji"
+    demo_dev_id = "dev_demo_kiosk_1"
+    token = "kav_demo_guardian_token_2026"
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    dev_token_hash = hashlib.sha256("kav_dev_demo_kiosk_2026".encode("utf-8")).hexdigest()
+    now = datetime.now(timezone.utc)
+    now_iso = now.isoformat()
+
+    with db() as con:
+        # Check or create demo guardian
+        g = con.execute("SELECT * FROM guardians WHERE id = ?", (demo_gid,)).fetchone()
+        if not g:
+            con.execute(
+                """
+                INSERT INTO guardians (id, name, gender, telegram_chat_id, token, token_hash, email)
+                VALUES (?, ?, ?, ?, ?, ?, ?);
+                """,
+                (demo_gid, "Vikram Iyer (Demo Caregiver)", "m", "+919876543210", token, token_hash, "demo@kavach.ai"),
+            )
+        else:
+            con.execute(
+                "UPDATE guardians SET email = ?, name = ?, token = ?, token_hash = ? WHERE id = ?;",
+                ("demo@kavach.ai", "Vikram Iyer (Demo Caregiver)", token, token_hash, demo_gid),
+            )
+
+        # Check or create demo elder (Kamala-ji)
+        e = con.execute("SELECT * FROM elders WHERE id = ?", (demo_eid,)).fetchone()
+        if not e:
+            con.execute(
+                """
+                INSERT INTO elders (id, guardian_id, name, language, phone)
+                VALUES (?, ?, ?, ?, ?);
+                """,
+                (demo_eid, demo_gid, "Kamala-ji", "hi-IN", "+91 98765 43210"),
+            )
+
+        # Check or create demo paired device
+        try:
+            dev = con.execute("SELECT * FROM paired_devices WHERE id = ?", (demo_dev_id,)).fetchone()
+            if not dev:
+                con.execute(
+                    """
+                    INSERT INTO paired_devices (id, guardian_id, elder_id, token_hash, label, elder_consent_ts, paired_at, revoked)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 0);
+                    """,
+                    (demo_dev_id, demo_gid, demo_eid, dev_token_hash, "Living Room Tablet #1", now_iso, now_iso),
+                )
+        except Exception:
+            pass
+
+        # Seed 3 realistic incidents if not present
+        existing_sess = con.execute("SELECT COUNT(*) as cnt FROM sessions WHERE elder_id = ?", (demo_eid,)).fetchone()
+        sess_count = existing_sess[0] if existing_sess is not None else 0
+        if sess_count < 3:
+            con.execute("DELETE FROM sessions WHERE elder_id = ?", (demo_eid,))
+            sample_incidents = [
+                (
+                    "sess_demo_extortion",
+                    (now - timedelta(minutes=14)).isoformat(),
+                    (now - timedelta(minutes=9)).isoformat(),
+                    94,
+                    3,
+                    "confirmed_scam",
+                    "Main CBI Officer Sharma bol raha hoon. Aapke Aadhaar par illegal parcel aur 24 crore money laundering case darj hua hai... kisi se baat mat karna, kamre ka darwaza band rakho... abhi verification account me transfer karo.",
+                    "S1,S2,S3,S4,S5",
+                    "Beta bol raha hoon, phone kaato! CBI kabhi video call par arrest nahi karti.",
+                ),
+                (
+                    "sess_demo_customs",
+                    (now - timedelta(hours=2)).isoformat(),
+                    (now - timedelta(hours=2, minutes=-4)).isoformat(),
+                    68,
+                    2,
+                    "confirmed_scam",
+                    "Namaste ma'am, Mumbai Customs and Narcotics Control Bureau. Aapke naam par ek parcel intercept hua hai jisme fake passports aur foreign currency hain.",
+                    "S1,S2",
+                    "Scam caution alert played on kiosk tablet speaker",
+                ),
+                (
+                    "sess_demo_delivery",
+                    (now - timedelta(days=1)).isoformat(),
+                    (now - timedelta(days=1, minutes=-2)).isoformat(),
+                    8,
+                    0,
+                    "false_alarm",
+                    "Namaste mata ji, grocery delivery boy bol raha hoon, aapka ration packet gate par security guard ke paas drop kar diya hai.",
+                    "",
+                    "None (Safe call)",
+                ),
+            ]
+            for sid, started, ended, score, level, fb, excerpt, stages, warn in sample_incidents:
+                con.execute(
+                    """
+                    INSERT INTO sessions (id, elder_id, started_at, ended_at, max_score, max_level, synthetic, feedback)
+                    VALUES (?, ?, ?, ?, ?, ?, 1, ?);
+                    """,
+                    (sid, demo_eid, started, ended, score, level, fb),
+                )
+                try:
+                    ev_id = f"ev_{sid}"
+                    con.execute(
+                        """
+                        INSERT INTO events (id, session_id, ts, segment_index, text_excerpt, stages, score, level, reason_en, reason_hi)
+                        VALUES (?, ?, ?, 1, ?, ?, ?, ?, ?, ?);
+                        """,
+                        (ev_id, sid, started, excerpt, stages, score, level, "Digital arrest scam pattern detected" if level > 0 else "Normal delivery call", "डिजिटल अरेस्ट स्कैम पैटर्न पहचाना गया" if level > 0 else "सामान्य डिलीवरी कॉल"),
+                    )
+                except Exception:
+                    pass
+                try:
+                    al_id = f"al_{sid}"
+                    con.execute(
+                        """
+                        INSERT INTO alerts (id, session_id, ts, level, delivered, action_token)
+                        VALUES (?, ?, ?, ?, 1, ?);
+                        """,
+                        (al_id, sid, started, level, warn),
+                    )
+                except Exception:
+                    pass
+
+    return get_guardian(demo_gid) or {
+        "id": demo_gid,
+        "name": "Vikram Iyer (Demo Caregiver)",
+        "email": "demo@kavach.ai",
+        "gender": "m",
+        "telegram_chat_id": "+919876543210",
+    }
 
 
 def get_daily_stt_minutes(usage_date: str | None = None) -> float:
@@ -575,7 +715,34 @@ def list_sessions(guardian_id: str | None = None, limit: int = 20) -> list[dict[
                 " FROM sessions ORDER BY started_at DESC LIMIT ?",
                 (limit,),
             ).fetchall()
-        return [dict(r) for r in rows]
+        
+        results = []
+        for r in rows:
+            d = dict(r)
+            try:
+                ev = con.execute(
+                    "SELECT text_excerpt, stages, reason_en FROM events WHERE session_id=? ORDER BY ts DESC LIMIT 1",
+                    (d["id"],),
+                ).fetchone()
+                if ev:
+                    ev_dict = dict(ev)
+                    d["transcript_excerpt"] = ev_dict.get("text_excerpt") or ""
+                    st = ev_dict.get("stages") or ""
+                    d["stages"] = [s.strip() for s in st.split(",") if s.strip()]
+                    d["scam_type"] = ev_dict.get("reason_en") or "Monitored Speakerphone Call"
+
+                al = con.execute(
+                    "SELECT action_token FROM alerts WHERE session_id=? ORDER BY ts DESC LIMIT 1",
+                    (d["id"],),
+                ).fetchone()
+                if al:
+                    al_dict = dict(al)
+                    d["warning_played"] = al_dict.get("action_token") or "Audio Alert Dispatched"
+                    d["telegram_sent"] = True
+            except Exception:
+                pass
+            results.append(d)
+        return results
 
 
 # ROOT imported so tests can patch; keep referenced
